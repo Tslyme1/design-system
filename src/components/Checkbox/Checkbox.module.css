@@ -1,0 +1,114 @@
+.wrapper {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: var(--space-sm);
+  position: relative;
+  min-width: 0;
+}
+
+/* Нативный input остаётся в разметке и получает фокус — рисуется
+   поверх него системная рамка. Так работают клавиатура, форма
+   и скринридер, а вид задаёт система. */
+.input {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--space-lg);
+  height: var(--space-lg);
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.input:disabled {
+  cursor: not-allowed;
+}
+
+.control {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  width: var(--space-lg);
+  height: var(--space-lg);
+
+  background: var(--color-surface);
+  border: var(--border-hairline) solid var(--color-border-strong);
+  border-radius: var(--radius-md);
+
+  transition:
+    background-color var(--duration-fast) var(--easing-standard),
+    border-color var(--duration-fast) var(--easing-standard);
+}
+
+.mark {
+  width: var(--space-md);
+  height: var(--space-md);
+  fill: none;
+  stroke: var(--color-text-on-accent);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+
+  opacity: 0;
+  transition: opacity var(--duration-fast) var(--easing-standard);
+}
+
+/* Состояния заводятся здесь целиком и не переопределяются на месте. */
+
+.input:hover:not(:disabled) + .control {
+  border-color: var(--color-accent);
+}
+
+.input:focus-visible + .control {
+  outline: var(--border-strong) solid var(--color-focus-ring);
+  outline-offset: 2px;
+}
+
+.input:checked + .control,
+.input:indeterminate + .control {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+}
+
+.input:checked + .control .mark,
+.input:indeterminate + .control .mark {
+  opacity: 1;
+}
+
+.input:disabled + .control {
+  background: var(--color-surface-sunken);
+  border-color: var(--color-border);
+}
+
+.labelBlock {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xs);
+  min-width: 0;
+  cursor: pointer;
+}
+
+.disabled .labelBlock {
+  cursor: not-allowed;
+}
+
+.label {
+  font-family: var(--font-body);
+  font-size: var(--text-body-sm-size);
+  line-height: var(--text-body-sm-line);
+  color: var(--color-text);
+}
+
+.description {
+  font-family: var(--font-body);
+  font-size: var(--text-caption-size);
+  line-height: var(--text-caption-line);
+  color: var(--color-text-muted);
+}
+
+.disabled .label,
+.disabled .description {
+  color: var(--color-text-disabled);
+}

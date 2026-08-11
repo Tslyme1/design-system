@@ -1,6 +1,24 @@
 import { useState } from 'react';
 import { Stack, Box, Text, Surface, Field, Icon } from '@/primitives';
-import { Button, Modal, Input, Tag, Card, EmptyState } from '@/components';
+import {
+  Button,
+  Modal,
+  Drawer,
+  Popover,
+  Input,
+  Select,
+  Checkbox,
+  Radio,
+  RadioGroup,
+  Tag,
+  Chip,
+  Card,
+  EmptyState,
+  AppHeader,
+  HeaderButton,
+  HeaderDivider,
+  HeaderSpacer,
+} from '@/components';
 import styles from './Playground.module.css';
 
 /**
@@ -16,6 +34,22 @@ export function Playground() {
   const [wideModalOpen, setWideModalOpen] = useState(false);
   const [name, setName] = useState('');
   const [loading, setLoading] = useState(false);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [modeOpen, setModeOpen] = useState(false);
+  const [filtersOpen, setFiltersOpen] = useState(false);
+  const [mode, setMode] = useState('engineer');
+  const [crusher, setCrusher] = useState<string | string[] | null>(null);
+  const [customer, setCustomer] = useState<string | string[] | null>(null);
+  const [tags, setTags] = useState<string | string[]>([]);
+  const [showDelta, setShowDelta] = useState(true);
+  const [angleUnit, setAngleUnit] = useState('deg');
+
+  const crushers = [
+    { value: 'kmd-1750', label: 'КМД-1750Т7-Д', description: 'Коркино', group: 'КМД' },
+    { value: 'kmd-2200', label: 'КМД-2200Т6-Д', description: 'Качканар', group: 'КМД' },
+    { value: 'ksd-2200', label: 'КСД-2200Т', description: 'Михайловский ГОК', group: 'КСД' },
+    { value: 'ksd-1750', label: 'КСД-1750Гр', description: 'Стойленский ГОК', group: 'КСД' },
+  ];
 
   const toggleTheme = () => {
     const next = theme === 'light' ? 'dark' : 'light';
@@ -183,6 +217,261 @@ export function Playground() {
               Широкая — 1100
             </Button>
           </Stack>
+        </Section>
+
+        {/* ---------- Шапка сервиса ---------- */}
+        <Section
+          title="Шапка сервиса"
+          note="Отдельная шкала chrome: высота 44, радиус 0, ячейки разделены линиями, а не отступами."
+        >
+          <Surface level="flat" border radius="none" fullWidth>
+            <AppHeader>
+              <HeaderButton icon="home" title="Проекты" active />
+              <HeaderDivider />
+              <HeaderButton icon="plus" title="Новый проект" />
+              <HeaderDivider />
+              <HeaderButton expandable>КМД-1750Т7-Д — Коркино</HeaderButton>
+              <HeaderSpacer />
+              <HeaderButton expandable>
+                {mode === 'engineer' ? 'Инженерный режим' : 'Упрощённый режим'}
+              </HeaderButton>
+              <HeaderDivider />
+              <HeaderButton icon="help" title="Справка" />
+              <HeaderDivider />
+              <HeaderButton icon="minimize" title="Свернуть" chrome="minimize" />
+              <HeaderButton icon="maximize" title="Развернуть" chrome="maximize" />
+              <HeaderButton icon="x" title="Закрыть" chrome="close" />
+            </AppHeader>
+          </Surface>
+        </Section>
+
+        {/* ---------- Плашки ---------- */}
+        <Section title="Плашки" note="Показывают выбранный объект и ведут к его замене. Не путать с метками.">
+          <Stack direction="row" gap="md" wrap align="center">
+            <Chip icon="settings" meta="Коркино" action={{ icon: 'pencil', label: 'Сменить дробилку', onClick: () => undefined }}>
+              КМД-1750Т7-Д
+            </Chip>
+            <Chip icon="folder" meta="проба 3" action={{ icon: 'pencil', label: 'Сменить пробу', onClick: () => undefined }}>
+              Железистые кварциты
+            </Chip>
+            <Chip icon="fileText" active onClick={() => undefined}>
+              Активная плашка
+            </Chip>
+          </Stack>
+        </Section>
+
+        {/* ---------- Поповеры ---------- */}
+        <Section
+          title="Поповеры"
+          note="Панель фильтров, выбор режима, действия над диаграммой — одна конструкция вместо трёх."
+        >
+          <Stack direction="row" gap="md" wrap align="start">
+            <Popover
+              open={modeOpen}
+              onClose={() => setModeOpen(false)}
+              placement="bottom-start"
+              width="md"
+              trigger={
+                <Button variant="secondary" iconEnd="chevronDown" onClick={() => setModeOpen((v) => !v)}>
+                  Режим работы
+                </Button>
+              }
+            >
+              <RadioGroup name="mode" legend="Режим расчёта">
+                <Radio
+                  value="engineer"
+                  checked={mode === 'engineer'}
+                  onChange={() => setMode('engineer')}
+                  label="Инженерный"
+                  description="Ручная настройка всех параметров на каждом этапе."
+                />
+                <Radio
+                  value="simple"
+                  checked={mode === 'simple'}
+                  onChange={() => setMode('simple')}
+                  label="Упрощённый"
+                  description="Три коротких шага и готовый отчёт."
+                />
+              </RadioGroup>
+            </Popover>
+
+            <Popover
+              open={filtersOpen}
+              onClose={() => setFiltersOpen(false)}
+              placement="bottom-start"
+              width="md"
+              title="Фильтры"
+              trigger={
+                <Button variant="secondary" iconStart="slidersHorizontal" onClick={() => setFiltersOpen((v) => !v)}>
+                  Фильтры
+                </Button>
+              }
+              footer={
+                <Button variant="ghost" size="sm" fullWidth onClick={() => setFiltersOpen(false)}>
+                  Сбросить всё
+                </Button>
+              }
+            >
+              <Stack gap="sm">
+                <Checkbox label="Показывать изменения" checked={showDelta} onChange={(e) => setShowDelta(e.target.checked)} />
+                <Checkbox label="Только мои проекты" />
+                <Checkbox label="Включая архив" />
+                <Checkbox label="Частично выбрано" indeterminate />
+                <Checkbox label="Недоступно" disabled />
+              </Stack>
+            </Popover>
+          </Stack>
+        </Section>
+
+        {/* ---------- Флажки и переключатели ---------- */}
+        <Section
+          title="Флажки и переключатели"
+          note="Квадрат — можно выбрать несколько. Круг — один вариант. Форма совпадает со смыслом."
+        >
+          <Stack direction="row" gap="2xl" wrap align="start">
+            <Stack gap="sm">
+              <Checkbox label="Учитывать износ футеровки" defaultChecked />
+              <Checkbox label="Показывать промежуточные расчёты" />
+              <Checkbox label="Выбрано частично" indeterminate />
+            </Stack>
+
+            <RadioGroup name="angle" legend="Единицы угла">
+              <Radio value="deg" checked={angleUnit === 'deg'} onChange={() => setAngleUnit('deg')} label="Градусы" />
+              <Radio value="rad" checked={angleUnit === 'rad'} onChange={() => setAngleUnit('rad')} label="Радианы" />
+            </RadioGroup>
+          </Stack>
+        </Section>
+
+        {/* ---------- Выпадающие списки ---------- */}
+        <Section title="Выпадающие списки" note="Одиночный и множественный выбор, поиск, группы, свободный ввод.">
+          <Stack direction="row" gap="lg" wrap align="start">
+            <div className={styles.cardSlot}>
+              <Field label="Дробилка" fullWidth>
+                {(props) => (
+                  <Select {...props} options={crushers} value={crusher} onChange={setCrusher} searchable fullWidth placeholder="Выберите дробилку" />
+                )}
+              </Field>
+            </div>
+
+            <div className={styles.cardSlot}>
+              <Field label="Метки" hint="Можно выбрать несколько" fullWidth>
+                {(props) => (
+                  <Select
+                    {...props}
+                    multiple
+                    options={[
+                      { value: 'work', label: 'Рабочий' },
+                      { value: 'draft', label: 'Черновик' },
+                      { value: 'archive', label: 'Архив' },
+                    ]}
+                    value={tags}
+                    onChange={setTags}
+                    fullWidth
+                    placeholder="Не выбрано"
+                    footer={
+                      <Button variant="ghost" size="sm" iconStart="plus" fullWidth>
+                        Добавить метку
+                      </Button>
+                    }
+                  />
+                )}
+              </Field>
+            </div>
+          </Stack>
+        </Section>
+
+        {/* ---------- Поля с плавающей подписью ---------- */}
+        <Section
+          title="Поля второго типа"
+          note="Подпись лежит в поле и уходит наверх при вводе. Тот же Field, другой вариант."
+        >
+          <Stack direction="row" gap="lg" wrap align="start">
+            <div className={styles.cardSlot}>
+              <Field label="Название проекта" variant="floating" fullWidth>
+                {(props) => <Input {...props} fullWidth />}
+              </Field>
+            </div>
+
+            <div className={styles.cardSlot}>
+              <Field label="Заказчик" variant="floating" hint="Можно ввести нового" fullWidth>
+                {(props) => (
+                  <Select
+                    {...props}
+                    options={[
+                      { value: 'korkino', label: 'Коркино' },
+                      { value: 'kachkanar', label: 'Качканар' },
+                    ]}
+                    value={customer}
+                    onChange={setCustomer}
+                    searchable
+                    allowCustom
+                    fullWidth
+                  />
+                )}
+              </Field>
+            </div>
+
+            <div className={styles.cardSlot}>
+              <Field label="Обязательное поле" variant="floating" error="Заполните поле" required fullWidth>
+                {(props) => <Input {...props} invalid fullWidth />}
+              </Field>
+            </div>
+          </Stack>
+        </Section>
+
+        {/* ---------- Выдвижная панель ---------- */}
+        <Section
+          title="Выдвижная панель"
+          note="Перекрывает рабочую область, но не шапку — в отличие от модалки."
+        >
+          <div className={styles.drawerHost}>
+            <AppHeader>
+              <HeaderButton icon="home" title="Проекты" active />
+              <HeaderDivider />
+              <HeaderButton expandable>КМД-1750Т7-Д</HeaderButton>
+              <HeaderSpacer />
+              <HeaderButton icon="help" title="Справка" />
+            </AppHeader>
+
+            <div className={styles.drawerBody}>
+              <Stack gap="md" align="start">
+                <Text variant="body" color="textMuted">
+                  Шапка остаётся доступной, пока панель открыта.
+                </Text>
+                <Button variant="primary" iconStart="chevronLeft" onClick={() => setDrawerOpen(true)}>
+                  Смотреть результат
+                </Button>
+              </Stack>
+            </div>
+
+            <Drawer
+              open={drawerOpen}
+              onClose={() => setDrawerOpen(false)}
+              title="Геометрия камеры"
+              footer={
+                <>
+                  <Stack direction="row" gap="sm">
+                    <Button variant="secondary" size="sm" iconStart="print">
+                      Печать
+                    </Button>
+                    <Button variant="secondary" size="sm" iconStart="download">
+                      Экспорт в Excel
+                    </Button>
+                  </Stack>
+                  <Button variant="primary" iconStart="chevronRight" onClick={() => setDrawerOpen(false)}>
+                    Свернуть результат
+                  </Button>
+                </>
+              }
+            >
+              <Stack gap="md">
+                <Text variant="body">Содержимое панели приходит снаружи — панель о нём ничего не знает.</Text>
+                <Text variant="body" color="textMuted">
+                  Прокрутка живёт только здесь, футер с действиями остаётся на виду.
+                </Text>
+              </Stack>
+            </Drawer>
+          </div>
         </Section>
 
         {/* ---------- Иконки ---------- */}

@@ -1,7 +1,17 @@
 import type { ReactNode } from 'react';
 import { useId } from 'react';
-import { Stack } from './Stack';
-import { Text } from './Text';
+import styles from './Field.module.css';
+
+export type FieldRenderProps = {
+  id: string;
+  'aria-describedby': string | undefined;
+  'aria-invalid': boolean | undefined;
+  /**
+   * Заполняется только у варианта `floating`: пробел в плейсхолдере —
+   * то, на чём держится `:placeholder-shown`. Контрол обязан его прокинуть.
+   */
+  placeholder?: string;
+};
 
 export type FieldProps = {
   /** Подпись поля. Обязательна: поле без подписи — это поле без назначения. */
@@ -10,51 +20,92 @@ export type FieldProps = {
    * Контрол. Получает `id`, `aria-describedby` и `aria-invalid`,
    * чтобы подпись и ошибка были связаны с ним программно, а не только визуально.
    */
-  children: (props: {
-    id: string;
-    'aria-describedby': string | undefined;
-    'aria-invalid': boolean | undefined;
-  }) => ReactNode;
+  children: (props: FieldRenderProps) => ReactNode;
+  /**
+   * `stacked` — подпись над контролом. Значение по умолчанию, годится везде.
+   * `floating` — подпись лежит в поле и уходит наверх при вводе. Для форм,
+   * где важна плотность и поля идут в ряд.
+   */
+  variant?: 'stacked' | 'floating';
   /** Пояснение под полем. Скрывается, когда показана ошибка. */
   hint?: string;
   /** Текст ошибки. Его наличие переводит поле в невалидное состояние. */
   error?: string;
   required?: boolean;
+  fullWidth?: boolean;
 };
 
 /**
- * Обёртка поля формы: подпись + контрол + пояснение/ошибка.
+ * Обёртка поля формы: подпись + контрол + пояснение или ошибка.
  *
  * Гарантирует одинаковую анатомию всех полей. В аудите поля собирались
  * тремя способами (`.input`, `.field`, `.float-field`), и связь подписи
  * с контролом нигде не была выражена программно.
  *
+ * Плавающая подпись оставлена как вариант, а не как отдельный компонент:
+ * иначе появляются два способа подписать поле, и они неизбежно расходятся.
+ *
  * Ошибка и пояснение занимают одну позицию: ошибка вытесняет пояснение,
  * поэтому высота поля не скачет при валидации.
  */
-export function Field({ label, children, hint, error, required = false }: FieldProps) {
+export function Field({
+  label,
+  children,
+  variant = 'stacked',
+  hint,
+  error,
+  required = false,
+  fullWidth = false,
+}: FieldProps) {
   const id = useId();
   const messageId = `${id}-message`;
   const hasMessage = Boolean(error || hint);
 
+  const renderProps: FieldRenderProps = {
+    id,
+    'aria-describedby': hasMessage ? messageId : undefined,
+    'aria-invalid': error ? true : undefined,
+    ...(variant === 'floating' ? { placeholder: ' ' } : null),
+  };
+
+  const wrapperClass = [styles.field, fullWidth ? styles.fullWidth : null].filter(Boolean).join(' ');
+
+  if (variant === 'floating') {
+    return (
+      <div className={wrapperClass}>
+        {/* Порядок важен: подпись идёт ПОСЛЕ контрола, потому что её
+            положение задаётся через соседний селектор `+`. */}
+        <div className={styles.floatBox}>
+          {children(renderProps)}
+          <label htmlFor={id} className={[styles.floatLabel, error ? styles.labelError : null].filter(Boolean).join(' ')}>
+            {label}
+            {required ? ' *' : ''}
+          </label>
+        </div>
+
+        {hasMessage ? (
+          <span id={messageId} className={[styles.message, error ? styles.messageError : null].filter(Boolean).join(' ')}>
+            {error ?? hint}
+          </span>
+        ) : null}
+      </div>
+    );
+  }
+
   return (
-    <Stack gap="2xs">
-      <Text variant="label" as="label" htmlFor={id} color={error ? 'dangerText' : 'text'}>
+    <div className={wrapperClass}>
+      <label htmlFor={id} className={[styles.label, error ? styles.labelError : null].filter(Boolean).join(' ')}>
         {label}
         {required ? ' *' : ''}
-      </Text>
+      </label>
 
-      {children({
-        id,
-        'aria-describedby': hasMessage ? messageId : undefined,
-        'aria-invalid': error ? true : undefined,
-      })}
+      {children(renderProps)}
 
       {hasMessage ? (
-        <Text variant="caption" color={error ? 'dangerText' : 'textMuted'} as="span" id={messageId}>
+        <span id={messageId} className={[styles.message, error ? styles.messageError : null].filter(Boolean).join(' ')}>
           {error ?? hint}
-        </Text>
+        </span>
       ) : null}
-    </Stack>
+    </div>
   );
 }

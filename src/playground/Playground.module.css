@@ -10,3 +10,23 @@
   width: 280px;
   max-width: 100%;
 }
+
+/* Выдвижная панель позиционируется абсолютно, поэтому родитель обязан
+   быть точкой отсчёта и обрезать её на время анимации. */
+.drawerHost {
+  position: relative;
+  overflow: hidden;
+  /* Сцена витрины, а не блок с текстом: панели нужна конечная высота,
+     иначе её нечем ограничить внутри страницы. */
+  height: 320px; /* ds-lint-disable */
+  display: flex;
+  flex-direction: column;
+  border: var(--border-hairline) solid var(--color-border);
+}
+
+.drawerBody {
+  flex: 1;
+  min-height: 0;
+  padding: var(--space-xl);
+  background: var(--color-surface);
+}

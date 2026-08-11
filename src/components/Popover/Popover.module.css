@@ -1,0 +1,91 @@
+.wrapper {
+  position: relative;
+  display: inline-flex;
+  min-width: 0;
+}
+
+.panel {
+  position: absolute;
+  /* Слой берётся из шкалы. В аудите z-index подбирался вручную —
+     240, 250, 251, 255, 256 — и слои начинали спорить между собой. */
+  z-index: var(--z-overlay);
+
+  display: flex;
+  flex-direction: column;
+  min-width: 100%;
+  max-height: 320px;
+
+  background: var(--color-surface-raised);
+  border: var(--border-hairline) solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+
+  animation: pop var(--duration-fast) var(--easing-standard);
+}
+
+/* Раскрытие вниз или вверх, прижатие к левому или правому краю триггера. */
+
+.bottom-start {
+  top: calc(100% + var(--space-xs));
+  left: 0;
+}
+
+.bottom-end {
+  top: calc(100% + var(--space-xs));
+  right: 0;
+}
+
+.top-start {
+  bottom: calc(100% + var(--space-xs));
+  left: 0;
+}
+
+.top-end {
+  bottom: calc(100% + var(--space-xs));
+  right: 0;
+}
+
+.widthTrigger {
+  width: 100%;
+}
+
+.widthSm {
+  width: 220px;
+}
+
+.widthMd {
+  width: 280px;
+}
+
+.title {
+  flex-shrink: 0;
+  padding: var(--space-md);
+  border-bottom: var(--border-hairline) solid var(--color-border);
+
+  font-family: var(--font-body);
+  font-size: var(--text-label-size);
+  line-height: var(--text-label-line);
+  font-weight: var(--text-label-weight);
+  color: var(--color-text);
+}
+
+/* Прокрутка живёт только в содержимом: заголовок и футер остаются на виду. */
+.content {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: var(--space-sm);
+}
+
+.footer {
+  flex-shrink: 0;
+  padding: var(--space-sm);
+  border-top: var(--border-hairline) solid var(--color-border);
+}
+
+@keyframes pop {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+}

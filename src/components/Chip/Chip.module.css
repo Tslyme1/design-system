@@ -1,0 +1,106 @@
+.chip {
+  display: inline-flex;
+  align-items: stretch;
+  min-width: 0;
+  max-width: 100%;
+
+  background: var(--color-surface);
+  border: var(--border-hairline) solid var(--color-border);
+  border-radius: var(--radius-md);
+
+  transition: border-color var(--duration-fast) var(--easing-standard);
+}
+
+.fullWidth {
+  width: 100%;
+}
+
+.active {
+  border-color: var(--color-accent);
+  background: var(--color-accent-subtle);
+}
+
+.clickable:hover {
+  border-color: var(--color-border-hover);
+}
+
+.main {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  flex: 1;
+  min-width: 0;
+
+  padding: var(--space-sm) var(--space-md);
+
+  background: transparent;
+  border: none;
+  color: var(--color-text);
+  font-family: var(--font-body);
+  text-align: left;
+}
+
+.clickable .main {
+  cursor: pointer;
+}
+
+.main:focus-visible {
+  outline: var(--border-strong) solid var(--color-focus-ring);
+  outline-offset: -2px;
+  border-radius: var(--radius-md);
+}
+
+.text {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-xs);
+  min-width: 0;
+}
+
+.label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  font-size: var(--text-body-size);
+  line-height: var(--text-body-line);
+  font-weight: 600;
+}
+
+.meta {
+  flex-shrink: 0;
+  font-size: var(--text-body-sm-size);
+  line-height: var(--text-body-sm-line);
+  color: var(--color-text-muted);
+}
+
+/* Действие отделено хайрлайном, а не отступом: плашка остаётся
+   единым объектом, а не парой «поле и кнопка рядом». */
+.action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  width: var(--control-sm);
+
+  background: transparent;
+  border: none;
+  border-left: var(--border-hairline) solid var(--color-border);
+  color: var(--color-text-muted);
+  cursor: pointer;
+
+  transition:
+    background-color var(--duration-fast) var(--easing-standard),
+    color var(--duration-fast) var(--easing-standard);
+}
+
+.action:hover {
+  background: var(--color-surface-sunken);
+  color: var(--color-text);
+}
+
+.action:focus-visible {
+  outline: var(--border-strong) solid var(--color-focus-ring);
+  outline-offset: -2px;
+}
