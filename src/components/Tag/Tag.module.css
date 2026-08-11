@@ -1,0 +1,81 @@
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2xs);
+  max-width: 100%;
+
+  padding-block: var(--space-2xs);
+  padding-inline: var(--space-sm);
+
+  border-radius: var(--radius-md);
+  font-family: var(--font-body);
+  font-size: var(--text-body-sm-size);
+  line-height: var(--text-body-sm-line);
+}
+
+.label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.remove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-full);
+  color: inherit;
+  opacity: 0.6;
+  cursor: pointer;
+
+  transition: opacity var(--duration-fast) var(--easing-standard);
+}
+
+.remove:hover {
+  opacity: 1;
+}
+
+.remove:focus-visible {
+  outline: var(--border-strong) solid var(--color-focus-ring);
+  outline-offset: 1px;
+  opacity: 1;
+}
+
+/* Цвета метки читаются из переменных темы: в тёмной теме
+   подставляются другие значения, компонент об этом не знает. */
+
+.steel {
+  background: var(--tag-steel-bg);
+  color: var(--tag-steel-fg);
+}
+
+.sage {
+  background: var(--tag-sage-bg);
+  color: var(--tag-sage-fg);
+}
+
+.amber {
+  background: var(--tag-amber-bg);
+  color: var(--tag-amber-fg);
+}
+
+.clay {
+  background: var(--tag-clay-bg);
+  color: var(--tag-clay-fg);
+}
+
+.violet {
+  background: var(--tag-violet-bg);
+  color: var(--tag-violet-fg);
+}
+
+.slate {
+  background: var(--tag-slate-bg);
+  color: var(--tag-slate-fg);
+}

@@ -1,0 +1,130 @@
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-xl);
+
+  background: var(--color-overlay);
+  animation: fade var(--duration-base) var(--easing-standard);
+}
+
+/* Модалка — единственное оговорённое исключение из правила
+   «тень или бордер»: без рамки её край теряется на тёмной теме. */
+.dialog {
+  display: flex;
+  flex-direction: column;
+  max-height: 88vh;
+  min-width: 0;
+
+  background: var(--color-surface-raised);
+  border: var(--border-hairline) solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+
+  animation: rise var(--duration-base) var(--easing-standard);
+}
+
+.sm {
+  width: var(--modal-width-sm);
+}
+
+.lg {
+  width: var(--modal-width-lg);
+}
+
+/* ---------- Шапка ---------- */
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  flex-shrink: 0;
+
+  padding: var(--space-lg);
+  border-bottom: var(--border-hairline) solid var(--color-border);
+}
+
+.header > :first-child {
+  flex: 1;
+  min-width: 0;
+}
+
+.close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  width: var(--control-sm);
+  height: var(--control-sm);
+
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-md);
+  color: var(--color-text-muted);
+  cursor: pointer;
+
+  transition: background-color var(--duration-fast) var(--easing-standard);
+}
+
+.close:hover {
+  background: var(--color-surface-sunken);
+  color: var(--color-text);
+}
+
+.close:focus-visible {
+  outline: var(--border-strong) solid var(--color-focus-ring);
+  outline-offset: 2px;
+}
+
+/* ---------- Содержимое ----------
+   Прокрутка живёт только здесь: шапка и футер остаются на виду. */
+
+.content {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: var(--space-lg);
+}
+
+/* ---------- Футер ---------- */
+
+.footer {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  flex-shrink: 0;
+
+  padding: var(--space-lg);
+  border-top: var(--border-hairline) solid var(--color-border);
+}
+
+.footerAside {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Действия всегда справа, даже когда слева ничего нет. */
+.footerActions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  margin-left: auto;
+}
+
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}

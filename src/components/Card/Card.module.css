@@ -1,0 +1,64 @@
+/* Регистрационные метки — «+» по углам обрамлённого объекта.
+   Рисуются внутрь, чтобы не выходить за границу поверхности. */
+
+.blueprint {
+  position: relative;
+}
+
+.corner {
+  position: absolute;
+  width: var(--space-sm);
+  height: var(--space-sm);
+  pointer-events: none;
+  opacity: 0.55;
+}
+
+.corner::before,
+.corner::after {
+  content: '';
+  position: absolute;
+  background: var(--color-border-strong);
+}
+
+.corner::before {
+  left: 50%;
+  top: 0;
+  width: var(--border-hairline);
+  height: 100%;
+  transform: translateX(-50%);
+}
+
+.corner::after {
+  top: 50%;
+  left: 0;
+  height: var(--border-hairline);
+  width: 100%;
+  transform: translateY(-50%);
+}
+
+.tl {
+  top: 0;
+  left: 0;
+}
+
+.tr {
+  top: 0;
+  right: 0;
+}
+
+.bl {
+  bottom: 0;
+  left: 0;
+}
+
+.br {
+  bottom: 0;
+  right: 0;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2xs);
+  flex-shrink: 0;
+}

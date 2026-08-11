@@ -1,0 +1,26 @@
+.surface {
+  min-width: 0;
+  transition:
+    border-color var(--duration-fast) var(--easing-standard),
+    background-color var(--duration-fast) var(--easing-standard);
+}
+
+/* Интерактивные состояния заводятся сразу и целиком — иначе они
+   дописываются потом и каждый раз по-разному. */
+.interactive {
+  cursor: pointer;
+}
+
+.interactive:hover {
+  border-color: var(--color-border-hover);
+  background: var(--color-surface-sunken);
+}
+
+.interactive:active {
+  background: var(--color-accent-subtle);
+}
+
+.interactive:focus-visible {
+  outline: var(--border-strong) solid var(--color-focus-ring);
+  outline-offset: 2px;
+}
