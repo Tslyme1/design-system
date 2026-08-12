@@ -53,8 +53,17 @@ const RULES = [
   {
     id: 'style-object-color',
     scope: CODE,
-    re: /\b(?:color|background|backgroundColor|borderColor)\s*:\s*['"`](?!var\()/g,
-    msg: 'Цвет строкой в объекте стилей. Используй семантическую роль.',
+    /**
+     * Ловится сырой цвет, а не любая строка после `color:`. Прежняя версия
+     * правила флагила `color: 'steel'` — то есть проп с именем роли (`Tag`,
+     * `Text`, `Icon`), а это ровно то, чего система и требует. Правило,
+     * наказывающее за правильный код, перестают читать целиком.
+     *
+     * Hex, rgb() и hsl() ловит raw-color; здесь остаются именованные
+     * цвета и градиенты — второй способ обойти шкалу.
+     */
+    re: /\b(?:color|background|backgroundColor|borderColor)\s*:\s*['"`](?:red|blue|green|white|black|gray|grey|silver|yellow|orange|purple|pink|brown|navy|teal|olive|maroon|lime|aqua|fuchsia|[a-z-]*gradient\()/gi,
+    msg: 'Сырой цвет строкой в объекте стилей. Используй семантическую роль.',
   },
   {
     id: 'primitive-import',
@@ -67,6 +76,19 @@ const RULES = [
     scope: CSS,
     re: /(?:^|[;{\s])(?:height|min-height)\s*:\s*\d+(?:\.\d+)?(?:px|rem|em)/g,
     msg: 'Фиксированная высота. Блок с текстом не должен её иметь; для контролов есть var(--control-*).',
+  },
+  {
+    id: 'dashed-css-class',
+    scope: CSS,
+    /**
+     * У CSS-модулей проекта включён `localsConvention: 'camelCaseOnly'`:
+     * дефисные ключи из экспорта удаляются, а не дублируются. Поэтому
+     * `styles['bottom-start']` — это `undefined`, класс молча не
+     * применяется, и ошибка вылезает только глазом. Так поповер
+     * четыре дня открывался поверх своего триггера.
+     */
+    re: /^\s*\.[a-zA-Z][a-zA-Z0-9]*-[a-zA-Z0-9-]+\s*[,{]/g,
+    msg: 'Дефис в имени класса CSS-модуля. Из экспорта такой ключ удаляется — пиши camelCase.',
   },
   {
     id: 'raw-z-index',
@@ -119,6 +141,53 @@ for (const file of files) {
       }
     }
   });
+}
+
+/**
+ * Обращение к несуществующему классу CSS-модуля.
+ *
+ * `styles.cardSlot` при удалённом `.cardSlot` — это `undefined`, а
+ * `className={undefined}` не ошибка: элемент просто теряет все стили.
+ * Так после удаления `Card` съехала секция полей в витрине, а до этого
+ * поповер открывался поверх триггера. Оба раза находил человек.
+ */
+for (const file of files) {
+  if (!CODE.has(extname(file))) continue;
+
+  const src = readFileSync(file, 'utf8');
+  const moduleImport = src.match(/import\s+(\w+)\s+from\s+['"]([^'"]+\.module\.css)['"]/);
+  if (!moduleImport) continue;
+
+  const [, binding, relative] = moduleImport;
+  const cssPath = join(file, '..', relative);
+  let css;
+  try {
+    css = readFileSync(cssPath, 'utf8');
+  } catch {
+    continue;
+  }
+
+  const defined = new Set([...css.matchAll(/\.([a-zA-Z_][\w-]*)/g)].map((m) => m[1]));
+
+  // Скобочные обращения читаются из исходника, точечные — из кода без
+  // строковых литералов: иначе путь './Drawer.scene.module.css' в импорте
+  // сам выглядит как обращение `scene.module`.
+  const bracket = [...src.matchAll(new RegExp(`\\b${binding}\\[['"]([^'"]+)['"]\\]`, 'g'))];
+  const codeOnly = src.replace(/(['"])(?:\\.|(?!\1).)*\1/g, '""');
+  const dotted = [...codeOnly.matchAll(new RegExp(`\\b${binding}\\.([a-zA-Z_]\\w*)`, 'g'))];
+  const used = [...bracket, ...dotted];
+
+  for (const match of used) {
+    if (defined.has(match[1])) continue;
+    const line = src.slice(0, match.index).split('\n').length;
+    violations.push({
+      file,
+      line,
+      rule: 'unknown-css-class',
+      match: `${binding}.${match[1]}`,
+      msg: `Класса .${match[1]} нет в ${relative}. className={undefined} не падает — элемент молча теряет стили.`,
+    });
+  }
 }
 
 if (violations.length === 0) {

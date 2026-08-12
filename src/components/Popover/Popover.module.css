@@ -25,22 +25,26 @@
 
 /* Раскрытие вниз или вверх, прижатие к левому или правому краю триггера. */
 
-.bottom-start {
+/* Имена классов camelCase не по вкусу, а по необходимости: у CSS-модулей
+   в этом проекте localsConvention: 'camelCaseOnly', и дефисные ключи
+   из экспорта удаляются целиком. styles['bottom-start'] был undefined,
+   панель оставалась без смещений и вставала поверх триггера. */
+.bottomStart {
   top: calc(100% + var(--space-xs));
   left: 0;
 }
 
-.bottom-end {
+.bottomEnd {
   top: calc(100% + var(--space-xs));
   right: 0;
 }
 
-.top-start {
+.topStart {
   bottom: calc(100% + var(--space-xs));
   left: 0;
 }
 
-.top-end {
+.topEnd {
   bottom: calc(100% + var(--space-xs));
   right: 0;
 }

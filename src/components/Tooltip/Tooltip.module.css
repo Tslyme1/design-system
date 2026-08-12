@@ -1,0 +1,56 @@
+.wrapper {
+  position: relative;
+  display: inline-flex;
+}
+
+.bubble {
+  position: absolute;
+  left: 50%;
+  z-index: var(--z-overlay);
+
+  max-width: var(--modal-width-sm);
+  width: max-content;
+  padding: var(--space-xs) var(--space-sm);
+
+  background: var(--color-surface-raised);
+  color: var(--color-text);
+  border: var(--border-hairline) solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+
+  font-family: var(--font-body);
+  font-size: var(--text-body-sm-size);
+  line-height: var(--text-body-sm-line);
+
+  /* visibility, а не только opacity: прозрачный пузырь остаётся в дереве
+     доступности, и скринридер читает подсказку постоянно — в том числе
+     когда она не показана. */
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+
+  transition:
+    opacity var(--duration-fast) var(--easing-standard),
+    visibility var(--duration-fast) var(--easing-standard);
+}
+
+.top {
+  bottom: 100%;
+  transform: translate(-50%, calc(-1 * var(--space-2xs)));
+}
+
+.bottom {
+  top: 100%;
+  transform: translate(-50%, var(--space-2xs));
+}
+
+.open {
+  opacity: 1;
+  visibility: visible;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bubble {
+    transition: none;
+  }
+}

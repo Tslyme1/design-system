@@ -1,0 +1,44 @@
+/* Подчёркивание по умолчанию, а не по наведению: ссылка, отличающаяся
+   от текста только цветом, не читается при дальтонизме. */
+
+.link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2xs);
+
+  font-family: var(--font-body);
+  font-size: inherit;
+  line-height: inherit;
+  text-decoration: underline;
+  text-underline-offset: var(--space-2xs);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+
+  transition: color var(--duration-fast) var(--easing-standard);
+}
+
+.label {
+  min-width: 0;
+}
+
+.accent {
+  color: var(--color-accent-text);
+}
+
+.muted {
+  color: var(--color-text-muted);
+}
+
+.link:hover {
+  color: var(--color-accent);
+}
+
+.link:active {
+  color: var(--color-accent-active);
+}
+
+.link:focus-visible {
+  outline: var(--border-strong) solid var(--color-focus-ring);
+  outline-offset: 2px;
+  text-decoration: none;
+}

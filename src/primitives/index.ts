@@ -4,6 +4,9 @@ export type { StackProps } from './Stack';
 export { Box } from './Box';
 export type { BoxProps } from './Box';
 
+export { Grid } from './Grid';
+export type { GridProps } from './Grid';
+
 export { Text } from './Text';
 export type { TextProps } from './Text';
 

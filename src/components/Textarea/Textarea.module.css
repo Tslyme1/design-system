@@ -1,0 +1,64 @@
+/* Те же границы, фокус и невалидность, что у Input: два поля ввода
+   в одной форме не должны выглядеть как из разных систем. */
+
+.textarea {
+  min-width: 0;
+  padding: var(--space-sm) var(--space-md);
+
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: var(--text-body-size);
+  line-height: var(--text-body-line);
+
+  border: var(--border-hairline) solid var(--color-border);
+  border-radius: var(--radius-md);
+
+  /* Растягивать по горизонтали нельзя: поле выедет за раскладку формы. */
+  resize: vertical;
+
+  transition:
+    border-color var(--duration-fast) var(--easing-standard),
+    background-color var(--duration-fast) var(--easing-standard);
+}
+
+.textarea::placeholder {
+  color: var(--color-text-muted);
+}
+
+.textarea:hover:not(:disabled) {
+  border-color: var(--color-border-hover);
+}
+
+.textarea:focus {
+  outline: none;
+  border-color: var(--color-accent);
+}
+
+.textarea:focus-visible {
+  outline: var(--border-strong) solid var(--color-focus-ring);
+  outline-offset: 1px;
+}
+
+.textarea:disabled {
+  background: var(--color-surface-sunken);
+  color: var(--color-text-disabled);
+  cursor: not-allowed;
+  resize: none;
+}
+
+.invalid {
+  border-color: var(--color-danger);
+}
+
+.invalid:focus {
+  border-color: var(--color-danger);
+}
+
+.invalid:focus-visible {
+  outline-color: var(--color-danger);
+}
+
+.fullWidth {
+  width: 100%;
+}

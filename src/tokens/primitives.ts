@@ -43,15 +43,25 @@ export const radius = {
  * Отдельных шкал кегля и интерлиньяжа нет намеренно: в аудите они
  * собирались заново в каждом месте и дали 18 кеглей и 8 интерлиньяжей.
  * Решение автора: 12.5 сведён к 12. Пары 11/11.5, 12/12.5, 13/13.5 схлопнуты.
+ *
+ * Шкала задана автором по назначению роли, а не выведена из аудита:
+ * 32 страница / 24 секция / 16 карточка / 16 ввод / 14 формы / 12 плотное.
+ *
+ * `caption` и `bodySm` намеренно ссылаются на ОДНУ тройку: решение автора —
+ * «размер один, начертания оставляем». Роли сохранены обе, потому что они
+ * означают разное (единицы измерения против плотных областей), но значение
+ * у них общее — иначе два одинаковых литерала со временем разъедутся.
  * ------------------------------------------------------------------ */
+const dense = { fontSize: '12px', lineHeight: '1.4', fontWeight: '400' } as const;
+
 export const typography = {
-  caption: { fontSize: '11px', lineHeight: '1.4', fontWeight: '400' },
-  bodySm: { fontSize: '12px', lineHeight: '1.4', fontWeight: '400' },
-  body: { fontSize: '13px', lineHeight: '1.45', fontWeight: '400' },
-  bodyLg: { fontSize: '15px', lineHeight: '1.5', fontWeight: '400' },
+  caption: dense,
+  bodySm: dense,
+  body: { fontSize: '14px', lineHeight: '1.45', fontWeight: '400' },
+  bodyLg: { fontSize: '16px', lineHeight: '1.5', fontWeight: '400' },
   label: { fontSize: '12px', lineHeight: '1.35', fontWeight: '600' },
   headingSm: { fontSize: '16px', lineHeight: '1.3', fontWeight: '600' },
-  headingMd: { fontSize: '22px', lineHeight: '1.2', fontWeight: '600' },
+  headingMd: { fontSize: '24px', lineHeight: '1.2', fontWeight: '600' },
   headingLg: { fontSize: '32px', lineHeight: '1.15', fontWeight: '700' },
 } as const;
 
@@ -88,7 +98,7 @@ export const chrome = {
  * ------------------------------------------------------------------ */
 export const modalWidth = {
   sm: 'min(560px, 94vw)',
-  lg: 'min(1100px, 96vw)',
+  lg: 'min(1280px, 96vw)',
 } as const;
 
 /* ------------------------------------------------------------------ *

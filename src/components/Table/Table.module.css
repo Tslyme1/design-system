@@ -1,0 +1,147 @@
+/* Таблица шире экрана прокручивается сама, а не растягивает страницу:
+   горизонтальная прокрутка всего документа ломает всё остальное. */
+
+.scroll {
+  width: 100%;
+  overflow-x: auto;
+  border: var(--border-hairline) solid var(--color-border);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-body);
+  background: var(--color-surface);
+}
+
+.caption {
+  padding: var(--space-md) var(--space-lg);
+  text-align: start;
+
+  font-size: var(--text-label-size);
+  line-height: var(--text-label-line);
+  font-weight: var(--text-label-weight);
+  color: var(--color-text-muted);
+
+  border-bottom: var(--border-hairline) solid var(--color-border);
+}
+
+/* Липкой шапки здесь нет намеренно: sticky работает только внутри
+   предка с ограниченной высотой, а шкалы высот областей в системе не
+   существует — ограничивать таблицу нечем. Появится шкала — появится
+   и sticky, одним местом. */
+.head {
+  padding: var(--space-sm) var(--space-lg);
+  text-align: start;
+  white-space: nowrap;
+
+  background: var(--color-surface-sunken);
+  border-bottom: var(--border-hairline) solid var(--color-border);
+
+  font-size: var(--text-label-size);
+  line-height: var(--text-label-line);
+  font-weight: var(--text-label-weight);
+  color: var(--color-text-muted);
+}
+
+.headLabel {
+  min-width: 0;
+}
+
+.sortButton {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2xs);
+
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-md);
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.sortButton:hover {
+  color: var(--color-text);
+}
+
+.sortButton:focus-visible {
+  outline: var(--border-strong) solid var(--color-focus-ring);
+  outline-offset: 2px;
+}
+
+.row + .row .cell {
+  border-top: var(--border-hairline) solid var(--color-border);
+}
+
+.cell {
+  padding: var(--space-sm) var(--space-lg);
+  /* Плотная область — это роль bodySm, а не «шрифт помельче». */
+  font-size: var(--text-body-sm-size);
+  line-height: var(--text-body-sm-line);
+  color: var(--color-text);
+  vertical-align: top;
+}
+
+.alignEnd {
+  text-align: end;
+}
+
+.dash {
+  color: var(--color-text-muted);
+}
+
+.interactive {
+  cursor: pointer;
+  transition: background-color var(--duration-fast) var(--easing-standard);
+}
+
+.interactive:hover {
+  background: var(--color-accent-subtle);
+}
+
+/* Клавиатурное действие принадлежит кнопке в первой ячейке, а не строке:
+   у tr нет роли, а фокус на нём не позволяет открыть в новой вкладке.
+   Подсветка при этом остаётся на всей строке — глазом действие
+   принадлежит строке целиком. */
+.interactive:focus-within {
+  background: var(--color-accent-subtle);
+}
+
+.rowAction {
+  display: inline-flex;
+  align-items: center;
+  min-width: 0;
+
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-md);
+  color: inherit;
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+}
+
+.rowAction:hover {
+  text-decoration: underline;
+  text-underline-offset: var(--space-2xs);
+}
+
+.rowAction:focus-visible {
+  outline: var(--border-strong) solid var(--color-focus-ring);
+  outline-offset: 2px;
+}
+
+/* Пустое состояние и ошибка занимают всю ширину таблицы —
+   иначе они выглядят как значение первой колонки. */
+.stateCell {
+  padding: var(--space-xl);
+}
+
+.summary {
+  padding: var(--space-md) var(--space-lg);
+  border-top: var(--border-hairline) solid var(--color-border);
+  background: var(--color-surface-sunken);
+}

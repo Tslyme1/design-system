@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import { useEffect, useRef, useCallback } from 'react';
+import { useAutoPlacement } from '../useAutoPlacement';
 import styles from './Popover.module.css';
 
 export type PopoverPlacement = 'bottom-start' | 'bottom-end' | 'top-start' | 'top-end';
@@ -30,6 +31,19 @@ const widthClass = {
 } as const;
 
 /**
+ * Размещение → класс. Отображение явное, а не `styles[placement]`:
+ * у CSS-модулей включён `camelCaseOnly`, дефисные ключи из экспорта
+ * удаляются, и обращение по имени пропа молча давало `undefined` —
+ * панель оставалась без смещений и вставала поверх триггера.
+ */
+const placementClass: Record<PopoverPlacement, string> = {
+  'bottom-start': 'bottomStart',
+  'bottom-end': 'bottomEnd',
+  'top-start': 'topStart',
+  'top-end': 'topEnd',
+};
+
+/**
  * Всплывающая панель у элемента.
  *
  * Закрывает три случая, которые в аудите были написаны отдельно каждый раз:
@@ -56,6 +70,12 @@ export function Popover({
 }: PopoverProps) {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
+  /**
+   * `placement` — предпочтение, а не приказ: если снизу не помещается,
+   * панель раскрывается вверх. Иначе фильтр у нижнего края экрана
+   * открывается за границу окна.
+   */
+  const actualPlacement = useAutoPlacement(placement, open, wrapperRef, panelRef);
 
   const handlePointerDown = useCallback(
     (event: MouseEvent) => {
@@ -98,7 +118,9 @@ export function Popover({
       {open ? (
         <div
           ref={panelRef}
-          className={[styles.panel, styles[placement], cls ? styles[cls] : null].filter(Boolean).join(' ')}
+          className={[styles.panel, styles[placementClass[actualPlacement]], cls ? styles[cls] : null]
+            .filter(Boolean)
+            .join(' ')}
           role="dialog"
         >
           {title ? <div className={styles.title}>{title}</div> : null}

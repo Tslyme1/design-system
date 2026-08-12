@@ -1,0 +1,56 @@
+/* Пульсация, а не бегущий блик: блик тянет взгляд и на длинной
+   загрузке утомляет. При prefers-reduced-motion анимация выключается. */
+
+.skeleton {
+  display: block;
+  background: var(--color-surface-sunken);
+  border-radius: var(--radius-md);
+  animation: pulse var(--duration-slow) var(--easing-standard) infinite alternate;
+}
+
+.lines {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  width: 100%;
+}
+
+.text {
+  height: var(--space-md);
+  width: 100%;
+}
+
+.lastLine {
+  width: 60%;
+}
+
+.control {
+  height: var(--control-md);
+  width: 100%;
+}
+
+/* Высота задаётся пропорцией, а не числом: заготовка занимает место
+   будущего блока, но не обещает конкретных пикселей. */
+.block {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+}
+
+.fullWidth {
+  width: 100%;
+}
+
+@keyframes pulse {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0.55;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton {
+    animation: none;
+  }
+}

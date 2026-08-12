@@ -1,0 +1,126 @@
+/* Сегменты стоят вплотную внутри общей рамки и разделены хайрлайном:
+   расстояние между ними означало бы, что это отдельные кнопки. */
+
+.group {
+  display: inline-flex;
+  align-items: stretch;
+  margin: 0;
+  padding: 0;
+  border: var(--border-hairline) solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-sunken);
+  overflow: hidden;
+}
+
+/* Подпись группы нужна скринридеру, но не глазу: видимую ставит `Field`.
+   Каноническая конструкция visually-hidden — 1px плюс clip-path.
+   Это не «фиксированная высота блока с текстом», против которой правило
+   линтера, а способ убрать элемент с экрана, оставив его в дереве
+   доступности; поэтому здесь оговорённое исключение. */
+.legend {
+  position: absolute;
+  width: 1px;
+  height: 1px; /* ds-lint-disable */
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.segment {
+  display: inline-flex;
+  position: relative;
+  min-width: 0;
+}
+
+.segment + .segment {
+  border-left: var(--border-hairline) solid var(--color-border);
+}
+
+.input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  margin: 0;
+  cursor: pointer;
+}
+
+.input:disabled {
+  cursor: not-allowed;
+}
+
+.label {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2xs);
+  min-width: 0;
+  width: 100%;
+
+  color: var(--color-text-muted);
+  font-family: var(--font-body);
+  font-weight: var(--text-label-weight);
+  cursor: pointer;
+
+  transition:
+    background-color var(--duration-fast) var(--easing-standard),
+    color var(--duration-fast) var(--easing-standard);
+}
+
+.text {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.input:hover:not(:disabled):not(:checked) ~ .label {
+  background: var(--color-surface);
+  color: var(--color-text);
+}
+
+/* Выбранный сегмент отличается заливкой и цветом текста, а не тенью:
+   группа уже обведена рамкой, а правило системы — тень ИЛИ бордер. */
+.input:checked ~ .label {
+  background: var(--color-surface);
+  color: var(--color-text);
+}
+
+.input:focus-visible ~ .label {
+  outline: var(--border-strong) solid var(--color-focus-ring);
+  outline-offset: calc(-1 * var(--border-strong));
+}
+
+.input:disabled ~ .label {
+  color: var(--color-text-disabled);
+  cursor: not-allowed;
+}
+
+/* Размеры — та же шкала контролов, что у кнопки и поля. */
+
+.sm .label {
+  height: var(--control-sm);
+  padding-inline: var(--space-md);
+  font-size: var(--text-body-sm-size);
+}
+
+.md .label {
+  height: var(--control-md);
+  padding-inline: var(--space-lg);
+  font-size: var(--text-body-size);
+}
+
+.lg .label {
+  height: var(--control-lg);
+  padding-inline: var(--space-xl);
+  font-size: var(--text-body-lg-size);
+}
+
+.fullWidth {
+  display: flex;
+  width: 100%;
+}
+
+.fullWidth .segment {
+  flex: 1;
+}

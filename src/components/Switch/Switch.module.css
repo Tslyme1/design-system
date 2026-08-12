@@ -1,0 +1,107 @@
+/* Нативный input лежит поверх дорожки и остаётся кликабельным и
+   доступным с клавиатуры; видимая часть рисуется рядом.
+   Свой div с onClick вместо input отнял бы роль, состояние и таб. */
+
+.row {
+  position: relative;
+  display: inline-flex;
+  align-items: start;
+  gap: var(--space-sm);
+}
+
+.input {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--control-lg);
+  height: var(--control-sm);
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.input:disabled {
+  cursor: not-allowed;
+}
+
+.track {
+  position: relative;
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  width: var(--control-lg);
+  height: var(--space-xl);
+  padding: var(--space-2xs);
+
+  background: var(--color-surface-sunken);
+  border: var(--border-hairline) solid var(--color-border);
+  border-radius: var(--radius-full);
+
+  transition:
+    background-color var(--duration-fast) var(--easing-standard),
+    border-color var(--duration-fast) var(--easing-standard);
+}
+
+.thumb {
+  display: block;
+  width: var(--space-lg);
+  height: var(--space-lg);
+  background: var(--color-surface);
+  border: var(--border-hairline) solid var(--color-border);
+  border-radius: var(--radius-full);
+
+  transition: transform var(--duration-fast) var(--easing-standard);
+}
+
+.input:hover:not(:disabled) ~ .track {
+  border-color: var(--color-border-hover);
+}
+
+.input:focus-visible ~ .track {
+  outline: var(--border-strong) solid var(--color-focus-ring);
+  outline-offset: 2px;
+}
+
+.input:checked ~ .track {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+}
+
+/* Ход бегунка = ширина дорожки − ширина бегунка − оба внутренних отступа.
+   Значение считается из тех же токенов, что и сама дорожка: подобранное
+   на глаз число разъедется при первой же правке шкалы. */
+.input:checked ~ .track .thumb {
+  transform: translateX(calc(var(--control-lg) - var(--space-lg) - var(--space-xs) - 2 * var(--border-hairline)));
+}
+
+.input:disabled ~ .track {
+  background: var(--color-surface-sunken);
+  opacity: 0.5;
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xs);
+  min-width: 0;
+}
+
+.label {
+  font-family: var(--font-body);
+  font-size: var(--text-body-size);
+  line-height: var(--text-body-line);
+  color: var(--color-text);
+  cursor: pointer;
+}
+
+.input:disabled ~ .text .label {
+  color: var(--color-text-disabled);
+  cursor: not-allowed;
+}
+
+.description {
+  font-family: var(--font-body);
+  font-size: var(--text-caption-size);
+  line-height: var(--text-caption-line);
+  color: var(--color-text-muted);
+}
