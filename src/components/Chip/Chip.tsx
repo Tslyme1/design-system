@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
-import { Icon } from '@/primitives';
-import type { IconName } from '@/primitives';
+import { Icon } from '../../primitives';
+import type { IconName } from '../../primitives';
 import styles from './Chip.module.css';
 
 export type ChipProps = {

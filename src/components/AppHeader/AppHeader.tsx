@@ -1,6 +1,6 @@
 import type { ReactNode, ButtonHTMLAttributes } from 'react';
-import { Icon } from '@/primitives';
-import type { IconName } from '@/primitives';
+import { Icon } from '../../primitives';
+import type { IconName } from '../../primitives';
 import styles from './AppHeader.module.css';
 
 export type AppHeaderProps = {

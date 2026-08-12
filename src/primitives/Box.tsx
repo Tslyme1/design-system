@@ -1,6 +1,6 @@
 import type { ReactNode, ElementType, CSSProperties } from 'react';
-import type { SpaceToken, RadiusToken, SurfaceColorToken } from '@/tokens';
-import { spaceVar, radiusVar, color } from '@/tokens';
+import type { SpaceToken, RadiusToken, SurfaceColorToken } from '../tokens';
+import { spaceVar, radiusVar, color } from '../tokens';
 import styles from './Box.module.css';
 
 export type BoxProps = {

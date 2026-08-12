@@ -1,6 +1,6 @@
 import type { CSSProperties } from 'react';
-import type { TextColorToken } from '@/tokens';
-import { color as colorToken } from '@/tokens';
+import type { TextColorToken } from '../tokens';
+import { color as colorToken } from '../tokens';
 import { icons, type IconName } from './icons';
 
 export type IconProps = {

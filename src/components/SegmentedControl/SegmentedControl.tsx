@@ -1,7 +1,7 @@
 import { useId } from 'react';
-import type { ControlSizeToken } from '@/tokens';
-import { Icon } from '@/primitives';
-import type { IconName } from '@/primitives';
+import type { ControlSizeToken } from '../../tokens';
+import { Icon } from '../../primitives';
+import type { IconName } from '../../primitives';
 import styles from './SegmentedControl.module.css';
 
 export type SegmentedOption<T extends string> = {

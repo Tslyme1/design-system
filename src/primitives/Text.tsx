@@ -1,6 +1,6 @@
 import type { ReactNode, ElementType, CSSProperties } from 'react';
-import type { TextVariantToken, TextColorToken } from '@/tokens';
-import { color } from '@/tokens';
+import type { TextVariantToken, TextColorToken } from '../tokens';
+import { color } from '../tokens';
 import styles from './Text.module.css';
 
 export type TextProps = {

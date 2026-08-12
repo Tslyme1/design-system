@@ -1,6 +1,6 @@
 import type { InputHTMLAttributes, ReactNode } from 'react';
 import { useId } from 'react';
-import { Stack } from '@/primitives';
+import { Stack } from '../../primitives';
 import styles from './Radio.module.css';
 
 type NativeProps = Omit<InputHTMLAttributes<HTMLInputElement>, 'className' | 'style' | 'type' | 'size'>;

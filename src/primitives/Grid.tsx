@@ -1,6 +1,6 @@
 import type { ElementType, ReactNode } from 'react';
-import type { SpaceToken } from '@/tokens';
-import { spaceVar } from '@/tokens';
+import type { SpaceToken } from '../tokens';
+import { spaceVar } from '../tokens';
 import styles from './Grid.module.css';
 
 export type GridProps = {

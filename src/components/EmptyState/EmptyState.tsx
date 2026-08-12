@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
-import { Stack, Text, Icon } from '@/primitives';
-import type { IconName } from '@/primitives';
+import { Stack, Text, Icon } from '../../primitives';
+import type { IconName } from '../../primitives';
 import styles from './EmptyState.module.css';
 
 export type EmptyStateProps = {

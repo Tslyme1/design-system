@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
-import { Icon, Text, Stack } from '@/primitives';
-import { Skeleton } from '@/components/Skeleton/Skeleton';
-import { EmptyState } from '@/components/EmptyState/EmptyState';
+import { Icon, Text, Stack } from '../../primitives';
+import { Skeleton } from '../Skeleton/Skeleton';
+import { EmptyState } from '../EmptyState/EmptyState';
 import styles from './Table.module.css';
 
 export type SortDirection = 'asc' | 'desc';

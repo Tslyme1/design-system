@@ -1,7 +1,7 @@
 import { useState, useMemo, useRef } from 'react';
 import type { ReactNode } from 'react';
-import type { ControlSizeToken } from '@/tokens';
-import { Icon } from '@/primitives';
+import type { ControlSizeToken } from '../../tokens';
+import { Icon } from '../../primitives';
 import { Popover } from '../Popover/Popover';
 import { Checkbox } from '../Checkbox/Checkbox';
 import styles from './Select.module.css';

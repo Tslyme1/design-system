@@ -1,6 +1,6 @@
 import type { ReactNode, ElementType, CSSProperties } from 'react';
-import type { SpaceToken } from '@/tokens';
-import { spaceVar } from '@/tokens';
+import type { SpaceToken } from '../tokens';
+import { spaceVar } from '../tokens';
 import styles from './Stack.module.css';
 
 export type StackProps = {

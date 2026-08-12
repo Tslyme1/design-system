@@ -1,7 +1,7 @@
 import type { ReactNode, ButtonHTMLAttributes } from 'react';
-import type { ControlSizeToken } from '@/tokens';
-import { Icon } from '@/primitives';
-import type { IconName } from '@/primitives';
+import type { ControlSizeToken } from '../../tokens';
+import { Icon } from '../../primitives';
+import type { IconName } from '../../primitives';
 import styles from './Button.module.css';
 
 type NativeProps = Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'className' | 'style' | 'children'>;

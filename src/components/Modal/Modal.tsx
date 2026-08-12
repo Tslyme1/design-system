@@ -1,8 +1,8 @@
 import type { ReactNode } from 'react';
 import { useEffect, useRef, useCallback } from 'react';
 import { createPortal } from 'react-dom';
-import type { ModalWidthToken } from '@/tokens';
-import { Text, Icon } from '@/primitives';
+import type { ModalWidthToken } from '../../tokens';
+import { Text, Icon } from '../../primitives';
 import styles from './Modal.module.css';
 
 export type ModalProps = {

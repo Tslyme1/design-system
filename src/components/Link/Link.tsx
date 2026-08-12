@@ -1,5 +1,5 @@
 import type { AnchorHTMLAttributes, ReactNode } from 'react';
-import { Icon } from '@/primitives';
+import { Icon } from '../../primitives';
 import styles from './Link.module.css';
 
 type NativeProps = Omit<AnchorHTMLAttributes<HTMLAnchorElement>, 'className' | 'style' | 'children'>;

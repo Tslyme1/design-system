@@ -1,6 +1,6 @@
 import { useEffect, useLayoutEffect, useState } from 'react';
 import type { RefObject } from 'react';
-import { spacing } from '@/tokens';
+import { spacing } from '../tokens';
 
 /**
  * Выбор размещения по свободному месту во вьюпорте.

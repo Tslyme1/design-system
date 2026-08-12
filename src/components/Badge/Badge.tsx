@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
-import { Icon } from '@/primitives';
-import type { IconName } from '@/primitives';
+import { Icon } from '../../primitives';
+import type { IconName } from '../../primitives';
 import styles from './Badge.module.css';
 
 export type BadgeTone = 'neutral' | 'accent' | 'success' | 'warning' | 'danger';

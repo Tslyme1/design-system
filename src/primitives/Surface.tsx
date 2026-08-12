@@ -1,6 +1,6 @@
 import type { ReactNode, ElementType, CSSProperties } from 'react';
-import type { ElevationToken, RadiusToken, SpaceToken, SurfaceColorToken } from '@/tokens';
-import { elevation, radiusVar, spaceVar, color } from '@/tokens';
+import type { ElevationToken, RadiusToken, SpaceToken, SurfaceColorToken } from '../tokens';
+import { elevation, radiusVar, spaceVar, color } from '../tokens';
 import styles from './Surface.module.css';
 
 export type SurfaceProps = {

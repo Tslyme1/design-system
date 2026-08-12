@@ -1,4 +1,4 @@
-import { Icon } from '@/primitives';
+import { Icon } from '../../primitives';
 import styles from './Stepper.module.css';
 
 export type Step = {

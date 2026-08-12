@@ -1,5 +1,5 @@
 import type { InputHTMLAttributes } from 'react';
-import type { ControlSizeToken } from '@/tokens';
+import type { ControlSizeToken } from '../../tokens';
 import styles from './Input.module.css';
 
 type NativeProps = Omit<InputHTMLAttributes<HTMLInputElement>, 'className' | 'style' | 'size'>;

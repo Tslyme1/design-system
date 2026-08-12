@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
-import type { TagColorToken } from '@/tokens';
-import { Icon } from '@/primitives';
+import type { TagColorToken } from '../../tokens';
+import { Icon } from '../../primitives';
 import styles from './Tag.module.css';
 
 export type TagProps = {
