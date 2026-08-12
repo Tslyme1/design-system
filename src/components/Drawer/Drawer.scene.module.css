@@ -1,0 +1,23 @@
+/* Сцена для историй Drawer.
+   Панель позиционируется абсолютно, поэтому родитель обязан быть точкой
+   отсчёта и обрезать её на время анимации. В приложении эту роль играет
+   рабочая область экрана. */
+
+.host {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  border: var(--border-hairline) solid var(--color-border);
+  /* Сцена витрины, а не блок с текстом: панели нужна конечная высота,
+     иначе внутри страницы её нечем ограничить. */
+  height: 360px; /* ds-lint-disable */
+}
+
+.body {
+  flex: 1;
+  min-height: 0;
+  padding: var(--space-xl);
+  background: var(--color-surface);
+}

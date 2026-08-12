@@ -1,0 +1,30 @@
+/* Оформление хелперов витрины. Намеренно бедное: линейки и подписи
+   не должны спорить с компонентом, который они размечают. */
+
+.token {
+  font-family: var(--font-mono);
+  font-size: var(--text-caption-size);
+  line-height: var(--text-caption-line);
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
+
+.matrix {
+  display: grid;
+  grid-template-columns: repeat(var(--matrix-columns), max-content);
+  align-items: center;
+  gap: var(--space-md) var(--space-xl);
+}
+
+.cell {
+  display: inline-flex;
+  align-items: center;
+}
+
+/* Сцена анатомии: пунктир показывает границы компонента,
+   не добавляя ему собственной рамки. */
+.stage {
+  padding: var(--space-lg);
+  border: var(--border-hairline) dashed var(--color-border);
+  border-radius: var(--radius-md);
+}

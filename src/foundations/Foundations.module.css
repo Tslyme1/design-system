@@ -1,0 +1,78 @@
+/* Раскладка страниц Foundations.
+   Всё, что можно выразить через Stack и Box, выражено там; здесь остаётся
+   только то, чего примитивами не сказать: образцы шкал и колоночная сетка.
+
+   Размер образца приходит из самого токена через CSS-переменную --sample:
+   страница не знает значений и не может разойтись со шкалой. */
+
+/* Таблица токенов: имя — образец — значение. Колонки выровнены по всей
+   странице, поэтому шкала читается как шкала, а не как список. */
+.tokenGrid {
+  display: grid;
+  grid-template-columns: max-content 1fr max-content;
+  align-items: center;
+  gap: var(--space-sm) var(--space-lg);
+  width: 100%;
+}
+
+.iconGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(9ch, 1fr));
+  gap: var(--space-lg);
+  width: 100%;
+}
+
+.mono {
+  font-family: var(--font-mono);
+  font-size: var(--text-body-sm-size);
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
+
+.swatch {
+  width: var(--control-lg);
+  height: var(--control-lg);
+  border: var(--border-hairline) solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--sample);
+}
+
+/* Полоса шкалы отступов: ширина равна самому отступу. */
+.spaceBar {
+  width: var(--sample);
+  height: var(--space-lg);
+  background: var(--color-accent);
+}
+
+.radiusSample {
+  width: var(--control-lg);
+  height: var(--control-lg);
+  border: var(--border-hairline) solid var(--color-border-strong);
+  border-radius: var(--sample);
+}
+
+/* Демонстрация длительности: квадрат уезжает и возвращается по клику. */
+.motionTrack {
+  width: 100%;
+  border: var(--border-hairline) dashed var(--color-border);
+  padding: var(--space-xs);
+}
+
+.motionBox {
+  width: var(--control-sm);
+  height: var(--control-sm);
+  background: var(--color-accent);
+  transition: transform var(--sample) var(--easing-standard);
+}
+
+.motionBoxMoved {
+  transform: translateX(320%);
+}
+
+.iconTile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-xs);
+  text-align: center;
+}
