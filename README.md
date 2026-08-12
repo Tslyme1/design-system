@@ -8,8 +8,9 @@ React-библиотека токенов, примитивов и компон�
 
 ```bash
 npm install
-npm run dev        # витрина компонентов на localhost:5173
-npm run ds:lint    # проверка на обход системы
+npm run storybook  # витрина системы на 127.0.0.1:6006 — основной вход
+npm run dev        # демо-страница на 127.0.0.1:5173
+npm run ds:check   # линтер + сверка витрины с инвентарём
 npm run typecheck  # проверка закрытости шкал
 ```
 
@@ -23,11 +24,20 @@ src/
     tokens.css       рантайм: переменные, светлая и тёмная темы, база
     README.md        что означает каждая роль и когда её нельзя применять
   primitives/      Stack, Box, Text, Surface, Field, Icon
-  components/      Button, Modal, Input, Tag, Card, EmptyState
-  playground/      витрина. В публичный экспорт не входит
+  components/      Button, Modal, Input, Select, Checkbox, Radio, Tag, Chip,
+                   Popover, Drawer, EmptyState, AppHeader
+  foundations/     страницы токенов для витрины. Рендерятся из самих токенов
+  docs/            правила системы: выбор компонента, состояния, плотность, a11y
+  playground/      демо-страница. В публичный экспорт не входит
+.storybook/        конфигурация витрины, тема, общие демо-данные (fixtures)
 scripts/
-  ds-lint.mjs      линтер: 8 правил против обхода системы
+  ds-lint.mjs           линтер: 8 правил против обхода системы
+  ds-stories-check.mjs  сверка Storybook и INVENTORY.md
 ```
+
+Истории лежат рядом с компонентом (`Button.tsx` → `Button.stories.tsx`).
+Story-файл пишется в том же коммите, что и компонент: компонент без историй
+в системе не существует.
 
 ## Три документа, которые надо читать
 
