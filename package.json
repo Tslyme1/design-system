@@ -39,6 +39,9 @@
     "ds:stories": "node scripts/ds-stories-check.mjs src INVENTORY.md",
     "ds:check": "npm run ds:lint && npm run ds:stories"
   },
+  "engines": {
+    "node": ">=20"
+  },
   "peerDependencies": {
     "react": "^18.3.0 || ^19.0.0",
     "react-dom": "^18.3.0 || ^19.0.0"
