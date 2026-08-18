@@ -19,6 +19,7 @@ export {
   elevation,
   stroke,
   motionDuration,
+  motionCycle,
   motionEasing,
   layer,
   spaceVar,

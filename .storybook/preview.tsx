@@ -99,6 +99,42 @@ const ThemedDocs = ({ children, context }: PropsWithChildren<DocsContainerProps>
 const preview: Preview = {
   decorators: [withTheme],
 
+  /**
+   * Контролы для пропов, объявленных как `ReactNode`.
+   *
+   * Тип контрола Storybook выводит из типа пропа, а `ReactNode` для него —
+   * объект: в панели появляется редактор JSON, и первое же обращение к нему
+   * подставляет пустой `{}`. React такой объект отрисовать не может, история
+   * падает с «Objects are not valid as a React child», хотя в коде компонента
+   * ошибки нет — падает витрина, а выглядит как дефект компонента.
+   *
+   * Поэтому: пропам, куда в жизни приходит текст, — текстовый контрол; слотам,
+   * куда приходит разметка, контрол выключен. Разметку в поле ввода всё равно
+   * не набрать, а выключенный контрол честно говорит, что значение задаётся
+   * в коде истории.
+   *
+   * Список глобальный, а не покомпонентный, потому что ошибка общая: она
+   * повторится у каждого следующего компонента с подписью или пояснением.
+   */
+  argTypes: {
+    label: { control: 'text' },
+    description: { control: 'text' },
+    hint: { control: 'text' },
+    error: { control: 'text' },
+    title: { control: 'text' },
+    caption: { control: 'text' },
+    content: { control: 'text' },
+    meta: { control: 'text' },
+    placeholder: { control: 'text' },
+    children: { control: 'text' },
+
+    action: { control: false },
+    footer: { control: false },
+    aside: { control: false },
+    trigger: { control: false },
+    empty: { control: false },
+  },
+
   globalTypes: {
     theme: {
       description: 'Тема',

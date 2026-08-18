@@ -14,7 +14,9 @@ import { fileURLToPath, URL } from 'node:url';
  *
  * 1. React вынесен наружу (`external`). Библиотека, принесшая с собой второй
  *    React, ломает хуки в приложении — это не оптимизация размера, а условие
- *    работоспособности.
+ *    работоспособности. Вместе с ним вынесен floating-ui: он объявлен в
+ *    `dependencies`, потребитель получит его установкой пакета, а вшитая
+ *    копия просто удвоила бы вес, если он уже есть в приложении.
  * 2. Стили собираются в один файл, а не режутся по компонентам
  *    (`cssCodeSplit: false`). Потребитель подключает их одной строкой; порядок
  *    правил при этом задаём мы, а не порядок импортов в чужом коде.
@@ -54,7 +56,13 @@ export default defineConfig({
     },
 
     rollupOptions: {
-      external: ['react', 'react-dom', 'react/jsx-runtime', 'react/jsx-dev-runtime'],
+      external: [
+        'react',
+        'react-dom',
+        'react/jsx-runtime',
+        'react/jsx-dev-runtime',
+        /^@floating-ui\//,
+      ],
       output: {
         assetFileNames: (asset) => (asset.name?.endsWith('.css') ? 'styles.css' : '[name][extname]'),
       },

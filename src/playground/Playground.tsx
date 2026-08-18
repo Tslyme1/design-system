@@ -25,7 +25,7 @@ import {
   AppHeader,
   HeaderButton,
   HeaderDivider,
-  HeaderSpacer,
+  HeaderLogo,
 } from '@/components';
 import type { TableSort } from '@/components';
 import styles from './Playground.module.css';
@@ -253,7 +253,7 @@ export function Playground() {
                   render: (row) => (
                     <Badge
                       tone={row.status === 'Согласовано' ? 'success' : row.status === 'В работе' ? 'accent' : 'neutral'}
-                      icon={row.status === 'Согласовано' ? 'check' : undefined}
+                      icon={row.status === 'Согласовано'}
                     >
                       {row.status}
                     </Badge>
@@ -273,13 +273,13 @@ export function Playground() {
             <Stack direction="row" gap="sm" wrap align="center">
               <Badge tone="neutral">Черновик</Badge>
               <Badge tone="accent">В работе</Badge>
-              <Badge tone="success" icon="check">
+              <Badge tone="success" icon>
                 Согласовано
               </Badge>
-              <Badge tone="warning" icon="alertTriangle">
+              <Badge tone="warning" icon>
                 Требует проверки
               </Badge>
-              <Badge tone="danger" icon="x">
+              <Badge tone="danger" icon>
                 Ошибка расчёта
               </Badge>
             </Stack>
@@ -400,21 +400,27 @@ export function Playground() {
         >
           <Surface level="flat" border radius="none" fullWidth>
             <AppHeader>
-              <HeaderButton icon="home" title="Проекты" active />
-              <HeaderDivider />
-              <HeaderButton icon="plus" title="Новый проект" />
-              <HeaderDivider />
-              <HeaderButton expandable>КМД-1750Т7-Д — Коркино</HeaderButton>
-              <HeaderSpacer />
-              <HeaderButton expandable>
-                {mode === 'engineer' ? 'Инженерный режим' : 'Упрощённый режим'}
-              </HeaderButton>
-              <HeaderDivider />
-              <HeaderButton icon="help" title="Справка" />
-              <HeaderDivider />
-              <HeaderButton icon="minimize" title="Свернуть" chrome="minimize" />
-              <HeaderButton icon="maximize" title="Развернуть" chrome="maximize" />
-              <HeaderButton icon="x" title="Закрыть" chrome="close" />
+              <AppHeader.Left>
+                <HeaderLogo>УРАЛМАШ</HeaderLogo>
+                <HeaderDivider />
+                <HeaderButton icon="home" title="Домой" active />
+                <HeaderDivider />
+                <HeaderButton icon="plus" title="Новый проект" />
+                <HeaderDivider />
+                <HeaderButton expandable>КМД-1750Т7-Д — Коркино</HeaderButton>
+              </AppHeader.Left>
+
+              <AppHeader.Right>
+                <HeaderButton expandable>
+                  {mode === 'engineer' ? 'Инженерный режим' : 'Упрощённый режим'}
+                </HeaderButton>
+                <HeaderDivider />
+                <HeaderButton icon="help" title="Справка" />
+                <HeaderDivider />
+                <HeaderButton chrome="minimize" title="Свернуть" />
+                <HeaderButton chrome="maximize" title="Развернуть" />
+                <HeaderButton chrome="close" title="Закрыть" />
+              </AppHeader.Right>
             </AppHeader>
           </Surface>
         </Section>
@@ -600,11 +606,17 @@ export function Playground() {
         >
           <div className={styles.drawerHost}>
             <AppHeader>
-              <HeaderButton icon="home" title="Проекты" active />
-              <HeaderDivider />
-              <HeaderButton expandable>КМД-1750Т7-Д</HeaderButton>
-              <HeaderSpacer />
-              <HeaderButton icon="help" title="Справка" />
+              <AppHeader.Left>
+                <HeaderLogo>УРАЛМАШ</HeaderLogo>
+                <HeaderDivider />
+                <HeaderButton icon="home" title="Домой" active />
+                <HeaderDivider />
+                <HeaderButton expandable>КМД-1750Т7-Д</HeaderButton>
+              </AppHeader.Left>
+
+              <AppHeader.Right>
+                <HeaderButton icon="help" title="Справка" />
+              </AppHeader.Right>
             </AppHeader>
 
             <div className={styles.drawerBody}>

@@ -4,7 +4,7 @@ import { Stepper } from './Stepper';
 import { Button } from '@/components';
 import { Stack, Text, Box, Surface } from '@/primitives';
 import { Labeled, Spec, DoDont } from '@spec';
-import { wizardSteps, longWord } from '@fixtures';
+import { labelSteps, wizardSteps, longWord } from '@fixtures';
 
 const meta = {
   title: 'Components/Stepper',
@@ -32,46 +32,42 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Overview: Story = {
-  args: { steps: wizardSteps, current: 1 },
-};
-
 export const Playground: Story = {
-  args: { steps: wizardSteps, current: 1, direction: 'row' },
+  args: { steps: labelSteps, current: 1, direction: 'row' },
 };
 
 export const Variants: Story = {
-  args: { steps: wizardSteps, current: 1 },
+  args: { steps: labelSteps, current: 1 },
   render: () => (
     <Stack gap="2xl" align="start">
       <Labeled label="row">
         <Box fullWidth>
-          <Stepper steps={wizardSteps} current={1} />
+          <Stepper steps={labelSteps} current={1} />
         </Box>
       </Labeled>
       <Labeled label="column">
-        <Stepper steps={wizardSteps} current={1} direction="column" />
+        <Stepper steps={labelSteps} current={1} direction="column" />
       </Labeled>
     </Stack>
   ),
 };
 
 export const States: Story = {
-  args: { steps: wizardSteps, current: 1 },
+  args: { steps: labelSteps, current: 1 },
   render: () => (
     <Stack gap="xl" align="start">
       <Labeled label="в начале — ничего не пройдено">
-        <Stepper steps={wizardSteps} current={0} direction="column" />
+        <Stepper steps={labelSteps} current={0} direction="column" />
       </Labeled>
       <Labeled label="в середине — первый с галкой">
-        <Stepper steps={wizardSteps} current={1} direction="column" />
+        <Stepper steps={labelSteps} current={1} direction="column" />
       </Labeled>
       <Labeled label="в конце — все пройдены">
-        <Stepper steps={wizardSteps} current={3} direction="column" />
+        <Stepper steps={labelSteps} current={3} direction="column" />
       </Labeled>
       <Labeled label="шаг недоступен">
         <Stepper
-          steps={[wizardSteps[0], wizardSteps[1], { ...wizardSteps[2], disabled: true }]}
+          steps={[labelSteps[0], labelSteps[1], { ...labelSteps[2], disabled: true }]}
           current={1}
           direction="column"
           onStepClick={() => undefined}
@@ -86,7 +82,7 @@ export const States: Story = {
 
 /** Матрица: направление × положение. Здесь видно, что линия ведёт себя одинаково. */
 export const VariantStates: Story = {
-  args: { steps: wizardSteps, current: 1 },
+  args: { steps: labelSteps, current: 1 },
   render: () => (
     <Stack gap="2xl" align="start">
       {(['row', 'column'] as const).map((direction) => (
@@ -96,7 +92,7 @@ export const VariantStates: Story = {
             {[0, 1, 3].map((current) => (
               <Labeled key={current} label={`current=${current}`}>
                 <Box fullWidth={direction === 'row'}>
-                  <Stepper steps={wizardSteps} current={current} direction={direction} />
+                  <Stepper steps={labelSteps} current={current} direction={direction} />
                 </Box>
               </Labeled>
             ))}
@@ -108,21 +104,23 @@ export const VariantStates: Story = {
 };
 
 export const Content: Story = {
-  args: { steps: wizardSteps, current: 1 },
+  args: { steps: labelSteps, current: 1 },
   render: () => (
     <Stack gap="xl" align="start">
       <Labeled label="два шага">
-        <Stepper steps={[wizardSteps[0], wizardSteps[1]]} current={1} />
+        <Stepper steps={[labelSteps[0], labelSteps[1]]} current={1} />
       </Labeled>
       <Labeled label="три шага с пояснениями">
-        <Stepper steps={wizardSteps} current={1} />
+        <Stepper steps={labelSteps} current={1} />
       </Labeled>
       <Labeled label="без пояснений">
-        <Stepper steps={wizardSteps.map(({ label }) => ({ label }))} current={1} />
+        <Stepper steps={labelSteps.map(({ label }) => ({ label }))} current={1} />
       </Labeled>
       <Labeled label="шесть шагов">
         <Stepper
-          steps={[...wizardSteps, { label: 'Схема' }, { label: 'Проверка' }, { label: 'Отчёт' }].map(({ label }) => ({ label }))}
+          steps={[...labelSteps, { label: 'Label 4' }, { label: 'Label 5' }, { label: 'Label 6' }].map(({ label }) => ({
+            label,
+          }))}
           current={2}
         />
       </Labeled>
@@ -131,42 +129,43 @@ export const Content: Story = {
 };
 
 export const Overflow: Story = {
-  args: { steps: wizardSteps, current: 1 },
+  args: { steps: labelSteps, current: 1 },
   render: () => (
     <Stack gap="xl" align="start">
       <Text variant="bodySm" color="textMuted">
-        Ответ на границе: название обрезается многоточием, кружок и линия остаются на месте. В `row` соединительная
-        линия сжимается первой — она эластичная, а шаги нет.
+        Ответ на границе: название и пояснение обрезаются многоточием, каждое в одну строку, кружок остаётся на
+        месте. В `row` первой сжимается соединительная линия — но не в ноль: короткая линия ещё читается как связь
+        между шагами, а её отсутствие уже нет. Дальше уступает текст.
       </Text>
       <Box border padding="md" fullWidth>
         <Stepper
           steps={[
-            { label: 'Выбор дробилки и типоразмера по каталогу', description: 'С учётом влажности питания' },
+            { label: 'Label, который в шаг не помещается и обязан обрезаться', description: 'Description' },
             { label: longWord },
-            { label: 'Продукт' },
+            { label: 'Label 3', description: 'Description, которое длиннее собственного названия шага' },
           ]}
           current={1}
         />
       </Box>
       <Box border padding="md">
-        <Stepper steps={wizardSteps} current={1} direction="column" />
+        <Stepper steps={labelSteps} current={1} direction="column" />
       </Box>
     </Stack>
   ),
 };
 
 export const EdgeCases: Story = {
-  args: { steps: wizardSteps, current: 1 },
+  args: { steps: labelSteps, current: 1 },
   render: () => (
     <Stack gap="xl" align="start">
       <Labeled label="один шаг — последовательности нет">
-        <Stepper steps={[wizardSteps[0]]} current={0} />
+        <Stepper steps={[labelSteps[0]]} current={0} />
       </Labeled>
       <Labeled label="current больше числа шагов">
-        <Stepper steps={wizardSteps} current={99} direction="column" />
+        <Stepper steps={labelSteps} current={99} direction="column" />
       </Labeled>
       <Labeled label="current отрицательный">
-        <Stepper steps={wizardSteps} current={-1} direction="column" />
+        <Stepper steps={labelSteps} current={-1} direction="column" />
       </Labeled>
       <Labeled label="пустой список">
         <Box border padding="md">
@@ -182,7 +181,7 @@ export const EdgeCases: Story = {
 };
 
 export const Anatomy: Story = {
-  args: { steps: wizardSteps, current: 1 },
+  args: { steps: labelSteps, current: 1 },
   render: () => (
     <Spec
       slots={['step × N', 'marker (номер | галка)', 'label', 'description?', 'connector (псевдоэлемент)']}
@@ -197,11 +196,16 @@ export const Anatomy: Story = {
         пояснение: 'text.caption',
       }}
     >
-      <Stepper steps={wizardSteps} current={1} />
+      <Stepper steps={labelSteps} current={1} />
     </Spec>
   ),
 };
 
+/**
+ * Примеры использования: настоящий визард. Названия шагов здесь предметные —
+ * в блоках выше на их месте стоят «Label», потому что там показана форма
+ * компонента, а не последовательность конкретного экрана.
+ */
 export const Usage: Story = {
   args: { steps: wizardSteps, current: 1 },
   render: () => {

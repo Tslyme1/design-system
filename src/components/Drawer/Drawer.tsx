@@ -1,5 +1,7 @@
 import type { ReactNode } from 'react';
 import { useEffect, useCallback } from 'react';
+import { motionDuration } from '../../tokens';
+import { usePresence } from '../usePresence';
 import styles from './Drawer.module.css';
 
 export type DrawerProps = {
@@ -29,6 +31,10 @@ export type DrawerProps = {
  * содержимое обоих слотов приходит снаружи.
  */
 export function Drawer({ open, onClose, children, footer, title, size = 'wide' }: DrawerProps) {
+  // Панель уезжает вправо, а не пропадает на месте: она въехала оттуда же,
+  // и без обратного хода закрытие читается как сбой отрисовки.
+  const { mounted, exiting } = usePresence(open, motionDuration.base);
+
   const handleKeyDown = useCallback(
     (event: KeyboardEvent) => {
       if (event.key === 'Escape') onClose();
@@ -42,14 +48,20 @@ export function Drawer({ open, onClose, children, footer, title, size = 'wide' }
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [open, handleKeyDown]);
 
-  if (!open) return null;
+  if (!mounted) return null;
 
   return (
     <>
-      <div className={styles.scrim} onClick={onClose} role="presentation" />
+      <div
+        className={[styles.scrim, exiting ? styles.exiting : null].filter(Boolean).join(' ')}
+        // Пока панель уезжает, она уже закрыта: повторный клик по затемнению
+        // ничего не должен запускать.
+        onClick={exiting ? undefined : onClose}
+        role="presentation"
+      />
 
       <aside
-        className={[styles.panel, styles[size]].join(' ')}
+        className={[styles.panel, styles[size], exiting ? styles.exiting : null].filter(Boolean).join(' ')}
         role="dialog"
         aria-label={title}
         aria-modal="false"

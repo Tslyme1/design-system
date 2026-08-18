@@ -4,7 +4,7 @@ import { Switch } from './Switch';
 import { Checkbox } from '@/components';
 import { Stack, Text, Box } from '@/primitives';
 import { Labeled, Spec, DoDont } from '@spec';
-import { longText, unbreakable } from '@fixtures';
+import { longText, unbreakable, label, description, labels, longLabel } from '@fixtures';
 
 const meta = {
   title: 'Components/Switch',
@@ -31,12 +31,8 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Overview: Story = {
-  args: { label: 'Автосохранение', defaultChecked: true },
-};
-
 export const Playground: Story = {
-  args: { label: 'Автосохранение', description: 'Изменения применяются сразу' },
+  args: { label, description },
 };
 
 /** Состояния базового варианта. Наведение и фокус — мышью и табом. */
@@ -44,16 +40,16 @@ export const States: Story = {
   render: () => (
     <Stack gap="md" align="start">
       <Labeled label="выключен">
-        <Switch label="Показывать сетку" />
+        <Switch label={label} />
       </Labeled>
       <Labeled label="включён">
-        <Switch label="Показывать сетку" defaultChecked />
+        <Switch label={label} defaultChecked />
       </Labeled>
       <Labeled label="disabled">
-        <Switch label="Показывать сетку" disabled />
+        <Switch label={label} disabled />
       </Labeled>
       <Labeled label="disabled + включён">
-        <Switch label="Показывать сетку" disabled defaultChecked />
+        <Switch label={label} disabled defaultChecked />
       </Labeled>
       <Text variant="caption" color="textMuted">
         Проверь ход бегунка: во включённом положении он обязан стоять у правого края дорожки, а не посередине.
@@ -66,19 +62,19 @@ export const Content: Story = {
   render: () => (
     <Stack gap="lg" align="start">
       <Labeled label="только подпись">
-        <Switch label="Автосохранение" />
+        <Switch label={label} />
       </Labeled>
       <Labeled label="подпись + пояснение">
-        <Switch label="Автосохранение" description="Изменения применяются сразу, без кнопки «Сохранить»" />
+        <Switch label={label} description={description} />
       </Labeled>
       <Labeled label="без подписи — так делать нельзя">
         <Switch />
       </Labeled>
-      <Labeled label="группа настроек">
+      <Labeled label="группа">
         <Stack gap="md">
-          <Switch label="Автосохранение" defaultChecked />
-          <Switch label="Показывать сетку" />
-          <Switch label="Единицы в СИ" defaultChecked />
+          {labels.slice(0, 3).map((item, index) => (
+            <Switch key={item} label={item} defaultChecked={index === 0} />
+          ))}
         </Stack>
       </Labeled>
     </Stack>
@@ -94,7 +90,7 @@ export const Overflow: Story = {
       </Text>
       <Box padding="md" border>
         <Stack gap="md">
-          <Switch label="Пересчитывать производительность при каждом изменении гранулометрического состава пробы" description={longText} />
+          <Switch label={longLabel} description={longText} />
           <Switch label={unbreakable} />
         </Stack>
       </Box>
@@ -114,7 +110,7 @@ export const EdgeCases: Story = {
           <Switch label="" />
         </Labeled>
         <Labeled label="пояснение без подписи">
-          <Switch description="Пояснение есть, подписи нет" />
+          <Switch description={description} />
         </Labeled>
         <Text variant="bodySm" color="textMuted">
           При увеличении системного шрифта до 200% дорожка не должна наезжать на текст: её размер задан токенами
@@ -130,17 +126,17 @@ export const Anatomy: Story = {
     <Spec
       slots={['input (невидимый, поверх дорожки)', 'track', 'thumb', 'label?', 'description?']}
       annotate={{
-        'ширина дорожки': 'control.lg',
+        'ширина дорожки': 'control.md',
         'высота дорожки': 'space.xl',
         'размер бегунка': 'space.lg',
         'внутренний отступ': 'space.2xs',
         'gap до подписи': 'space.sm',
-        'ход бегунка': 'control.lg − space.lg − space.xs − 2×hairline',
+        'ход бегунка': 'control.md − space.lg − space.xs − 2×hairline',
         подпись: 'text.body',
         пояснение: 'text.caption',
       }}
     >
-      <Switch label="Автосохранение" description="Изменения применяются сразу" defaultChecked />
+      <Switch label={label} description={description} defaultChecked />
     </Spec>
   ),
 };

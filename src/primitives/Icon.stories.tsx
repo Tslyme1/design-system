@@ -34,12 +34,17 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Playground: Story = {
-  args: { name: 'settings', size: 'md' },
+  args: { name: 'placeholder', size: 'md' },
 };
 
-/** Весь набор. Полная сетка с именами — на странице Foundations/Iconography. */
+/**
+ * Весь набор. Полная сетка с именами — на странице Foundations/Iconography.
+ *
+ * Последняя в ряду — `placeholder`: заглушка витрины. Она стоит в примерах
+ * там, где иконка показывает возможность, а не конкретное действие.
+ */
 export const Variants: Story = {
-  args: { name: 'settings' },
+  args: { name: 'placeholder' },
   render: () => (
     <Stack direction="row" gap="md" wrap align="center">
       {(Object.keys(icons) as IconName[]).map((name) => (
@@ -54,23 +59,23 @@ export const Variants: Story = {
  * Проп `color` — это та же семантическая роль, что у текста.
  */
 export const States: Story = {
-  args: { name: 'alertTriangle' },
+  args: { name: 'placeholder' },
   render: () => (
     <Stack gap="md">
       <Stack direction="row" gap="md" align="center">
-        <Icon name="alertTriangle" color="dangerText" />
+        <Icon name="placeholder" color="dangerText" />
         <Text variant="body" color="dangerText">
           Наследует цвет текста рядом
         </Text>
       </Stack>
       <Stack direction="row" gap="md" align="center">
-        <Icon name="check" color="successText" />
+        <Icon name="placeholder" color="successText" />
         <Text variant="body" color="successText">
           Расчёт завершён
         </Text>
       </Stack>
       <Stack direction="row" gap="md" align="center">
-        <Icon name="info" color="textDisabled" />
+        <Icon name="placeholder" color="textDisabled" />
         <Text variant="body" color="textDisabled">
           Недоступно
         </Text>
@@ -81,14 +86,49 @@ export const States: Story = {
 
 /** Три размера: рядом с текстом, в контроле, в пустом состоянии. */
 export const Sizes: Story = {
-  args: { name: 'folder' },
+  args: { name: 'placeholder' },
   render: () => (
     <Stack direction="row" gap="xl" align="center">
       {(['sm', 'md', 'lg'] as const).map((size) => (
         <Stack key={size} gap="2xs" align="center">
-          <Icon name="folder" size={size} />
+          <Icon name="placeholder" size={size} />
           <Text variant="caption" color="textMuted">
             {size}
+          </Text>
+        </Stack>
+      ))}
+    </Stack>
+  ),
+};
+
+/**
+ * Примеры использования. Иконка выбирается по смыслу соседнего текста —
+ * и только в этом блоке витрина показывает конкретный выбор.
+ *
+ * Правило простое: если иконку можно заменить на любую другую и ничего не
+ * изменится, она не нужна. Именно поэтому в блоках выше стоит заглушка:
+ * там иконка показывает форму компонента, а не значение.
+ */
+export const Usage: Story = {
+  args: { name: 'placeholder' },
+  render: () => (
+    <Stack gap="lg" align="start">
+      {(
+        [
+          { name: 'trash', text: 'Удалить расчёт', color: 'dangerText' },
+          { name: 'check', text: 'Согласовано', color: 'successText' },
+          { name: 'alertTriangle', text: 'Проверьте исходные данные', color: 'warningText' },
+          { name: 'download', text: 'Скачать отчёт', color: 'text' },
+          { name: 'search', text: 'Ничего не найдено', color: 'textMuted' },
+        ] as const
+      ).map((row) => (
+        <Stack key={row.name} direction="row" gap="md" align="center">
+          <Icon name={row.name} color={row.color} />
+          <Text variant="body" color={row.color}>
+            {row.text}
+          </Text>
+          <Text variant="caption" color="textMuted">
+            {row.name}
           </Text>
         </Stack>
       ))}

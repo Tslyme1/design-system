@@ -38,7 +38,7 @@ export const Playground: Story = {
     children: null,
     placement: 'bottom-start',
     width: 'sm',
-    title: 'Фильтры',
+    title: 'Label',
   },
   render: (args) => {
     const [open, setOpen] = useState(false);
@@ -49,14 +49,14 @@ export const Playground: Story = {
         onClose={() => setOpen(false)}
         trigger={
           <Button variant="secondary" iconEnd="chevronDown" onClick={() => setOpen((v) => !v)}>
-            Фильтры
+            Label
           </Button>
         }
       >
         <Stack gap="sm">
-          <Checkbox label="Рабочие" defaultChecked />
-          <Checkbox label="Черновики" />
-          <Checkbox label="Архив" />
+          <Checkbox label="Label 1" defaultChecked />
+          <Checkbox label="Label 2" />
+          <Checkbox label="Label 3" />
         </Stack>
       </Popover>
     );
@@ -111,7 +111,7 @@ export const States: Story = {
           open={open}
           onClose={() => setOpen(false)}
           width="md"
-          title="Режим расчёта"
+          title="Label"
           trigger={
             <Button variant="secondary" iconEnd="chevronDown" onClick={() => setOpen((v) => !v)}>
               {open ? 'Открыт' : 'Закрыт'}
@@ -119,13 +119,13 @@ export const States: Story = {
           }
           footer={
             <Button variant="primary" size="sm" fullWidth onClick={() => setOpen(false)}>
-              Применить
+              Label
             </Button>
           }
         >
-          <RadioGroup name="popover-mode" legend="Режим">
-            <Radio label="Инженерный" value="pro" defaultChecked />
-            <Radio label="Упрощённый" value="lite" />
+          <RadioGroup name="popover-mode" legend="Label">
+            <Radio label="Label 1" value="a" defaultChecked />
+            <Radio label="Label 2" value="b" />
           </RadioGroup>
         </Popover>
 
@@ -137,8 +137,117 @@ export const States: Story = {
   },
 };
 
-/** Три случая из приложения закрываются одной конструкцией. */
-export const InContext: Story = {
+/**
+ * Крайние случаи размещения. Здесь проверяется одно: панель обязана остаться
+ * в видимой области, чем бы ни был указан `placement`.
+ *
+ * Правило разрешения — три шага, в этом порядке:
+ * 1. сторона (`top` / `bottom`): предпочтённая, если панель помещается;
+ *    противоположная, если помещается там; иначе — та, где места больше;
+ * 2. выравнивание (`start` / `end`): прижаться к триггеру другим краем
+ *    лучше, чем оторваться от него;
+ * 3. сдвиг по горизонтали: остаток, который не берётся выравниванием.
+ *
+ * Порядок не случаен: сдвиг рвёт связь панели с триггером, поэтому он
+ * последний — им добирается только то, что не закрыли первые два шага.
+ */
+export const EdgeCases: Story = {
+  args: { open: false, onClose: () => undefined, trigger: null, children: null },
+  render: () => {
+    const [which, setWhich] = useState<'flip' | 'align' | 'tall' | null>(null);
+    const close = () => setWhich(null);
+    const toggle = (id: 'flip' | 'align' | 'tall') => () => setWhich(which === id ? null : id);
+
+    return (
+      // Без align="start" у внешней колонки: группам нужна вся ширина,
+      // иначе триггер «у правого края» окажется у края своего содержимого.
+      <Stack gap="xl">
+        <Stack gap="xs" align="start">
+          <Text variant="label">Сверху не помещается</Text>
+          <Popover
+            open={which === 'flip'}
+            onClose={close}
+            placement="top-start"
+            width="md"
+            title="placement=&quot;top-start&quot;"
+            trigger={
+              <Button variant="secondary" iconEnd="chevronDown" onClick={toggle('flip')}>
+                Открыть вверх
+              </Button>
+            }
+          >
+            <Text variant="bodySm" color="textMuted">
+              Запрошено раскрытие вверх, но над триггером места нет — панель ушла вниз.
+            </Text>
+          </Popover>
+        </Stack>
+
+        <Stack gap="xs">
+          <Text variant="label">Справа не помещается</Text>
+          <Stack direction="row" justify="end">
+            <Popover
+              open={which === 'align'}
+              onClose={close}
+              placement="bottom-start"
+              width="md"
+              trigger={
+                <Button variant="secondary" iconEnd="chevronDown" onClick={toggle('align')}>
+                  У правого края
+                </Button>
+              }
+            >
+              <Text variant="bodySm" color="textMuted">
+                Запрошено выравнивание по левому краю триггера, но панель шире остатка справа — она прижалась
+                правым краем. Если и этого мало, панель дополнительно сдвигается внутрь окна.
+              </Text>
+            </Popover>
+          </Stack>
+        </Stack>
+
+        <Stack gap="xs" align="start">
+          <Text variant="label">Не помещается нигде</Text>
+          <Popover
+            open={which === 'tall'}
+            onClose={close}
+            width="sm"
+            title="Двадцать пунктов"
+            trigger={
+              <Button variant="secondary" iconEnd="chevronDown" onClick={toggle('tall')}>
+                Длинный список
+              </Button>
+            }
+          >
+            <Stack gap="2xs">
+              {Array.from({ length: 20 }, (_, i) => (
+                <Text key={i} variant="bodySm">{`Пункт ${i + 1}`}</Text>
+              ))}
+            </Stack>
+          </Popover>
+          <Text variant="bodySm" color="textMuted">
+            Панель выбирает сторону с бо́льшим запасом и подрезается по нему: содержимое прокручивается внутри,
+            заголовок и футер остаются на виду. Прежде она сохраняла предпочтённую сторону и уезжала за кромку.
+          </Text>
+        </Stack>
+
+        <Text variant="bodySm" color="textMuted">
+          Панель рисуется в портале и считается от вьюпорта: контейнер с прокруткой её не режет — в том числе этот,
+          холст документации. Размещение пересчитывается на прокрутке любого предка, на изменении размеров окна и на
+          изменении размеров самой панели.
+        </Text>
+      </Stack>
+    );
+  },
+};
+
+/**
+ * Примеры использования: три случая из приложения закрываются одной
+ * конструкцией. Иконки конкретные — блок прикладной.
+ *
+ * `chevronDown` у триггера заглушкой не заменяется ни здесь, ни в блоках
+ * выше: это не иллюстрация, а признак раскрытия. Без него кнопка не
+ * обещает панель.
+ */
+export const Usage: Story = {
   args: { open: false, onClose: () => undefined, trigger: null, children: null },
   render: () => {
     const [which, setWhich] = useState<'filters' | 'mode' | 'actions' | null>(null);

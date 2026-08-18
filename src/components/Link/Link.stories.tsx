@@ -3,7 +3,7 @@ import { Link } from './Link';
 import { Button } from '@/components';
 import { Stack, Text, Box } from '@/primitives';
 import { Labeled, Matrix, Spec, DoDont } from '@spec';
-import { longText, unbreakable } from '@fixtures';
+import { longText, unbreakable, label, labels } from '@fixtures';
 
 const TONES = ['accent', 'muted'] as const;
 const STATES = ['default', 'hover', 'focus-visible'] as const;
@@ -33,12 +33,8 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Overview: Story = {
-  args: { children: 'Методика ВНИИ', href: '#anchor' },
-};
-
 export const Playground: Story = {
-  args: { children: 'Методика ВНИИ', href: '#anchor', tone: 'accent' },
+  args: { children: label, href: '#anchor', tone: 'accent' },
 };
 
 export const Variants: Story = {
@@ -46,21 +42,21 @@ export const Variants: Story = {
   render: () => (
     <Stack gap="lg" align="start">
       <Labeled label="accent">
-        <Link href="#anchor">Внутренняя ссылка</Link>
+        <Link href="#anchor">{label}</Link>
       </Labeled>
       <Labeled label="muted">
         <Link href="#anchor" tone="muted">
-          Второстепенная ссылка
+          {label}
         </Link>
       </Labeled>
       <Labeled label="external">
         <Link href="https://example.com" external>
-          Методика ВНИИ
+          {label}
         </Link>
       </Labeled>
       <Labeled label="external + muted">
         <Link href="https://example.com" external tone="muted">
-          Источник данных
+          {label}
         </Link>
       </Labeled>
     </Stack>
@@ -88,7 +84,7 @@ export const VariantStates: Story = {
     <Matrix rows={TONES} columns={STATES}>
       {(tone) => (
         <Link href="#anchor" tone={tone}>
-          Методика
+          {label}
         </Link>
       )}
     </Matrix>
@@ -100,19 +96,22 @@ export const Content: Story = {
   render: () => (
     <Stack gap="lg" align="start">
       <Labeled label="одно слово">
-        <Link href="#anchor">Подробнее</Link>
+        <Link href="#anchor">{label}</Link>
       </Labeled>
       <Labeled label="внутри абзаца">
         <Text variant="body">
-          Расчёт выполняется по <Link href="#anchor">методике ВНИИ</Link> с поправкой на влажность питания.
+          Текст абзаца, внутри которого стоит <Link href="#anchor">{label}</Link> и продолжается дальше.
         </Text>
       </Labeled>
       <Labeled label="список ссылок">
         <Stack gap="xs">
-          <Link href="#anchor">Исходные данные</Link>
-          <Link href="#anchor">Результат расчёта</Link>
+          {labels.slice(0, 2).map((item) => (
+            <Link key={item} href="#anchor">
+              {item}
+            </Link>
+          ))}
           <Link href="https://example.com" external>
-            Паспорт оборудования
+            {labels[2]}
           </Link>
         </Stack>
       </Labeled>
@@ -179,7 +178,7 @@ export const Anatomy: Story = {
       }}
     >
       <Link href="https://example.com" external>
-        Методика ВНИИ
+        {label}
       </Link>
     </Spec>
   ),

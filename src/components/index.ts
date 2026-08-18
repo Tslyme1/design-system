@@ -35,7 +35,8 @@ export { Tag } from './Tag/Tag';
 export type { TagProps } from './Tag/Tag';
 
 export { Badge } from './Badge/Badge';
-export type { BadgeProps, BadgeTone } from './Badge/Badge';
+export { badgeToneIcons } from './Badge/Badge';
+export type { BadgeProps, BadgeTone, BadgeIcon } from './Badge/Badge';
 
 export { Table, TableSummary } from './Table/Table';
 export type { TableProps, TableColumn, TableSort, SortDirection } from './Table/Table';
@@ -58,5 +59,5 @@ export type { ChipProps } from './Chip/Chip';
 export { EmptyState } from './EmptyState/EmptyState';
 export type { EmptyStateProps } from './EmptyState/EmptyState';
 
-export { AppHeader, HeaderButton, HeaderDivider, HeaderSpacer } from './AppHeader/AppHeader';
-export type { AppHeaderProps, HeaderButtonProps } from './AppHeader/AppHeader';
+export { AppHeader, HeaderButton, HeaderDivider, HeaderLogo, HeaderSpacer } from './AppHeader/AppHeader';
+export type { AppHeaderProps, HeaderButtonProps, HeaderLogoProps, HeaderSideProps } from './AppHeader/AppHeader';

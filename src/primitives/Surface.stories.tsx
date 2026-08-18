@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Surface } from './Surface';
 import { Stack } from './Stack';
 import { Text } from './Text';
-import { crusher, ore } from '@fixtures';
+import { label, description } from '@fixtures';
 
 const meta = {
   title: 'Primitives/Surface',
@@ -34,9 +34,9 @@ type Story = StoryObj<typeof meta>;
 
 const Body = () => (
   <Stack gap="2xs">
-    <Text variant="headingSm">{crusher.short}</Text>
+    <Text variant="headingSm">{label}</Text>
     <Text variant="bodySm" color="textMuted">
-      {ore}
+      {description}
     </Text>
   </Stack>
 );

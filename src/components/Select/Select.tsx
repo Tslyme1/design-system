@@ -167,6 +167,7 @@ export function Select({
       trigger={trigger}
       placement="bottom-start"
       width="trigger"
+      fullWidth={fullWidth}
       footer={footer}
     >
       {searchable ? (

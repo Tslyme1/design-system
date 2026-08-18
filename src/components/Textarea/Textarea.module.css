@@ -14,8 +14,15 @@
   border: var(--border-hairline) solid var(--color-border);
   border-radius: var(--radius-md);
 
-  /* Растягивать по горизонтали нельзя: поле выедет за раскладку формы. */
-  resize: vertical;
+  /* Ручки растягивания нет: высотой управляет сам компонент — он ведёт её
+     за содержимым. Ручка спорила бы с вводом, откатывая заданную вручную
+     высоту на первом же символе. По горизонтали растягивать нельзя в любом
+     случае: поле выедет за раскладку формы. */
+  resize: none;
+
+  /* Пока поле растёт, прокручивать нечего. Значение переключает на `auto`
+     сам компонент — когда упёрлись в `maxRows`. */
+  overflow-y: hidden;
 
   transition:
     border-color var(--duration-fast) var(--easing-standard),
@@ -44,7 +51,6 @@
   background: var(--color-surface-sunken);
   color: var(--color-text-disabled);
   cursor: not-allowed;
-  resize: none;
 }
 
 .invalid {

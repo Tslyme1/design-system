@@ -12,6 +12,44 @@
   border-bottom: var(--border-hairline) solid var(--color-border);
 }
 
+/* Часть полосы — левая или правая. Ячейки внутри примыкают друг к другу
+   так же вплотную, как в самой полосе: границу групп рисует хайрлайн. */
+.side {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  min-width: 0;
+  /* Растёт от собственного содержимого (basis auto), поэтому свободное место
+     полосы делится между частями поровну, а содержимое не сжимается.
+     С basis 0 узкая часть отдала бы половину полосы широкой и обрезала бы её. */
+  flex: 1 1 auto;
+}
+
+.left {
+  justify-content: flex-start;
+}
+
+/* Прижатие к правому краю — работой самой части, а не внешним отступом:
+   правая часть остаётся у края даже когда левой на полосе нет. */
+.right {
+  justify-content: flex-end;
+}
+
+/* Знак сервиса. Форма ячейки, но не поведение: ни hover, ни курсора-руки —
+   нажимать не на что. */
+.logo {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-sm);
+  flex-shrink: 0;
+
+  height: 100%;
+  padding-inline: var(--space-md);
+  color: var(--color-text);
+  cursor: default;
+  user-select: none;
+}
+
 .cell {
   display: inline-flex;
   align-items: center;

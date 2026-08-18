@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { SegmentedControl } from './SegmentedControl';
 import { Select, RadioGroup, Radio } from '@/components';
 import { Stack, Text, Box, Field } from '@/primitives';
+import type { IconName } from '@/primitives';
 import { Labeled, Spec, DoDont } from '@spec';
 import { longWord } from '@fixtures';
 
@@ -32,7 +33,18 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
+/**
+ * Подписи сегментов в демонстрационных блоках нейтральны: система не
+ * назначает сегментам смысл, его выбирает экран. Настоящие режимы —
+ * в блоке `Usage`.
+ */
 const MODES = [
+  { value: 'a', label: 'Label 1' },
+  { value: 'b', label: 'Label 2' },
+];
+
+/** Настоящие режимы приложения — только для блока `Usage`. */
+const USAGE_MODES = [
   { value: 'engineer', label: 'Инженерный' },
   { value: 'simple', label: 'Упрощённый' },
 ];
@@ -42,27 +54,22 @@ function Live({
   options = MODES,
   ...rest
 }: {
-  options?: { value: string; label: string; icon?: 'settings' | 'check'; disabled?: boolean }[];
+  options?: { value: string; label: string; icon?: IconName; disabled?: boolean }[];
   size?: 'sm' | 'md' | 'lg';
   fullWidth?: boolean;
   legend?: string;
 }) {
   const [value, setValue] = useState(options[0].value);
-  return <SegmentedControl legend="Режим расчёта" {...rest} options={options} value={value} onChange={setValue} />;
+  return <SegmentedControl legend="Label" {...rest} options={options} value={value} onChange={setValue} />;
 }
 
-export const Overview: Story = {
-  args: { legend: 'Режим расчёта', options: MODES, value: 'engineer', onChange: () => undefined },
-  render: () => <Live />,
-};
-
 export const Playground: Story = {
-  args: { legend: 'Режим расчёта', options: MODES, value: 'engineer', onChange: () => undefined },
+  args: { legend: 'Label', options: MODES, value: 'a', onChange: () => undefined },
   render: (args) => <Live size={args.size} fullWidth={args.fullWidth} />,
 };
 
 export const States: Story = {
-  args: { legend: '', options: MODES, value: 'engineer', onChange: () => undefined },
+  args: { legend: '', options: MODES, value: 'a', onChange: () => undefined },
   render: () => (
     <Stack gap="lg" align="start">
       <Labeled label="выбран первый">
@@ -71,9 +78,9 @@ export const States: Story = {
       <Labeled label="сегмент disabled">
         <Live
           options={[
-            { value: 'engineer', label: 'Инженерный' },
-            { value: 'simple', label: 'Упрощённый' },
-            { value: 'expert', label: 'Экспертный', disabled: true },
+            { value: 'a', label: 'Label 1' },
+            { value: 'b', label: 'Label 2' },
+            { value: 'c', label: 'Label 3', disabled: true },
           ]}
         />
       </Labeled>
@@ -86,7 +93,7 @@ export const States: Story = {
 };
 
 export const Sizes: Story = {
-  args: { legend: '', options: MODES, value: 'engineer', onChange: () => undefined },
+  args: { legend: '', options: MODES, value: 'a', onChange: () => undefined },
   render: () => (
     <Stack gap="lg" align="start">
       {(['sm', 'md', 'lg'] as const).map((size) => (
@@ -103,7 +110,7 @@ export const Sizes: Story = {
 };
 
 export const Content: Story = {
-  args: { legend: '', options: MODES, value: 'engineer', onChange: () => undefined },
+  args: { legend: '', options: MODES, value: 'a', onChange: () => undefined },
   render: () => (
     <Stack gap="lg" align="start">
       <Labeled label="два сегмента">
@@ -112,17 +119,17 @@ export const Content: Story = {
       <Labeled label="три сегмента">
         <Live
           options={[
-            { value: 'day', label: 'Сутки' },
-            { value: 'week', label: 'Неделя' },
-            { value: 'month', label: 'Месяц' },
+            { value: 'a', label: 'Label 1' },
+            { value: 'b', label: 'Label 2' },
+            { value: 'c', label: 'Label 3' },
           ]}
         />
       </Labeled>
       <Labeled label="с иконками">
         <Live
           options={[
-            { value: 'engineer', label: 'Инженерный', icon: 'settings' },
-            { value: 'simple', label: 'Упрощённый', icon: 'check' },
+            { value: 'a', label: 'Label 1', icon: 'placeholder' },
+            { value: 'b', label: 'Label 2', icon: 'placeholder' },
           ]}
         />
       </Labeled>
@@ -136,7 +143,7 @@ export const Content: Story = {
 };
 
 export const Overflow: Story = {
-  args: { legend: '', options: MODES, value: 'engineer', onChange: () => undefined },
+  args: { legend: '', options: MODES, value: 'a', onChange: () => undefined },
   render: () => (
     <Stack gap="lg" align="start">
       <Text variant="bodySm" color="textMuted">
@@ -145,15 +152,15 @@ export const Overflow: Story = {
       </Text>
       <Live
         options={[
-          { value: 'a', label: 'Инженерный расчёт с поправками' },
+          { value: 'a', label: 'Label, который в сегмент не помещается' },
           { value: 'b', label: longWord },
         ]}
       />
       <Live
         options={[
-          { value: 'a', label: 'Один' },
-          { value: 'b', label: 'Два' },
-          { value: 'c', label: 'Три' },
+          { value: 'a', label: 'Label 1' },
+          { value: 'b', label: 'Label 2' },
+          { value: 'c', label: 'Label 3' },
         ]}
       />
     </Stack>
@@ -161,17 +168,17 @@ export const Overflow: Story = {
 };
 
 export const EdgeCases: Story = {
-  args: { legend: '', options: MODES, value: 'engineer', onChange: () => undefined },
+  args: { legend: '', options: MODES, value: 'a', onChange: () => undefined },
   render: () => (
     <Stack gap="lg" align="start">
       <Labeled label="один сегмент — вырожденный случай">
-        <Live options={[{ value: 'only', label: 'Единственный' }]} />
+        <Live options={[{ value: 'only', label: 'Label' }]} />
       </Labeled>
       <Labeled label="все сегменты disabled">
         <Live
           options={[
-            { value: 'a', label: 'Первый', disabled: true },
-            { value: 'b', label: 'Второй', disabled: true },
+            { value: 'a', label: 'Label 1', disabled: true },
+            { value: 'b', label: 'Label 2', disabled: true },
           ]}
         />
       </Labeled>
@@ -184,7 +191,7 @@ export const EdgeCases: Story = {
 };
 
 export const Anatomy: Story = {
-  args: { legend: '', options: MODES, value: 'engineer', onChange: () => undefined },
+  args: { legend: '', options: MODES, value: 'a', onChange: () => undefined },
   render: () => (
     <Spec
       slots={['legend (скрыт визуально)', 'segment × N', 'icon?', 'label']}
@@ -204,14 +211,28 @@ export const Anatomy: Story = {
 };
 
 export const Usage: Story = {
-  args: { legend: '', options: MODES, value: 'engineer', onChange: () => undefined },
+  args: { legend: '', options: MODES, value: 'a', onChange: () => undefined },
   render: () => (
     <Stack gap="2xl" align="start">
       <Stack gap="sm" align="start">
         <Text variant="label">В форме — с подписью от Field</Text>
         <Field label="Режим расчёта" hint="Инженерный показывает промежуточные величины">
-          {() => <Live />}
+          {() => <Live options={USAGE_MODES} />}
         </Field>
+      </Stack>
+
+      <Stack gap="sm" align="start">
+        <Text variant="label">Режим расчёта с иконками — как в приложении</Text>
+        <Live
+          options={[
+            { value: 'engineer', label: 'Инженерный', icon: 'settings' },
+            { value: 'simple', label: 'Упрощённый', icon: 'check' },
+          ]}
+        />
+        <Text variant="caption" color="textMuted">
+          Иконка здесь конкретная: в блоках выше на её месте стоит заглушка, чтобы вариант не читался как
+          рекомендация «режим — обязательно шестерёнка».
+        </Text>
       </Stack>
 
       <DoDont reason="Четыре и больше вариантов не помещаются: подписи обрезаются, и выбор перестаёт читаться. Список прячет варианты за клик, но зато показывает их целиком.">
@@ -236,7 +257,7 @@ export const Usage: Story = {
       </DoDont>
 
       <DoDont reason="Сегменты показывают режим, между которыми переключаются часто и сразу видят результат. Для выбора значения в форме, который сохраняется вместе с ней, привычнее радиокнопки.">
-        <Live />
+        <Live options={USAGE_MODES} />
         <RadioGroup name="usage-units" legend="Единицы измерения">
           <Radio label="Миллиметры" value="mm" defaultChecked />
           <Radio label="Сантиметры" value="cm" />

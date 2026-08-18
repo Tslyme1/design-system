@@ -1,6 +1,19 @@
 import type { ReactNode } from 'react';
-import { useEffect, useRef, useCallback } from 'react';
-import { useAutoPlacement } from '../useAutoPlacement';
+import {
+  useFloating,
+  useDismiss,
+  useInteractions,
+  autoUpdate,
+  offset,
+  flip,
+  shift,
+  limitShift,
+  size,
+  FloatingPortal,
+  FloatingFocusManager,
+} from '@floating-ui/react';
+import { motionDuration, spacing } from '../../tokens';
+import { usePresence } from '../usePresence';
 import styles from './Popover.module.css';
 
 export type PopoverPlacement = 'bottom-start' | 'bottom-end' | 'top-start' | 'top-end';
@@ -21,6 +34,13 @@ export type PopoverProps = {
   title?: string;
   /** Закреплённая нижняя строка: «+ Добавить», «Сбросить». */
   footer?: ReactNode;
+  /**
+   * Обёртка занимает всю ширину родителя. Нужна, когда триггер обязан
+   * растянуться — например, поле формы: обёртка по умолчанию `inline-flex`
+   * и сжимается по содержимому, а `width: 100%` на самом триггере считается
+   * от этой сжатой ширины и ничего не даёт.
+   */
+  fullWidth?: boolean;
 };
 
 const widthClass = {
@@ -30,18 +50,10 @@ const widthClass = {
   md: 'widthMd',
 } as const;
 
-/**
- * Размещение → класс. Отображение явное, а не `styles[placement]`:
- * у CSS-модулей включён `camelCaseOnly`, дефисные ключи из экспорта
- * удаляются, и обращение по имени пропа молча давало `undefined` —
- * панель оставалась без смещений и вставала поверх триггера.
- */
-const placementClass: Record<PopoverPlacement, string> = {
-  'bottom-start': 'bottomStart',
-  'bottom-end': 'bottomEnd',
-  'top-start': 'topStart',
-  'top-end': 'topEnd',
-};
+/** Зазор между триггером и панелью. Значение приходит из шкалы, а не из головы. */
+const GAP = Number.parseFloat(spacing.xs);
+/** Зазор между панелью и кромкой окна: вплотную к краю панель читается как обрезанная. */
+const EDGE = Number.parseFloat(spacing.sm);
 
 /**
  * Всплывающая панель у элемента.
@@ -55,6 +67,11 @@ const placementClass: Record<PopoverPlacement, string> = {
  * Закрытие по Esc и клику снаружи, возврат фокуса на триггер — здесь,
  * а не в вызывающем коде.
  *
+ * Размещение считает floating-ui: панель переворачивается, сдвигается и
+ * подрезается так, чтобы остаться в видимой области. Панель рисуется в
+ * портале и позиционируется от вьюпорта — иначе её режет любой предок
+ * с прокруткой задолго до кромки окна.
+ *
  * Не использовать для модальных решений: поповер не блокирует интерфейс
  * и закрывается случайным кликом. Если ответ обязателен — это `Modal`.
  */
@@ -67,66 +84,121 @@ export function Popover({
   width = 'auto',
   title,
   footer,
+  fullWidth = false,
 }: PopoverProps) {
-  const wrapperRef = useRef<HTMLDivElement>(null);
-  const panelRef = useRef<HTMLDivElement>(null);
+  // Панель схлопывается к триггеру, а не исчезает в кадре: у поповера
+  // закрытие происходит чаще открытия — по клику снаружи, по Esc, по выбору
+  // пункта, — и именно оно определяет, аккуратен слой или нет.
+  const { mounted, exiting } = usePresence(open, motionDuration.fast);
+
+  const {
+    refs,
+    floatingStyles,
+    context,
+    placement: actualPlacement,
+  } = useFloating({
+    open,
+    onOpenChange: (next) => {
+      if (!next) onClose();
+    },
+    placement,
+    /**
+     * `fixed`, а не `absolute`: панель обязана считаться от вьюпорта.
+     * При `absolute` её координаты зависели бы от ближайшего позиционированного
+     * предка, а он у прокручиваемой колонки как раз и есть.
+     */
+    strategy: 'fixed',
+    /**
+     * Позиционирование через `top`/`left`, а не через `transform`: `transform`
+     * занят анимацией появления и ухода, и одно затирало бы другое.
+     */
+    transform: false,
+    middleware: [
+      offset(GAP),
+      // Переворот. Если не помещается ни сверху, ни снизу, floating-ui сам
+      // берёт сторону с бо́льшим запасом (`fallbackStrategy: 'bestFit'`).
+      flip({ padding: EDGE }),
+      // Сдвиг вдоль оси. `limitShift` не даёт панели оторваться от триггера
+      // и повиснуть рядом с ним, когда сдвигать уже нечего.
+      shift({ padding: EDGE, limiter: limitShift() }),
+      size({
+        padding: EDGE,
+        apply({ availableHeight, rects, elements }) {
+          // Потолок высоты и ширина триггера уезжают в CSS переменными:
+          // вторая половина правила — `min(320px, …)` и `min-width` — живёт там.
+          elements.floating.style.setProperty('--layer-max-height', `${availableHeight}px`);
+          elements.floating.style.setProperty('--layer-trigger-width', `${rects.reference.width}px`);
+        },
+      }),
+    ],
+    // Пересчёт на прокрутке предков, ресайзе окна и изменении размеров
+    // панели или триггера. Панель прибита к вьюпорту и сама за содержимым
+    // не поедет — без этого она отстала бы от триггера на первой прокрутке.
+    whileElementsMounted: autoUpdate,
+  });
+
+  // pointerdown, а не click: иначе панель успевает закрыться раньше,
+  // чем сработает обработчик внутри неё.
+  const dismiss = useDismiss(context, { outsidePressEvent: 'pointerdown' });
   /**
-   * `placement` — предпочтение, а не приказ: если снизу не помещается,
-   * панель раскрывается вверх. Иначе фильтр у нижнего края экрана
-   * открывается за границу окна.
+   * `useRole` не подключён намеренно: он вешает `aria-haspopup` и
+   * `aria-expanded` на опорный элемент, а опорный здесь — обёртка-div, которая
+   * ничего не нажимает. Роль объявляет сама панель, а `aria-haspopup` ставит
+   * триггер — так, как это делает `Select`.
    */
-  const actualPlacement = useAutoPlacement(placement, open, wrapperRef, panelRef);
-
-  const handlePointerDown = useCallback(
-    (event: MouseEvent) => {
-      if (!wrapperRef.current) return;
-      if (!wrapperRef.current.contains(event.target as Node)) onClose();
-    },
-    [onClose]
-  );
-
-  const handleKeyDown = useCallback(
-    (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        onClose();
-        // Фокус возвращается на триггер: иначе он остаётся в никуда
-        // и следующий Tab начинает обход с начала страницы.
-        wrapperRef.current?.querySelector<HTMLElement>('button, [tabindex]')?.focus();
-      }
-    },
-    [onClose]
-  );
-
-  useEffect(() => {
-    if (!open) return;
-    // pointerdown, а не click: иначе панель успевает закрыться раньше,
-    // чем сработает обработчик внутри неё.
-    document.addEventListener('pointerdown', handlePointerDown);
-    document.addEventListener('keydown', handleKeyDown);
-    return () => {
-      document.removeEventListener('pointerdown', handlePointerDown);
-      document.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [open, handlePointerDown, handleKeyDown]);
+  const { getReferenceProps, getFloatingProps } = useInteractions([dismiss]);
 
   const cls = widthClass[width];
 
   return (
-    <div className={styles.wrapper} ref={wrapperRef}>
+    <div
+      className={[styles.wrapper, fullWidth ? styles.fullWidth : null].filter(Boolean).join(' ')}
+      /* Опорный элемент — обёртка, а не сам триггер: `trigger` приходит как
+         `ReactNode`, ref в него не воткнуть, не потребовав от каждого
+         вызывающего пробрасывать ref. Обёртка обтягивает триггер,
+         поэтому геометрия та же. */
+      ref={refs.setReference}
+      {...getReferenceProps()}
+    >
       {trigger}
 
-      {open ? (
-        <div
-          ref={panelRef}
-          className={[styles.panel, styles[placementClass[actualPlacement]], cls ? styles[cls] : null]
-            .filter(Boolean)
-            .join(' ')}
-          role="dialog"
-        >
-          {title ? <div className={styles.title}>{title}</div> : null}
-          <div className={styles.content}>{children}</div>
-          {footer ? <div className={styles.footer}>{footer}</div> : null}
-        </div>
+      {mounted ? (
+        <FloatingPortal>
+          {/*
+            Панель лежит в портале, то есть в конце документа, а обход по Tab
+            идёт по порядку в DOM. Менеджер фокуса ставит вокруг панели
+            метки-ловушки и возвращает обход на место: Tab с триггера ведёт
+            в панель, а не в конец страницы.
+
+            `modal={false}` — поповер не блокирует интерфейс, фокус в нём
+            не запирается. `initialFocus={-1}` — фокус не переносится в панель
+            сам: у `Select` внутрь ведёт поле поиска, у меню — первый пункт,
+            и решать это должен вызывающий, а не слой.
+          */}
+          <FloatingFocusManager context={context} modal={false} initialFocus={-1}>
+            <div
+              ref={refs.setFloating}
+              className={[
+                styles.panel,
+                // Класс только для стороны «вверх»: он нужен ровно затем,
+                // чтобы развернуть анимацию ухода. Пустого парного класса
+                // в CSS нет, поэтому и обращения к нему нет.
+                actualPlacement.startsWith('top') ? styles.sideTop : null,
+                cls ? styles[cls] : null,
+                exiting ? styles.exiting : null,
+              ]
+                .filter(Boolean)
+                .join(' ')}
+              style={floatingStyles}
+              role="dialog"
+              {...getFloatingProps()}
+            >
+              {title ? <div className={styles.title}>{title}</div> : null}
+              <div className={styles.content}>{children}</div>
+              {footer ? <div className={styles.footer}>{footer}</div> : null}
+            </div>
+          </FloatingFocusManager>
+        </FloatingPortal>
       ) : null}
     </div>
   );

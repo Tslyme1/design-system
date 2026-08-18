@@ -13,7 +13,7 @@
 .row {
   flex-direction: row;
   align-items: flex-start;
-  gap: var(--space-md);
+  gap: var(--space-sm);
 }
 
 .column {
@@ -27,15 +27,24 @@
   min-width: 0;
 }
 
+/* Шаг занимает столько, сколько нужно его подписи, а не равную долю
+   строки. При `flex: 1` короткие шаги получали ту же ширину, что длинные:
+   у одних оставалась полоса пустоты, у других подпись уходила в многоточие
+   при свободном месте рядом. */
 .row .step {
-  flex: 1;
+  flex: 0 1 auto;
 }
 
+/* Линия связывает соседние шаги, а не растягивает их по всей строке:
+   при `flex: 1` она забирала всё свободное место и блоки разъезжались
+   по краям. Длина фиксированная, сжимается первой — но не в ноль,
+   иначе последовательность перестаёт читаться. */
 .row .step + .step::before {
   content: '';
-  flex: 1;
+  flex: 0 1 var(--space-2xl);
+  min-width: var(--space-md);
   height: var(--border-hairline);
-  margin-inline-end: var(--space-md);
+  margin-inline-end: var(--space-sm);
   background: var(--color-border);
 }
 
@@ -107,15 +116,22 @@ button.button:disabled {
   font-size: var(--text-body-size);
   line-height: var(--text-body-line);
   color: var(--color-text-muted);
+  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
+/* Пояснение живёт по тем же правилам, что название: одна строка и
+   многоточие. В две строки оно разъезжалось по высоте и ломало
+   выравнивание соседних шагов по кружку. */
 .description {
   font-family: var(--font-body);
   font-size: var(--text-caption-size);
   line-height: var(--text-caption-line);
   color: var(--color-text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* Пройденный — залит акцентом с галкой. Текущий — обведён и с жирной

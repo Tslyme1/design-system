@@ -6,6 +6,52 @@
  * Данные взяты из предметной области проекта: дробилки, руда, заказчики.
  */
 
+/**
+ * Нейтральные подписи для демонстрационных блоков.
+ *
+ * В блоках `Variants`, `States`, `Sizes`, `Content`, `Overflow`, `EdgeCases`
+ * и `Anatomy` текст показывает форму компонента, а не смысл. Прикладная
+ * формулировка там читается как распределение ролей («danger — это всегда
+ * удаление», «переключатель — это всегда автосохранение»), которого система
+ * не устанавливает. Предметные данные ниже остаются для блоков `Usage`.
+ */
+export const label = 'Label';
+export const description = 'Description';
+export const placeholder = 'Placeholder';
+export const value = 'Value';
+export const errorText = 'Текст ошибки';
+
+/** Несколько подписей подряд — для групп, списков и наборов опций. */
+export const labels = ['Label 1', 'Label 2', 'Label 3', 'Label 4', 'Label 5'] as const;
+
+/** Нейтральные шаги — для Stepper. */
+export const labelSteps = [
+  { label: 'Label 1', description: 'Description' },
+  { label: 'Label 2', description: 'Description' },
+  { label: 'Label 3', description: 'Description' },
+];
+
+/** Нейтральные опции списка — для Select и других наборов. */
+export const labelOptions = [
+  { value: 'a', label: 'Label 1', description: 'Description' },
+  { value: 'b', label: 'Label 2' },
+  { value: 'c', label: 'Label 3' },
+  { value: 'd', label: 'Label 4', disabled: true },
+];
+
+/** То же с группами: группировка — тоже форма, а не предметная классификация. */
+export const labelOptionsGrouped = [
+  { value: 'a', label: 'Label 1', description: 'Description', group: 'Group 1' },
+  { value: 'b', label: 'Label 2', group: 'Group 1' },
+  { value: 'c', label: 'Label 3', group: 'Group 2' },
+  { value: 'd', label: 'Label 4', group: 'Group 2', disabled: true },
+];
+
+/** Длинная подпись без предметного смысла — для блоков Overflow. */
+export const longLabel =
+  'Label, который не помещается в одну строку и обязан перенестись или обрезаться, ' +
+  'а не растянуть контейнер и вынести раскладку';
+
 /** Обозначения дробилок. Короткое и длинное — чтобы ловить перенос. */
 export const crusher = {
   short: 'КМД-1750Т7-Д',

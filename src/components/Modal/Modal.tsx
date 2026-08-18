@@ -2,6 +2,8 @@ import type { ReactNode } from 'react';
 import { useEffect, useRef, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import type { ModalWidthToken } from '../../tokens';
+import { motionDuration } from '../../tokens';
+import { usePresence } from '../usePresence';
 import { Text, Icon } from '../../primitives';
 import styles from './Modal.module.css';
 
@@ -38,6 +40,9 @@ export type ModalProps = {
 export function Modal({ open, onClose, title, children, footer, size = 'sm', dismissible = true }: ModalProps) {
   const dialogRef = useRef<HTMLDivElement>(null);
   const previouslyFocused = useRef<HTMLElement | null>(null);
+  // Окно остаётся в дереве, пока доигрывает уход: иначе закрытие происходит
+  // рывком, хотя открытие анимировано.
+  const { mounted, exiting } = usePresence(open, motionDuration.fast);
 
   const handleKeyDown = useCallback(
     (event: KeyboardEvent) => {
@@ -91,17 +96,19 @@ export function Modal({ open, onClose, title, children, footer, size = 'sm', dis
     };
   }, [open, handleKeyDown]);
 
-  if (!open) return null;
+  if (!mounted) return null;
 
   return createPortal(
     <div
-      className={styles.backdrop}
-      onClick={dismissible ? onClose : undefined}
+      className={[styles.backdrop, exiting ? styles.exiting : null].filter(Boolean).join(' ')}
+      // Во время ухода окно уже закрыто: повторный клик по фону ничего
+      // не запускает и не перезапускает анимацию.
+      onClick={dismissible && !exiting ? onClose : undefined}
       role="presentation"
     >
       <div
         ref={dialogRef}
-        className={[styles.dialog, styles[size]].join(' ')}
+        className={[styles.dialog, styles[size], exiting ? styles.exiting : null].filter(Boolean).join(' ')}
         role="dialog"
         aria-modal="true"
         aria-labelledby="modal-title"

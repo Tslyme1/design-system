@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { Drawer } from './Drawer';
 import { Button } from '@/components';
 import { Stack, Text, Box } from '@/primitives';
+import type { IconName } from '@/primitives';
 import { crusher, longText } from '@fixtures';
 import scene from './Drawer.scene.module.css';
 
@@ -30,20 +31,60 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
+type SceneCopy = {
+  heading: string;
+  trigger: string;
+  title: string;
+  close: string;
+  action: string;
+  metricLabel: string;
+  metricValue: string;
+  icon: IconName;
+};
+
+/**
+ * Тексты и иконка сцены — данные, а не часть компонента.
+ *
+ * В демонстрационных блоках они нейтральны: панель показывает форму, и
+ * прикладная формулировка читалась бы как назначение («панель — это всегда
+ * результат расчёта»). Настоящие тексты подставляет блок `Usage`.
+ */
+const demoCopy: SceneCopy = {
+  heading: 'Label',
+  trigger: 'Label',
+  title: 'Label',
+  close: 'Label',
+  action: 'Label',
+  metricLabel: 'Label',
+  metricValue: 'Value',
+  icon: 'placeholder',
+};
+
+const usageCopy: SceneCopy = {
+  heading: crusher.short,
+  trigger: 'Смотреть результат',
+  title: 'Результат расчёта',
+  close: 'Закрыть',
+  action: 'Скачать',
+  metricLabel: 'Производительность',
+  metricValue: '1 250 т/ч',
+  icon: 'download',
+};
+
 /** Сцена = рабочая область экрана. Внутри неё панель и живёт. */
-function Scene({ size }: { size: 'narrow' | 'wide' }) {
+function Scene({ size, copy = demoCopy }: { size: 'narrow' | 'wide'; copy?: SceneCopy }) {
   const [open, setOpen] = useState(false);
 
   return (
     <div className={scene.host}>
       <div className={scene.body}>
         <Stack gap="md" align="start">
-          <Text variant="headingSm">{crusher.short}</Text>
+          <Text variant="headingSm">{copy.heading}</Text>
           <Text variant="bodySm" color="textMuted">
             Рабочая область остаётся видимой и доступной, пока панель открыта.
           </Text>
           <Button variant="primary" onClick={() => setOpen(true)}>
-            Смотреть результат
+            {copy.trigger}
           </Button>
         </Stack>
       </div>
@@ -51,15 +92,15 @@ function Scene({ size }: { size: 'narrow' | 'wide' }) {
       <Drawer
         open={open}
         onClose={() => setOpen(false)}
-        title="Результат расчёта"
+        title={copy.title}
         size={size}
         footer={
           <Stack direction="row" gap="sm" justify="end">
             <Button variant="ghost" onClick={() => setOpen(false)}>
-              Закрыть
+              {copy.close}
             </Button>
-            <Button variant="primary" iconStart="download">
-              Скачать
+            <Button variant="primary" iconStart={copy.icon}>
+              {copy.action}
             </Button>
           </Stack>
         }
@@ -68,8 +109,8 @@ function Scene({ size }: { size: 'narrow' | 'wide' }) {
           <Text variant="body">{longText}</Text>
           <Box padding="md" background="surfaceSunken">
             <Stack gap="xs">
-              <Text variant="label">Производительность</Text>
-              <Text variant="body">1 250 т/ч</Text>
+              <Text variant="label">{copy.metricLabel}</Text>
+              <Text variant="body">{copy.metricValue}</Text>
             </Stack>
           </Box>
         </Stack>
@@ -114,6 +155,25 @@ export const States: Story = {
         отличает панель от модалки.
       </Text>
       <Scene size="wide" />
+    </Stack>
+  ),
+};
+
+/**
+ * Примеры использования: панель результата расчёта — тот самый сценарий,
+ * ради которого компонент и появился. Иконка в футере здесь конкретная:
+ * действие «Скачать» обязано выглядеть как скачивание.
+ */
+export const Usage: Story = {
+  args: { open: false, onClose: () => undefined, children: null },
+  render: () => (
+    <Stack gap="md">
+      <Text variant="label">«Смотреть результат» на экране расчёта</Text>
+      <Scene size="wide" copy={usageCopy} />
+      <Text variant="bodySm" color="textMuted">
+        Не использовать для: решений, без которых нельзя продолжить — панель не блокирует интерфейс и закрывается
+        случайным кликом. Там `Modal`.
+      </Text>
     </Stack>
   ),
 };

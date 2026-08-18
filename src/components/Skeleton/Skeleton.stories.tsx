@@ -30,15 +30,6 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Overview: Story = {
-  args: { variant: 'text', lines: 3 },
-  render: (args) => (
-    <Box padding="md">
-      <Skeleton {...args} />
-    </Box>
-  ),
-};
-
 export const Playground: Story = {
   args: { variant: 'text', lines: 3 },
   render: (args) => (

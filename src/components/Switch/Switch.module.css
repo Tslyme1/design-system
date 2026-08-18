@@ -13,7 +13,7 @@
   position: absolute;
   top: 0;
   left: 0;
-  width: var(--control-lg);
+  width: var(--control-md);
   height: var(--control-sm);
   margin: 0;
   opacity: 0;
@@ -29,9 +29,17 @@
   flex: none;
   display: inline-flex;
   align-items: center;
-  width: var(--control-lg);
+  width: var(--control-md);
   height: var(--space-xl);
   padding: var(--space-2xs);
+
+  /* Дорожка — рисунок, а не мишень. Она позиционирована и в разметке идёт
+     после input, поэтому по правилам покраски ложится поверх него и
+     забирает себе клик и наведение: переключатель выглядел рабочим, но
+     не переключался. `aria-hidden` уже говорит, что элемента для чтения
+     нет; здесь то же самое сказано для мыши. Клик уходит в input под ней —
+     роль, состояние и клавиатура остаются нативными. */
+  pointer-events: none;
 
   background: var(--color-surface-sunken);
   border: var(--border-hairline) solid var(--color-border);
@@ -71,7 +79,7 @@
    Значение считается из тех же токенов, что и сама дорожка: подобранное
    на глаз число разъедется при первой же правке шкалы. */
 .input:checked ~ .track .thumb {
-  transform: translateX(calc(var(--control-lg) - var(--space-lg) - var(--space-xs) - 2 * var(--border-hairline)));
+  transform: translateX(calc(var(--control-md) - var(--space-lg) - var(--space-xs) - 2 * var(--border-hairline)));
 }
 
 .input:disabled ~ .track {

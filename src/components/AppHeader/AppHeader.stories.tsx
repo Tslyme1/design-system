@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { AppHeader, HeaderButton, HeaderDivider, HeaderSpacer } from './AppHeader';
+import { AppHeader, HeaderButton, HeaderDivider, HeaderLogo } from './AppHeader';
 import { Stack, Text, Surface } from '@/primitives';
 
 const meta = {
@@ -12,8 +12,10 @@ const meta = {
       description: {
         component: [
           'Роль: оболочка приложения — полоса шапки и её ячейки. Отдельная шкала `chrome`: полоса 44, ячейка 44, радиус 0.',
+          'Устроена как две части — `AppHeader.Left` и `AppHeader.Right`. Обе принимают любые ячейки с любыми иконками: разделение здесь про сторону полосы, а не про назначение.',
+          'Знак сервиса ставит `HeaderLogo` — он неинтерактивен. Переход на главную — обычная ячейка рядом со знаком: логотип, который выглядит нажимаемым и ничего не делает, обманывает.',
+          '`HeaderSpacer` устарел, замена — `AppHeader.Right`.',
           'Не использовать для: действий внутри содержимого — там `Button`. У ячейки шапки нет собственной высоты и отступов, она заполняет полосу целиком и отделяется хайрлайном, а не отступом.',
-          'Попытка выразить обе сущности одним компонентом даёт проп `variant="header"`, отменяющий половину остальных.',
         ].join('\n\n'),
       },
     },
@@ -23,19 +25,58 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
+/**
+ * Знак сервиса система не хранит: бренд приходит снаружи, иначе библиотека
+ * не переносится между сервисами. Здесь он нарисован в самой истории —
+ * ровно так же, как его передаст приложение. Обводка `currentColor`
+ * и толщина 1.5 — чтобы знак стоял в одном ряду с иконками ячеек,
+ * а не выглядел вставкой из другой системы.
+ */
+function Mark() {
+  return (
+    <svg
+      width="20"
+      height="20"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M4 20 12 4l8 16Z" />
+      <path d="M9 20l3-6 3 6" />
+    </svg>
+  );
+}
+
 export const Playground: Story = {
   args: {
     children: (
       <>
-        <HeaderButton icon="home" title="Проекты" active />
-        <HeaderButton icon="folder" title="Библиотека" />
-        <HeaderDivider />
-        <HeaderButton icon="user">Иванов И. И.</HeaderButton>
-        <HeaderSpacer />
-        <HeaderButton icon="help" title="Справка" />
-        <HeaderButton chrome="minimize" title="Свернуть" />
-        <HeaderButton chrome="maximize" title="Развернуть" />
-        <HeaderButton chrome="close" title="Закрыть" />
+        <AppHeader.Left>
+          <HeaderLogo label="Уралмаш">
+            <Mark />
+          </HeaderLogo>
+          <HeaderDivider />
+          <HeaderButton icon="placeholder" title="Label" active />
+          <HeaderDivider />
+          <HeaderButton icon="placeholder" expandable>
+            Label
+          </HeaderButton>
+        </AppHeader.Left>
+
+        <AppHeader.Right>
+          <HeaderButton icon="placeholder" expandable>
+            Label
+          </HeaderButton>
+          <HeaderButton icon="placeholder" title="Label" />
+          <HeaderDivider />
+          <HeaderButton chrome="minimize" title="Свернуть" />
+          <HeaderButton chrome="maximize" title="Развернуть" />
+          <HeaderButton chrome="close" title="Закрыть" />
+        </AppHeader.Right>
       </>
     ),
   },
@@ -46,18 +87,69 @@ export const Playground: Story = {
   ),
 };
 
-/** Четыре формы ячейки. Разделяются линией, а не расстоянием. */
+/**
+ * Части полосы и формы ячейки. Разделяются линией, а не расстоянием.
+ *
+ * Иконка здесь — заглушка: блок показывает форму ячейки, а не конкретное
+ * действие. Настоящие иконки — в блоке `Usage`.
+ */
 export const Variants: Story = {
   args: { children: null },
   render: () => (
     <Stack gap="xl">
       <Stack gap="xs">
-        <Text variant="label">Только иконка — 44×44</Text>
+        <Text variant="label">Две части — любые ячейки слева и справа</Text>
         <Surface level="flat" border radius="none" fullWidth>
           <AppHeader>
-            <HeaderButton icon="home" title="Проекты" />
-            <HeaderButton icon="folder" title="Библиотека" />
-            <HeaderButton icon="settings" title="Настройки" />
+            <AppHeader.Left>
+              <HeaderButton icon="placeholder" title="Label 1" />
+              <HeaderButton icon="placeholder" title="Label 2" />
+            </AppHeader.Left>
+            <AppHeader.Right>
+              <HeaderButton icon="placeholder" title="Label 3" />
+              <HeaderButton icon="placeholder" title="Label 4" />
+            </AppHeader.Right>
+          </AppHeader>
+        </Surface>
+      </Stack>
+
+      <Stack gap="xs">
+        <Text variant="label">Только правая часть — прижата к краю без левой</Text>
+        <Surface level="flat" border radius="none" fullWidth>
+          <AppHeader>
+            <AppHeader.Right>
+              <HeaderButton chrome="minimize" title="Свернуть" />
+              <HeaderButton chrome="maximize" title="Развернуть" />
+              <HeaderButton chrome="close" title="Закрыть" />
+            </AppHeader.Right>
+          </AppHeader>
+        </Surface>
+      </Stack>
+
+      <Stack gap="xs">
+        <Text variant="label">Знак сервиса — неинтерактивный</Text>
+        <Surface level="flat" border radius="none" fullWidth>
+          <AppHeader>
+            <AppHeader.Left>
+              <HeaderLogo label="Уралмаш">
+                <Mark />
+              </HeaderLogo>
+              <HeaderDivider />
+              <HeaderButton icon="placeholder" title="Label" />
+            </AppHeader.Left>
+          </AppHeader>
+        </Surface>
+      </Stack>
+
+      <Stack gap="xs">
+        <Text variant="label">Ячейка: только иконка — 44×44</Text>
+        <Surface level="flat" border radius="none" fullWidth>
+          <AppHeader>
+            <AppHeader.Left>
+              <HeaderButton icon="placeholder" title="Label 1" />
+              <HeaderButton icon="placeholder" title="Label 2" />
+              <HeaderButton icon="placeholder" title="Label 3" />
+            </AppHeader.Left>
           </AppHeader>
         </Surface>
       </Stack>
@@ -66,13 +158,15 @@ export const Variants: Story = {
         <Text variant="label">С подписью и раскрытием</Text>
         <Surface level="flat" border radius="none" fullWidth>
           <AppHeader>
-            <HeaderButton icon="user" expandable>
-              Иванов И. И.
-            </HeaderButton>
-            <HeaderDivider />
-            <HeaderButton icon="fileText" expandable>
-              КМД-1750Т7-Д
-            </HeaderButton>
+            <AppHeader.Left>
+              <HeaderButton icon="placeholder" expandable>
+                Label 1
+              </HeaderButton>
+              <HeaderDivider />
+              <HeaderButton icon="placeholder" expandable>
+                Label 2
+              </HeaderButton>
+            </AppHeader.Left>
           </AppHeader>
         </Surface>
       </Stack>
@@ -81,22 +175,29 @@ export const Variants: Story = {
         <Text variant="label">Активная вкладка</Text>
         <Surface level="flat" border radius="none" fullWidth>
           <AppHeader>
-            <HeaderButton icon="home" title="Проекты" active />
-            <HeaderButton icon="folder" title="Библиотека" />
+            <AppHeader.Left>
+              <HeaderButton icon="placeholder" title="Label 1" active />
+              <HeaderButton icon="placeholder" title="Label 2" />
+            </AppHeader.Left>
           </AppHeader>
         </Surface>
       </Stack>
 
       <Stack gap="xs">
-        <Text variant="label">Управление окном</Text>
+        <Text variant="label">Управление окном — иконку подставляет роль</Text>
         <Surface level="flat" border radius="none" fullWidth>
           <AppHeader>
-            <HeaderSpacer />
-            <HeaderButton chrome="minimize" title="Свернуть" />
-            <HeaderButton chrome="maximize" title="Развернуть" />
-            <HeaderButton chrome="close" title="Закрыть" />
+            <AppHeader.Right>
+              <HeaderButton chrome="minimize" title="Свернуть" />
+              <HeaderButton chrome="maximize" title="Развернуть" />
+              <HeaderButton chrome="close" title="Закрыть" />
+            </AppHeader.Right>
           </AppHeader>
         </Surface>
+        <Text variant="caption" color="textMuted">
+          Единственные ячейки, у которых иконка не называется в месте употребления: свернуть, развернуть и закрыть —
+          закрытый набор, и пара «`chrome="close"` с иконкой галочки» сообщала бы обратное действие.
+        </Text>
       </Stack>
     </Stack>
   ),
@@ -109,42 +210,60 @@ export const States: Story = {
     <Stack gap="md">
       <Surface level="flat" border radius="none" fullWidth>
         <AppHeader>
-          <HeaderButton icon="home" title="Обычная" />
-          <HeaderButton icon="folder" title="Активная" active />
-          <HeaderButton icon="settings" title="Недоступная" disabled />
-          <HeaderSpacer />
-          <HeaderButton chrome="close" title="Закрыть" />
+          <AppHeader.Left>
+            <HeaderLogo label="Уралмаш">
+              <Mark />
+            </HeaderLogo>
+            <HeaderDivider />
+            <HeaderButton icon="placeholder" title="Обычная" />
+            <HeaderButton icon="placeholder" title="Активная" active />
+            <HeaderButton icon="placeholder" title="Недоступная" disabled />
+          </AppHeader.Left>
+          <AppHeader.Right>
+            <HeaderButton chrome="close" title="Закрыть" />
+          </AppHeader.Right>
         </AppHeader>
       </Surface>
       <Text variant="caption" color="textMuted">
         Наведи на каждую и пройди табом. Красный отдан только закрытию: это единственное действие шапки, теряющее
-        несохранённую работу.
+        несохранённую работу. Знак слева состояний не имеет — он не интерактивен и фокус не получает.
       </Text>
     </Stack>
   ),
 };
 
-/** Шапка целиком — так она стоит в приложении. */
-export const InContext: Story = {
+/**
+ * Примеры использования: шапка целиком, как она стоит в приложении.
+ * Иконки здесь конкретные — в шапке иконка часто единственная подпись
+ * ячейки, и заглушка на её месте не сообщала бы ничего.
+ */
+export const Usage: Story = {
   args: { children: null },
   render: () => (
     <Surface level="flat" border radius="none" fullWidth>
       <AppHeader>
-        <HeaderButton icon="home" title="Проекты" active />
-        <HeaderButton icon="folder" title="Библиотека" />
-        <HeaderDivider />
-        <HeaderButton icon="fileText" expandable>
-          КМД-1750Т7-Д
-        </HeaderButton>
-        <HeaderSpacer />
-        <HeaderButton icon="user" expandable>
-          Иванов И. И.
-        </HeaderButton>
-        <HeaderButton icon="help" title="Справка" />
-        <HeaderDivider />
-        <HeaderButton chrome="minimize" title="Свернуть" />
-        <HeaderButton chrome="maximize" title="Развернуть" />
-        <HeaderButton chrome="close" title="Закрыть" />
+        <AppHeader.Left>
+          <HeaderLogo label="Уралмаш">
+            <Mark />
+          </HeaderLogo>
+          <HeaderDivider />
+          <HeaderButton icon="home" title="Домой" active />
+          <HeaderDivider />
+          <HeaderButton icon="fileText" expandable>
+            КМД-1750Т7-Д
+          </HeaderButton>
+        </AppHeader.Left>
+
+        <AppHeader.Right>
+          <HeaderButton icon="user" expandable>
+            Иванов И. И.
+          </HeaderButton>
+          <HeaderButton icon="help" title="Справка" />
+          <HeaderDivider />
+          <HeaderButton chrome="minimize" title="Свернуть" />
+          <HeaderButton chrome="maximize" title="Развернуть" />
+          <HeaderButton chrome="close" title="Закрыть" />
+        </AppHeader.Right>
       </AppHeader>
     </Surface>
   ),

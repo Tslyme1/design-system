@@ -1,7 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Tag } from './Tag';
 import { Stack, Text } from '@/primitives';
-import { projectTags, crusher } from '@fixtures';
+import { Labeled } from '@spec';
+import { projectTags, label, longLabel } from '@fixtures';
+
+const COLORS = ['steel', 'sage', 'amber', 'clay', 'violet', 'slate'] as const;
 
 const meta = {
   title: 'Components/Tag',
@@ -28,20 +31,24 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Playground: Story = {
-  args: { children: 'Рабочий', color: 'steel' },
+  args: { children: label, color: 'steel' },
 };
 
-/** Шесть цветов. Порядок в палитре смысла не несёт — это выбор автора проекта. */
+/**
+ * Шесть цветов. Порядок в палитре смысла не несёт — это выбор автора проекта.
+ *
+ * Подпись у всех одна: цвет метки задаёт человек, и связывать конкретный
+ * цвет с конкретным словом система не вправе. Настоящие метки — в `Usage`.
+ */
 export const Variants: Story = {
   args: { children: '' },
   render: () => (
-    <Stack direction="row" gap="sm" wrap align="center">
-      {projectTags.map((tag) => (
-        <Tag key={tag.label} color={tag.color}>
-          {tag.label}
-        </Tag>
+    <Stack direction="row" gap="lg" wrap align="start">
+      {COLORS.map((color) => (
+        <Labeled key={color} label={color}>
+          <Tag color={color}>{label}</Tag>
+        </Labeled>
       ))}
-      <Tag color="violet">violet</Tag>
     </Stack>
   ),
 };
@@ -51,11 +58,15 @@ export const States: Story = {
   args: { children: '' },
   render: () => (
     <Stack gap="md">
-      <Stack direction="row" gap="sm" align="center">
-        <Tag color="steel">Без снятия</Tag>
-        <Tag color="steel" onRemove={() => undefined}>
-          Со снятием
-        </Tag>
+      <Stack direction="row" gap="lg" align="start">
+        <Labeled label="без снятия">
+          <Tag color="steel">{label}</Tag>
+        </Labeled>
+        <Labeled label="со снятием">
+          <Tag color="steel" onRemove={() => undefined}>
+            {label}
+          </Tag>
+        </Labeled>
       </Stack>
       <Text variant="caption" color="textMuted">
         Наведи на крестик и пройди табом: hover и focus-visible принадлежат кнопке, а не метке.
@@ -69,10 +80,35 @@ export const Content: Story = {
   args: { children: '' },
   render: () => (
     <Stack direction="row" gap="sm" wrap align="center">
-      <Tag color="amber">{crusher.long}</Tag>
+      <Tag color="steel">{label}</Tag>
+      <Tag color="amber">{longLabel}</Tag>
       <Tag color="slate" onRemove={() => undefined}>
-        Архив
+        {label}
       </Tag>
+    </Stack>
+  ),
+};
+
+/**
+ * Примеры использования: метки проекта. Здесь формулировки настоящие —
+ * блок показывает, как метки выглядят в списке, а не что умеет компонент.
+ */
+export const Usage: Story = {
+  args: { children: '' },
+  render: () => (
+    <Stack gap="lg" align="start">
+      <Text variant="label">Метки в карточке проекта</Text>
+      <Stack direction="row" gap="sm" wrap align="center">
+        {projectTags.map((tag) => (
+          <Tag key={tag.label} color={tag.color} onRemove={() => undefined}>
+            {tag.label}
+          </Tag>
+        ))}
+      </Stack>
+      <Text variant="bodySm" color="textMuted">
+        Цвет здесь выбрал человек: «Черновик» жёлтый не потому, что система назначила жёлтому смысл. Для статуса, у
+        которого смысл есть, — `Badge`.
+      </Text>
     </Stack>
   ),
 };

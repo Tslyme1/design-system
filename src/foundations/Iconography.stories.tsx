@@ -28,7 +28,9 @@ export const Playground: Story = {
   render: () => (
     <Stack gap="lg">
       <Text variant="bodySm" color="textMuted">
-        {NAMES.length} иконок. Взяты те, что реально используются в приложении.
+        {NAMES.length} иконок. Взяты те, что реально используются в приложении. Последняя, `placeholder`, — служебная:
+        она стоит в примерах витрины там, где иконка показывает возможность компонента, а не конкретное действие.
+        В приложении её быть не должно.
       </Text>
       <div className={styles.iconGrid}>
         {NAMES.map((name) => (
@@ -48,7 +50,7 @@ export const Sizes: Story = {
     <Stack direction="row" gap="xl" align="center">
       {(['sm', 'md', 'lg'] as const).map((size) => (
         <Stack key={size} gap="2xs" align="center">
-          <Icon name="settings" size={size} />
+          <Icon name="placeholder" size={size} />
           <span className={styles.mono}>{size}</span>
         </Stack>
       ))}

@@ -1,14 +1,16 @@
 .wrapper {
-  position: relative;
   display: inline-flex;
 }
 
 .bubble {
-  position: absolute;
-  left: 50%;
+  /* Координаты ставит floating-ui инлайном (`position: fixed` + top/left):
+     пузырь считается от вьюпорта и потому не режется предком с прокруткой. */
   z-index: var(--z-overlay);
 
-  max-width: var(--modal-width-sm);
+  /* Шире окна пузырь не бывает: `modal.sm` — потолок, вычет — зазоры
+     от кромок, те же, с которыми считается сдвиг. */
+  max-width: min(var(--modal-width-sm), calc(100vw - var(--space-sm) * 2));
+  max-height: var(--layer-max-height, none);
   width: max-content;
   padding: var(--space-xs) var(--space-sm);
 
@@ -22,35 +24,26 @@
   font-size: var(--text-body-sm-size);
   line-height: var(--text-body-sm-line);
 
-  /* visibility, а не только opacity: прозрачный пузырь остаётся в дереве
-     доступности, и скринридер читает подсказку постоянно — в том числе
-     когда она не показана. */
-  opacity: 0;
-  visibility: hidden;
+  /* Указатель пузырь не ловит: до подсказки нельзя дотянуться мышью,
+     не сдвинув курсор с триггера, и ловить там нечего. */
   pointer-events: none;
 
-  transition:
-    opacity var(--duration-fast) var(--easing-standard),
-    visibility var(--duration-fast) var(--easing-standard);
+  animation: fade var(--duration-fast) var(--easing-standard);
 }
 
-.top {
-  bottom: 100%;
-  transform: translate(-50%, calc(-1 * var(--space-2xs)));
+.bubble.exiting {
+  animation-name: unfade;
+  animation-fill-mode: forwards;
 }
 
-.bottom {
-  top: 100%;
-  transform: translate(-50%, var(--space-2xs));
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
 }
 
-.open {
-  opacity: 1;
-  visibility: visible;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .bubble {
-    transition: none;
+@keyframes unfade {
+  to {
+    opacity: 0;
   }
 }

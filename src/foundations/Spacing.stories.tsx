@@ -66,15 +66,15 @@ export const Rhythm: Story = {
           <Text variant="label">Верно</Text>
           <Stack gap="xs">
             <Text variant="caption" color="textMuted">
-              Заказчик
+              Label 1
             </Text>
-            <Text variant="body">ММК</Text>
+            <Text variant="body">Value</Text>
           </Stack>
           <Stack gap="xs">
             <Text variant="caption" color="textMuted">
-              Дата расчёта
+              Label 2
             </Text>
-            <Text variant="body">12.08.2026</Text>
+            <Text variant="body">Value</Text>
           </Stack>
         </Stack>
       </Box>
@@ -84,15 +84,15 @@ export const Rhythm: Story = {
           <Text variant="label">Неверно</Text>
           <Stack gap="sm">
             <Text variant="caption" color="textMuted">
-              Заказчик
+              Label 1
             </Text>
-            <Text variant="body">ММК</Text>
+            <Text variant="body">Value</Text>
           </Stack>
           <Stack gap="sm">
             <Text variant="caption" color="textMuted">
-              Дата расчёта
+              Label 2
             </Text>
-            <Text variant="body">12.08.2026</Text>
+            <Text variant="body">Value</Text>
           </Stack>
         </Stack>
       </Box>

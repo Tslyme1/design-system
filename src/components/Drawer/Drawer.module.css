@@ -69,6 +69,19 @@
   border-top: var(--border-hairline) solid var(--color-border);
 }
 
+/* ---------- Уход ----------
+   Панель уезжает туда же, откуда приехала. Затемнение на это время
+   перестаёт ловить указатель: рабочая область уже свободна. */
+
+.scrim.exiting {
+  pointer-events: none;
+  animation: fadeOut var(--duration-base) var(--easing-standard) forwards;
+}
+
+.panel.exiting {
+  animation: slideOut var(--duration-base) var(--easing-standard) forwards;
+}
+
 @keyframes fade {
   from {
     opacity: 0;
@@ -77,6 +90,18 @@
 
 @keyframes slide {
   from {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes fadeOut {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes slideOut {
+  to {
     transform: translateX(100%);
   }
 }

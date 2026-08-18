@@ -4,7 +4,7 @@ import { Button } from '@/components';
 import { Stack, Text, Box, Field, Icon } from '@/primitives';
 import { Input } from '@/components';
 import { Labeled, Spec, DoDont } from '@spec';
-import { longText, unbreakable } from '@fixtures';
+import { longText, unbreakable, label, description } from '@fixtures';
 
 const meta = {
   title: 'Components/Tooltip',
@@ -32,25 +32,14 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Overview: Story = {
-  args: {
-    content: 'Индекс работы по Бонду, кВт·ч/т',
-    children: (
-      <Button variant="secondary" size="sm">
-        Wi
-      </Button>
-    ),
-  },
-};
-
 export const Playground: Story = {
   args: {
-    content: 'Индекс работы по Бонду, кВт·ч/т',
+    content: description,
     placement: 'top',
     delay: 300,
     children: (
-      <Button variant="secondary" size="sm" iconStart="help">
-        Wi
+      <Button variant="secondary" size="sm" iconStart="placeholder">
+        Label
       </Button>
     ),
   },
@@ -105,24 +94,24 @@ export const Content: Story = {
   render: () => (
     <Stack gap="xl" align="start">
       <Labeled label="на кнопке с текстом">
-        <Tooltip content="Индекс работы по Бонду, кВт·ч/т">
+        <Tooltip content={description}>
           <Button variant="secondary" size="sm">
-            Wi
+            Label
           </Button>
         </Tooltip>
       </Labeled>
       <Labeled label="на квадратной кнопке">
-        <Tooltip content="Пояснение к параметру">
-          <Button variant="ghost" size="sm" icon="info" aria-label="Пояснение" />
+        <Tooltip content={description}>
+          <Button variant="ghost" size="sm" icon="placeholder" aria-label="Label" />
         </Tooltip>
       </Labeled>
       <Labeled label="в подписи поля">
-        <Field label="Индекс работы">
+        <Field label={label}>
           {(props) => (
             <Stack direction="row" gap="xs" align="center">
               <Input {...props} />
-              <Tooltip content="Определяется лабораторно по методике Бонда">
-                <Button variant="ghost" size="sm" icon="help" aria-label="Что это" />
+              <Tooltip content={description}>
+                <Button variant="ghost" size="sm" icon="placeholder" aria-label="Label" />
               </Tooltip>
             </Stack>
           )}
@@ -168,14 +157,14 @@ export const EdgeCases: Story = {
       <Labeled label="нефокусируемый триггер — так делать нельзя">
         <Tooltip content="До этой подсказки нельзя добраться с клавиатуры">
           <span>
-            <Icon name="info" />
+            <Icon name="placeholder" />
           </span>
         </Tooltip>
       </Labeled>
       <Labeled label="триггер у края экрана">
         <Box fullWidth>
           <Stack direction="row" justify="end">
-            <Tooltip content="Пузырь центрируется по триггеру: сторона выбирается по месту, но сдвига вдоль оси нет">
+            <Tooltip content="Пузырь центрируется по триггеру, но у кромки окна сдвигается внутрь — целиком остаётся читаемым">
               <Button variant="secondary" size="sm">
                 У правого края
               </Button>
@@ -184,8 +173,9 @@ export const EdgeCases: Story = {
         </Box>
       </Labeled>
       <Text variant="bodySm" color="textMuted">
-        Сторона выбирается по свободному месту: у верхней кромки экрана подсказка раскрывается вниз. Чего пока нет —
-        сдвига вдоль горизонтали, поэтому у самого края окна пузырь может частично выйти за него.
+        Сторона выбирается по свободному месту: у верхней кромки экрана подсказка раскрывается вниз. По горизонтали
+        пузырь сдвигается внутрь окна, сохраняя зазор от кромки, — центрирование по триггеру при этом теряется, и это
+        осознанный размен: прочитать подсказку важнее, чем видеть её ровно по центру.
       </Text>
     </Stack>
   ),
@@ -202,15 +192,16 @@ export const Anatomy: Story = {
         'отступ от триггера': 'space.2xs',
         'максимальная ширина': 'modal.sm — своей шкалы ширин у системы нет',
         сторона: 'placement — предпочтение, переворот по месту во вьюпорте',
+        'сдвиг у кромки': 'внутрь окна, зазор space.sm',
         слой: 'z.overlay',
         тень: 'shadow.md',
         типографика: 'text.bodySm',
         задержка: 'delay 300ms, переход duration.fast',
       }}
     >
-      <Tooltip content="Индекс работы по Бонду">
+      <Tooltip content={description}>
         <Button variant="secondary" size="sm">
-          Wi
+          Label
         </Button>
       </Tooltip>
     </Spec>

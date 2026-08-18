@@ -3,6 +3,8 @@ import { Field } from './Field';
 import { Stack } from './Stack';
 import { Text } from './Text';
 import { Input } from '@/components';
+import { Labeled } from '@spec';
+import { label, description, value, errorText } from '@fixtures';
 
 const meta = {
   title: 'Primitives/Field',
@@ -20,6 +22,8 @@ const meta = {
     },
   },
   argTypes: {
+    /* Контрол приходит render-функцией: ни текстом, ни JSON её не задать. */
+    children: { control: false },
     variant: { control: 'inline-radio', options: ['stacked', 'floating'] },
     required: { control: 'boolean' },
     fullWidth: { control: 'boolean' },
@@ -31,8 +35,8 @@ type Story = StoryObj<typeof meta>;
 
 export const Playground: Story = {
   args: {
-    label: 'Название проекта',
-    hint: 'Отображается в списке проектов',
+    label,
+    hint: description,
     variant: 'stacked',
     children: (props) => <Input {...props} fullWidth />,
   },
@@ -47,13 +51,13 @@ export const Variants: Story = {
         <Text variant="caption" color="textMuted">
           stacked — подпись над контролом
         </Text>
-        <Field label="Заказчик">{(props) => <Input {...props} fullWidth />}</Field>
+        <Field label={label}>{(props) => <Input {...props} fullWidth />}</Field>
       </Stack>
       <Stack gap="sm">
         <Text variant="caption" color="textMuted">
           floating — подпись уходит наверх при вводе
         </Text>
-        <Field label="Заказчик" variant="floating">
+        <Field label={label} variant="floating">
           {(props) => <Input {...props} fullWidth />}
         </Field>
       </Stack>
@@ -69,21 +73,55 @@ export const States: Story = {
   args: { label: '', children: () => null },
   render: () => (
     <Stack gap="lg">
-      <Field label="Заказчик" hint="Начните вводить название">
+      <Labeled label="default + hint">
+        <Field label={label} hint={description}>
+          {(props) => <Input {...props} fullWidth />}
+        </Field>
+      </Labeled>
+
+      <Labeled label="required + заполненное">
+        <Field label={label} required>
+          {(props) => <Input {...props} fullWidth defaultValue={value} />}
+        </Field>
+      </Labeled>
+
+      <Labeled label="error — вытесняет hint">
+        <Field label={label} required error={errorText} hint={description}>
+          {(props) => <Input {...props} fullWidth />}
+        </Field>
+      </Labeled>
+
+      <Labeled label="disabled">
+        <Field label={label} hint={description}>
+          {(props) => <Input {...props} fullWidth disabled />}
+        </Field>
+      </Labeled>
+    </Stack>
+  ),
+};
+
+/**
+ * Примеры использования: настоящая форма. Подпись поля — то единственное,
+ * что объясняет, что в него вводят, поэтому абстрактный «Label» здесь
+ * ничего не показал бы.
+ */
+export const Usage: Story = {
+  args: { label: '', children: () => null },
+  render: () => (
+    <Stack gap="lg">
+      <Field label="Название проекта" hint="Отображается в списке проектов">
+        {(props) => <Input {...props} fullWidth defaultValue="КМД-1750Т7-Д" />}
+      </Field>
+      <Field label="Заказчик" required error="Поле обязательно для заполнения">
         {(props) => <Input {...props} fullWidth />}
       </Field>
-
-      <Field label="Заказчик" required>
-        {(props) => <Input {...props} fullWidth defaultValue="ММК" />}
-      </Field>
-
-      <Field label="Заказчик" required error="Поле обязательно для заполнения" hint="Это пояснение скрыто ошибкой">
+      <Field label="Комментарий" variant="floating">
         {(props) => <Input {...props} fullWidth />}
       </Field>
-
-      <Field label="Заказчик" hint="Поле недоступно на этом шаге">
-        {(props) => <Input {...props} fullWidth disabled />}
-      </Field>
+      <Text variant="bodySm" color="textMuted">
+        Внутри одной формы — один тип подписи. Смешанные `stacked` и `floating` читаются как две разные формы на
+        одном экране.
+      </Text>
     </Stack>
   ),
 };

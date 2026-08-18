@@ -4,16 +4,31 @@
   min-width: 0;
 }
 
+/* Обёртка растягивается вместе с полем. `flex`, а не `inline-flex`:
+   иначе ширина считается по содержимому триггера, и `width: 100%`
+   внутри него упирается в ту же сжатую ширину. */
+.wrapper.fullWidth {
+  display: flex;
+  width: 100%;
+}
+
 .panel {
-  position: absolute;
+  /* Координаты ставит floating-ui инлайном (`position: fixed` + top/left):
+     панель считается от вьюпорта и потому не режется предком с прокруткой. */
   /* Слой берётся из шкалы. В аудите z-index подбирался вручную —
      240, 250, 251, 255, 256 — и слои начинали спорить между собой. */
   z-index: var(--z-overlay);
 
   display: flex;
   flex-direction: column;
-  min-width: 100%;
-  max-height: 320px;
+  /* Не уже триггера. Прежде это было `min-width: 100%` от обёртки; панель
+     живёт в портале, и ширину триггера ей передаёт middleware `size`. */
+  min-width: var(--layer-trigger-width, 0);
+  max-width: 100vw;
+  /* Потолок высоты — здесь, свободное место — из расчёта размещения.
+     min() берёт меньшее: у кромки окна панель подрезается по остатку,
+     а не вылезает за экран. */
+  max-height: min(320px, var(--layer-max-height, 320px));
 
   background: var(--color-surface-raised);
   border: var(--border-hairline) solid var(--color-border);
@@ -23,34 +38,10 @@
   animation: pop var(--duration-fast) var(--easing-standard);
 }
 
-/* Раскрытие вниз или вверх, прижатие к левому или правому краю триггера. */
-
-/* Имена классов camelCase не по вкусу, а по необходимости: у CSS-модулей
-   в этом проекте localsConvention: 'camelCaseOnly', и дефисные ключи
-   из экспорта удаляются целиком. styles['bottom-start'] был undefined,
-   панель оставалась без смещений и вставала поверх триггера. */
-.bottomStart {
-  top: calc(100% + var(--space-xs));
-  left: 0;
-}
-
-.bottomEnd {
-  top: calc(100% + var(--space-xs));
-  right: 0;
-}
-
-.topStart {
-  bottom: calc(100% + var(--space-xs));
-  left: 0;
-}
-
-.topEnd {
-  bottom: calc(100% + var(--space-xs));
-  right: 0;
-}
-
+/* Ширина по триггеру. Значение приходит из middleware `size`: панель
+   в портале, и о ширине триггера иначе не узнать. */
 .widthTrigger {
-  width: 100%;
+  width: var(--layer-trigger-width, auto);
 }
 
 .widthSm {
@@ -87,9 +78,40 @@
   border-top: var(--border-hairline) solid var(--color-border);
 }
 
+/* ---------- Уход ----------
+   Панель схлопывается обратно к триггеру и на это время перестаёт ловить
+   указатель: она уже закрыта, и клик сквозь неё должен попадать туда,
+   куда целился человек. */
+
+.panel.exiting {
+  pointer-events: none;
+  animation: unpop var(--duration-fast) var(--easing-standard) forwards;
+}
+
+/* Панель, раскрытая вверх, и схлопывается вверх — иначе уход идёт против
+   направления появления. Сторону сообщает floating-ui: она могла не совпасть
+   с запрошенной. */
+.sideTop.exiting {
+  animation-name: unpopUp;
+}
+
 @keyframes pop {
   from {
     opacity: 0;
     transform: translateY(-4px);
+  }
+}
+
+@keyframes unpop {
+  to {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+}
+
+@keyframes unpopUp {
+  to {
+    opacity: 0;
+    transform: translateY(4px);
   }
 }

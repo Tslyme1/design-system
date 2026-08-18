@@ -82,6 +82,22 @@
   border-color: var(--color-border);
 }
 
+/* Недоступный флажок теряет акцентную заливку — правило выше стоит ниже
+   `:checked` и с той же специфичностью, и гасит его намеренно: недоступное
+   не должно выглядеть активным.
+
+   Но отметка обязана пережить это гашение. «Выбрано и недоступно» и
+   «не выбрано» — разные состояния, а галочка цветом `textOnAccent` на
+   утопленном фоне пропадала совсем: в витрине `disabled + checked`
+   выглядел ровно как `disabled`, и по виду нельзя было понять, что
+   значение вообще выбрано. Приём не новый — у `Radio` точка в том же
+   случае красится в `textDisabled`; флажок просто выпал из правила. */
+.input:disabled:checked + .control .mark,
+.input:disabled:indeterminate + .control .mark {
+  opacity: 1;
+  stroke: var(--color-text-disabled);
+}
+
 .labelBlock {
   display: flex;
   flex-direction: column;

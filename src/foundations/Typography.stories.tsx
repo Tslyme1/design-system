@@ -93,13 +93,13 @@ export const Families: Story = {
         <Text variant="caption" color="textMuted">
           Barlow Condensed — заголовки
         </Text>
-        <Text variant="headingMd">Расчёт дробилки КМД-1750Т7-Д</Text>
+        <Text variant="headingMd">Label — заголовок гарнитурой Barlow Condensed</Text>
       </Stack>
       <Stack gap="2xs">
         <Text variant="caption" color="textMuted">
           Barlow — текст
         </Text>
-        <Text variant="body">Расчёт дробилки КМД-1750Т7-Д</Text>
+        <Text variant="body">Label — текст гарнитурой Barlow</Text>
       </Stack>
     </Stack>
   ),

@@ -3,7 +3,7 @@ import { Textarea } from './Textarea';
 import { Input } from '@/components';
 import { Stack, Text, Box, Field } from '@/primitives';
 import { Labeled, Spec, DoDont } from '@spec';
-import { longText, unbreakable } from '@fixtures';
+import { longText, unbreakable, label, description, placeholder, value } from '@fixtures';
 
 const meta = {
   title: 'Components/Textarea',
@@ -15,7 +15,7 @@ const meta = {
         component: [
           'Роль: многострочный ввод — примечание, комментарий, описание.',
           'Анатомия: поле ввода. Подпись, пояснение и ошибка приходят от `Field`, у самого контрола их нет.',
-          'Правила: высота поля — обещание объёма, поэтому `rows` выбирается по ожидаемому тексту. Растягивание разрешено только по вертикали: по горизонтали поле выедет за раскладку формы.',
+          'Правила: высота поля — обещание объёма, поэтому `rows` выбирается по ожидаемому тексту. Дальше поле растёт за вводом само: `rows` — нижняя граница, `maxRows` — верхняя, после неё поле прокручивается внутри себя. Ручки растягивания нет — высотой управляет компонент.',
           'Не использовать для: однострочных значений — там `Input`.',
         ].join('\n\n'),
       },
@@ -23,6 +23,7 @@ const meta = {
   },
   argTypes: {
     rows: { control: { type: 'number', min: 2, max: 12 } },
+    maxRows: { control: { type: 'number', min: 2, max: 20 } },
     invalid: { control: 'boolean' },
     disabled: { control: 'boolean' },
     fullWidth: { control: 'boolean' },
@@ -32,31 +33,27 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Overview: Story = {
-  args: { placeholder: 'Примечание к расчёту', rows: 3 },
-};
-
 export const Playground: Story = {
-  args: { placeholder: 'Примечание к расчёту', rows: 3, fullWidth: true },
+  args: { placeholder, rows: 3, fullWidth: true },
 };
 
 export const States: Story = {
   render: () => (
     <Stack gap="md" align="start">
       <Labeled label="default">
-        <Textarea placeholder="Примечание" />
+        <Textarea placeholder={placeholder} />
       </Labeled>
       <Labeled label="filled">
-        <Textarea defaultValue="Расчёт согласован с технологом" />
+        <Textarea defaultValue={value} />
       </Labeled>
       <Labeled label="invalid">
-        <Textarea defaultValue="Слишком короткое" invalid />
+        <Textarea defaultValue={value} invalid />
       </Labeled>
       <Labeled label="disabled">
-        <Textarea defaultValue="Недоступно на этом шаге" disabled />
+        <Textarea defaultValue={value} disabled />
       </Labeled>
       <Text variant="caption" color="textMuted">
-        Наведение и фокус — мышью и табом. У disabled убрана ручка растягивания: тянуть нечего.
+        Наведение и фокус — мышью и табом. Высота во всех состояниях идёт за содержимым, ручки растягивания нет.
       </Text>
     </Stack>
   ),
@@ -66,13 +63,19 @@ export const Content: Story = {
   render: () => (
     <Stack gap="lg" align="start">
       <Labeled label="rows=2 — короткая заметка">
-        <Textarea rows={2} placeholder="Одна-две строки" fullWidth />
+        <Textarea rows={2} placeholder={placeholder} fullWidth />
       </Labeled>
-      <Labeled label="rows=6 — развёрнутое примечание">
+      <Labeled label="rows=6 — развёрнутый текст">
         <Textarea rows={6} defaultValue={longText} fullWidth />
       </Labeled>
+      <Labeled label="рост за вводом — начните печатать, поле поднимется">
+        <Textarea rows={2} placeholder={placeholder} fullWidth />
+      </Labeled>
+      <Labeled label="maxRows=4 — рост до потолка, дальше прокрутка">
+        <Textarea rows={2} maxRows={4} defaultValue={longText} fullWidth />
+      </Labeled>
       <Labeled label="в форме, с подписью и пояснением">
-        <Field label="Примечание" hint="Попадёт в печатную форму расчёта">
+        <Field label={label} hint={description}>
           {(props) => <Textarea {...props} fullWidth />}
         </Field>
       </Labeled>
@@ -84,13 +87,14 @@ export const Overflow: Story = {
   render: () => (
     <Stack gap="lg" align="start">
       <Text variant="bodySm" color="textMuted">
-        Ответ на границе: текст переносится и поле прокручивается внутри себя, оставаясь заданной высоты. Строка без
-        пробелов разрывается принудительно, а не растягивает форму.
+        Ответ на границе: без `maxRows` поле идёт за текстом сколько угодно, с `maxRows` — упирается в потолок и
+        прокручивается внутри себя. Строка без пробелов разрывается принудительно, а не растягивает форму.
       </Text>
       <Box padding="md" border>
         <Stack gap="md">
           <Textarea rows={3} defaultValue={`${longText} ${longText}`} fullWidth />
-          <Textarea rows={2} defaultValue={unbreakable} fullWidth />
+          <Textarea rows={3} maxRows={5} defaultValue={`${longText} ${longText}`} fullWidth />
+          <Textarea rows={2} maxRows={4} defaultValue={unbreakable} fullWidth />
         </Stack>
       </Box>
     </Stack>
@@ -103,14 +107,17 @@ export const EdgeCases: Story = {
       <Labeled label="пустое, без плейсхолдера">
         <Textarea />
       </Labeled>
-      <Labeled label="rows=1 — вырожденный случай">
-        <Textarea rows={1} defaultValue="Здесь нужен Input, а не Textarea" fullWidth />
+      <Labeled label="rows=1 — вырожденный случай, здесь нужен Input">
+        <Textarea rows={1} defaultValue={value} fullWidth />
       </Labeled>
       <Labeled label="только пробелы">
         <Textarea defaultValue="   " />
       </Labeled>
       <Labeled label="перевод строки в начале">
-        <Textarea defaultValue={'\n\nТекст после двух пустых строк'} />
+        <Textarea defaultValue={`\n\n${value} — после двух пустых строк`} />
+      </Labeled>
+      <Labeled label="maxRows меньше rows — потолок ниже пола, побеждает потолок">
+        <Textarea rows={4} maxRows={2} defaultValue={longText} fullWidth />
       </Labeled>
     </Stack>
   ),
@@ -126,10 +133,10 @@ export const Anatomy: Story = {
         рамка: 'hairline / color.border',
         типографика: 'text.body',
         'фокус': 'color.accent + focusRing',
-        'растягивание': 'только по вертикали',
+        'высота': 'rows … maxRows, за содержимым',
       }}
     >
-      <Textarea rows={3} defaultValue="Примечание к расчёту" />
+      <Textarea rows={3} defaultValue={value} />
     </Spec>
   ),
 };
@@ -143,7 +150,7 @@ export const Usage: Story = {
           <Stack gap="lg">
             <Field label="Название проекта">{(props) => <Input {...props} fullWidth />}</Field>
             <Field label="Примечание" hint="Свободный текст, попадёт в печатную форму">
-              {(props) => <Textarea {...props} rows={4} fullWidth />}
+              {(props) => <Textarea {...props} rows={4} maxRows={10} fullWidth />}
             </Field>
           </Stack>
         </Box>

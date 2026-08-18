@@ -43,16 +43,20 @@ export const Playground: Story = {
     align: 'center',
     children: (
       <>
-        <Item>Первый</Item>
-        <Item>Второй</Item>
-        <Item>Третий</Item>
+        <Item>Label 1</Item>
+        <Item>Label 2</Item>
+        <Item>Label 3</Item>
       </>
     ),
   },
 };
 
-/** Плотность решает иерархию: внутри группы теснее, чем между группами. */
-export const InContext: Story = {
+/**
+ * Примеры использования. Плотность решает иерархию: внутри группы теснее,
+ * чем между группами — `xs` против `xl`. Здесь тексты настоящие: на «Label»
+ * и «Value» не видно, что подпись и значение относятся друг к другу.
+ */
+export const Usage: Story = {
   args: { children: null },
   render: () => (
     <Stack gap="xl">

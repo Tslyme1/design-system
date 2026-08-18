@@ -116,6 +116,21 @@
   margin-left: auto;
 }
 
+/* ---------- Уход ----------
+   Закрытие зеркалит открытие и идёт быстрее его: появление объясняет,
+   откуда взялось окно, исчезновение объяснять нечего.
+   Подложка на это время перестаёт ловить указатель — окно уже закрыто,
+   и повторный клик не должен никуда попадать. */
+
+.backdrop.exiting {
+  pointer-events: none;
+  animation: fadeOut var(--duration-fast) var(--easing-standard) forwards;
+}
+
+.dialog.exiting {
+  animation: fall var(--duration-fast) var(--easing-standard) forwards;
+}
+
 @keyframes fade {
   from {
     opacity: 0;
@@ -124,6 +139,19 @@
 
 @keyframes rise {
   from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+@keyframes fadeOut {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes fall {
+  to {
     opacity: 0;
     transform: translateY(8px);
   }

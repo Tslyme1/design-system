@@ -1,7 +1,18 @@
 import type { ReactNode } from 'react';
 import { useId, useState, useRef, useEffect, cloneElement, isValidElement } from 'react';
 import type { ReactElement } from 'react';
-import { useAutoSide } from '../useAutoPlacement';
+import {
+  useFloating,
+  autoUpdate,
+  offset,
+  flip,
+  shift,
+  limitShift,
+  size,
+  FloatingPortal,
+} from '@floating-ui/react';
+import { motionDuration, spacing } from '../../tokens';
+import { usePresence } from '../usePresence';
 import styles from './Tooltip.module.css';
 
 export type TooltipProps = {
@@ -14,8 +25,19 @@ export type TooltipProps = {
   delay?: number;
 };
 
+/** Зазор между триггером и пузырём — у подсказки он меньше, чем у панели. */
+const GAP = Number.parseFloat(spacing['2xs']);
+/** Зазор между пузырём и кромкой окна. */
+const EDGE = Number.parseFloat(spacing.sm);
+
 /**
  * Подсказка по наведению и фокусу.
+ *
+ * Размещение считает floating-ui: сторона выбирается по свободному месту,
+ * а у кромки окна пузырь сдвигается внутрь — центрирование по триггеру при
+ * этом теряется, и это осознанный размен, прочитать подсказку важнее.
+ * Пузырь рисуется в портале и позиционируется от вьюпорта: подсказка в
+ * таблице с прокруткой иначе обрезалась бы контейнером.
  *
  * Не использовать для: текста, без которого нельзя работать. Подсказка
  * недоступна с сенсорного экрана и исчезает при попытке её прочитать —
@@ -28,14 +50,32 @@ export function Tooltip({ children, content, placement = 'top', delay = 300 }: T
   const id = useId();
   const [open, setOpen] = useState(false);
   const timer = useRef<number>();
-  const wrapperRef = useRef<HTMLSpanElement>(null);
-  const bubbleRef = useRef<HTMLSpanElement>(null);
+  // Пузырь доигрывает исчезновение и только потом уходит из дерева.
+  // Скрытый пузырь в дереве не остаётся вовсе — прежде он висел там всегда
+  // с `visibility: hidden`, и это приходилось объяснять отдельным комментарием.
+  const { mounted, exiting } = usePresence(open, motionDuration.fast);
 
-  /**
-   * `placement` — предпочтение: у верхней кромки экрана подсказка
-   * раскрывается вниз, иначе она уедет за край и её нельзя будет прочитать.
-   */
-  const side = useAutoSide(placement, open, wrapperRef, bubbleRef);
+  const { refs, floatingStyles } = useFloating({
+    open,
+    placement,
+    // Считать от вьюпорта, а не от предка: иначе пузырь режет ближайший
+    // контейнер с прокруткой задолго до кромки окна.
+    strategy: 'fixed',
+    middleware: [
+      offset(GAP),
+      flip({ padding: EDGE }),
+      // Сдвиг вдоль оси: подсказка у кнопки в углу экрана иначе
+      // центрируется за кромку окна и наполовину обрезается.
+      shift({ padding: EDGE, limiter: limitShift() }),
+      size({
+        padding: EDGE,
+        apply({ availableHeight, elements }) {
+          elements.floating.style.setProperty('--layer-max-height', `${availableHeight}px`);
+        },
+      }),
+    ],
+    whileElementsMounted: autoUpdate,
+  });
 
   useEffect(() => {
     if (!open) return;
@@ -68,7 +108,7 @@ export function Tooltip({ children, content, placement = 'top', delay = 300 }: T
 
   return (
     <span
-      ref={wrapperRef}
+      ref={refs.setReference}
       className={styles.wrapper}
       onMouseEnter={show}
       onMouseLeave={hide}
@@ -76,14 +116,19 @@ export function Tooltip({ children, content, placement = 'top', delay = 300 }: T
       onBlurCapture={hide}
     >
       {trigger}
-      <span
-        ref={bubbleRef}
-        id={id}
-        role="tooltip"
-        className={[styles.bubble, styles[side], open ? styles.open : null].filter(Boolean).join(' ')}
-      >
-        {content}
-      </span>
+      {mounted ? (
+        <FloatingPortal>
+          <span
+            ref={refs.setFloating}
+            id={id}
+            role="tooltip"
+            className={[styles.bubble, exiting ? styles.exiting : null].filter(Boolean).join(' ')}
+            style={floatingStyles}
+          >
+            {content}
+          </span>
+        </FloatingPortal>
+      ) : null}
     </span>
   );
 }

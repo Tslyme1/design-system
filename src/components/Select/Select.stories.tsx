@@ -3,7 +3,8 @@ import { useState } from 'react';
 import { Select } from './Select';
 import { Button } from '@/components';
 import { Stack, Text, Field } from '@/primitives';
-import { crusherOptions, customers } from '@fixtures';
+import { Labeled } from '@spec';
+import { crusherOptions, customers, labelOptions, labelOptionsGrouped, placeholder } from '@fixtures';
 
 const meta = {
   title: 'Components/Select',
@@ -37,10 +38,10 @@ type Story = StoryObj<typeof meta>;
 
 export const Playground: Story = {
   args: {
-    options: crusherOptions,
+    options: labelOptions,
     value: null,
     onChange: () => undefined,
-    placeholder: 'Выберите дробилку',
+    placeholder,
     searchable: true,
     fullWidth: true,
   },
@@ -54,41 +55,41 @@ export const Playground: Story = {
 export const Variants: Story = {
   args: { options: [], value: null, onChange: () => undefined },
   render: () => {
-    const [single, setSingle] = useState<string | string[] | null>('kmd-1750');
-    const [multi, setMulti] = useState<string | string[] | null>(['kmd-1750', 'sms-741']);
+    const [single, setSingle] = useState<string | string[] | null>('a');
+    const [multi, setMulti] = useState<string | string[] | null>(['a', 'c']);
     const [custom, setCustom] = useState<string | string[] | null>(null);
 
     return (
       <Stack gap="xl" align="start">
         <Stack gap="xs">
           <Text variant="label">Одиночный выбор с группами</Text>
-          <Select options={crusherOptions} value={single} onChange={setSingle} placeholder="Выберите дробилку" />
+          <Select options={labelOptionsGrouped} value={single} onChange={setSingle} placeholder={placeholder} />
         </Stack>
 
         <Stack gap="xs">
           <Text variant="label">Множественный выбор с поиском</Text>
           <Select
-            options={crusherOptions}
+            options={labelOptions}
             value={multi}
             onChange={setMulti}
             multiple
             searchable
-            placeholder="Типы оборудования"
+            placeholder={placeholder}
           />
         </Stack>
 
         <Stack gap="xs">
-          <Text variant="label">Свободный ввод — «Заказчик»</Text>
+          <Text variant="label">Свободный ввод</Text>
           <Select
-            options={customers}
+            options={labelOptions}
             value={custom}
             onChange={setCustom}
             searchable
             allowCustom
-            placeholder="Начните вводить название"
+            placeholder={placeholder}
             footer={
-              <Button variant="ghost" size="sm" iconStart="plus" fullWidth>
-                Добавить заказчика
+              <Button variant="ghost" size="sm" iconStart="placeholder" fullWidth>
+                Label
               </Button>
             }
           />
@@ -102,13 +103,21 @@ export const States: Story = {
   args: { options: [], value: null, onChange: () => undefined },
   render: () => (
     <Stack gap="lg" align="start">
-      <Select options={crusherOptions} value={null} onChange={() => undefined} placeholder="Обычный" />
-      <Select options={crusherOptions} value="kmd-1750" onChange={() => undefined} placeholder="Заполненный" />
-      <Select options={crusherOptions} value={null} onChange={() => undefined} placeholder="Невалидный" invalid />
-      <Select options={crusherOptions} value={null} onChange={() => undefined} placeholder="Недоступный" disabled />
+      <Labeled label="default">
+        <Select options={labelOptions} value={null} onChange={() => undefined} placeholder={placeholder} />
+      </Labeled>
+      <Labeled label="заполненный">
+        <Select options={labelOptions} value="a" onChange={() => undefined} placeholder={placeholder} />
+      </Labeled>
+      <Labeled label="invalid">
+        <Select options={labelOptions} value={null} onChange={() => undefined} placeholder={placeholder} invalid />
+      </Labeled>
+      <Labeled label="disabled">
+        <Select options={labelOptions} value={null} onChange={() => undefined} placeholder={placeholder} disabled />
+      </Labeled>
       <Text variant="caption" color="textMuted">
-        Отключённый пункт в списке («СМД-109, снята с производства») остаётся видимым: он объясняет, почему выбрать
-        нельзя, а скрытый пункт заставляет искать его снова.
+        Отключённый пункт списка («Label 4») остаётся видимым: он объясняет, почему выбрать нельзя, а скрытый пункт
+        заставляет искать его снова.
       </Text>
     </Stack>
   ),
@@ -125,19 +134,13 @@ export const DataStates: Story = {
     return (
       <Stack gap="xl" align="start">
         <Stack gap="xs">
-          <Text variant="label">Поиск без совпадений</Text>
-          <Select
-            options={crusherOptions}
-            value={value}
-            onChange={setValue}
-            searchable
-            placeholder="Введите «щековая роторная»"
-          />
+          <Text variant="label">Поиск без совпадений — введи «Label 9»</Text>
+          <Select options={labelOptions} value={value} onChange={setValue} searchable placeholder={placeholder} />
         </Stack>
 
         <Stack gap="xs">
           <Text variant="label">Список пуст</Text>
-          <Select options={[]} value={null} onChange={() => undefined} placeholder="Оборудование не заведено" />
+          <Select options={[]} value={null} onChange={() => undefined} placeholder={placeholder} />
         </Stack>
       </Stack>
     );
@@ -149,22 +152,33 @@ export const Sizes: Story = {
   args: { options: [], value: null, onChange: () => undefined },
   render: () => (
     <Stack gap="md" align="start">
-      {(['sm', 'md', 'lg'] as const).map((size) => (
-        <Select
-          key={size}
-          options={crusherOptions}
-          value={null}
-          onChange={() => undefined}
-          size={size}
-          placeholder={`Размер ${size}`}
-        />
+      {(
+        [
+          ['sm', '32'],
+          ['md', '40'],
+          ['lg', '48'],
+        ] as const
+      ).map(([size, px]) => (
+        <Labeled key={size} label={`${size} — ${px}`}>
+          <Select
+            options={labelOptions}
+            value={null}
+            onChange={() => undefined}
+            size={size}
+            placeholder={placeholder}
+          />
+        </Labeled>
       ))}
     </Stack>
   ),
 };
 
-/** В форме селект живёт внутри `Field` — как любое другое поле. */
-export const InContext: Story = {
+/**
+ * Примеры использования: в форме селект живёт внутри `Field` — как любое
+ * другое поле. Иконка в футере списка здесь конкретная: «Добавить
+ * заказчика» — это плюс, а не абстрактное действие.
+ */
+export const Usage: Story = {
   args: { options: [], value: null, onChange: () => undefined },
   render: () => {
     const [customer, setCustomer] = useState<string | string[] | null>(null);
@@ -182,6 +196,11 @@ export const InContext: Story = {
               searchable
               allowCustom
               fullWidth
+              footer={
+                <Button variant="ghost" size="sm" iconStart="plus" fullWidth>
+                  Добавить заказчика
+                </Button>
+              }
             />
           )}
         </Field>

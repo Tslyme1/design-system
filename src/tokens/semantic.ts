@@ -11,7 +11,7 @@
  * тема переопределяет переменную, и компонент об этом не знает.
  */
 
-import { space, radius, typography, controlSize, chrome, modalWidth, borderWidth, duration, easing, zIndex } from './primitives';
+import { space, radius, typography, controlSize, chrome, modalWidth, borderWidth, duration, cycle, easing, zIndex } from './primitives';
 
 /** Цветовые роли. Значения резолвятся из tokens.css и меняются вместе с темой. */
 export const color = {
@@ -102,6 +102,8 @@ export const elevation = {
 
 export const stroke = borderWidth;
 export const motionDuration = duration;
+/** Период оборота индикатора загрузки. Не длительность перехода — см. primitives. */
+export const motionCycle = cycle;
 export const motionEasing = easing;
 export const layer = zIndex;
 

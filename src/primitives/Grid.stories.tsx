@@ -41,32 +41,15 @@ const Cell = ({ children }: { children: string }) => (
   </Box>
 );
 
-export const Overview: Story = {
-  args: {
-    columns: 3,
-    gap: 'lg',
-    children: (
-      <>
-        <Cell>Первая</Cell>
-        <Cell>Вторая</Cell>
-        <Cell>Третья</Cell>
-      </>
-    ),
-  },
-};
-
 export const Playground: Story = {
   args: {
     columns: 3,
     gap: 'lg',
     children: (
       <>
-        <Cell>Первая</Cell>
-        <Cell>Вторая</Cell>
-        <Cell>Третья</Cell>
-        <Cell>Четвёртая</Cell>
-        <Cell>Пятая</Cell>
-        <Cell>Шестая</Cell>
+        {Array.from({ length: 6 }, (_, i) => (
+          <Cell key={i}>{`Label ${i + 1}`}</Cell>
+        ))}
       </>
     ),
   },
@@ -80,7 +63,7 @@ export const Variants: Story = {
         <Labeled key={columns} label={`columns=${columns}`}>
           <Grid columns={columns} gap="lg">
             {Array.from({ length: columns * 2 }, (_, i) => (
-              <Cell key={i}>{`Ячейка ${i + 1}`}</Cell>
+              <Cell key={i}>{`Label ${i + 1}`}</Cell>
             ))}
           </Grid>
         </Labeled>
@@ -95,42 +78,41 @@ export const EdgeCases: Story = {
     <Stack gap="2xl">
       <Labeled label="одна ячейка в сетке на три колонки">
         <Grid columns={3} gap="lg">
-          <Cell>Одна</Cell>
+          <Cell>Label 1</Cell>
         </Grid>
       </Labeled>
 
       <Labeled label="неполный последний ряд">
         <Grid columns={3} gap="lg">
-          <Cell>Первая</Cell>
-          <Cell>Вторая</Cell>
-          <Cell>Третья</Cell>
-          <Cell>Четвёртая</Cell>
+          {Array.from({ length: 4 }, (_, i) => (
+            <Cell key={i}>{`Label ${i + 1}`}</Cell>
+          ))}
         </Grid>
       </Labeled>
 
       <Labeled label="ячейки разной высоты — ряд выравнивается по самой высокой">
         <Grid columns={3} gap="lg">
-          <Cell>Коротко</Cell>
+          <Cell>Label 1</Cell>
           <Box padding="md" border background="surfaceSunken">
             <Text variant="bodySm">{longText}</Text>
           </Box>
-          <Cell>Тоже коротко</Cell>
+          <Cell>Label 3</Cell>
         </Grid>
       </Labeled>
 
       <Labeled label="строка без пробелов не растягивает колонку">
         <Grid columns={3} gap="lg">
           <Cell>{unbreakable}</Cell>
-          <Cell>Вторая</Cell>
-          <Cell>Третья</Cell>
+          <Cell>Label 2</Cell>
+          <Cell>Label 3</Cell>
         </Grid>
       </Labeled>
 
       <Labeled label="gap=none — ячейки вплотную">
         <Grid columns={3} gap="none">
-          <Cell>Первая</Cell>
-          <Cell>Вторая</Cell>
-          <Cell>Третья</Cell>
+          {Array.from({ length: 3 }, (_, i) => (
+            <Cell key={i}>{`Label ${i + 1}`}</Cell>
+          ))}
         </Grid>
       </Labeled>
 
@@ -155,9 +137,9 @@ export const Anatomy: Story = {
       }}
     >
       <Grid columns={3} gap="lg">
-        <Cell>Первая</Cell>
-        <Cell>Вторая</Cell>
-        <Cell>Третья</Cell>
+        {Array.from({ length: 3 }, (_, i) => (
+          <Cell key={i}>{`Label ${i + 1}`}</Cell>
+        ))}
       </Grid>
     </Spec>
   ),

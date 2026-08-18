@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Text } from './Text';
 import { Stack } from './Stack';
 import { Box } from './Box';
-import { longText, crusher } from '@fixtures';
+import { longText, label } from '@fixtures';
 
 const VARIANTS = ['headingLg', 'headingMd', 'headingSm', 'bodyLg', 'body', 'bodySm', 'label', 'caption'] as const;
 
@@ -38,7 +38,7 @@ export const Playground: Story = {
   args: {
     variant: 'body',
     color: 'text',
-    children: crusher.short,
+    children: label,
   },
 };
 

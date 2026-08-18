@@ -1,6 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Input } from './Input';
 import { Stack, Text, Field } from '@/primitives';
+import { Labeled } from '@spec';
+import { label, description, placeholder, value } from '@fixtures';
 
 const meta = {
   title: 'Components/Input',
@@ -30,7 +32,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Playground: Story = {
-  args: { placeholder: 'КМД-1750Т7-Д', size: 'md' },
+  args: { placeholder, size: 'md' },
 };
 
 /**
@@ -50,7 +52,7 @@ export const Variants: Story = {
         <Text variant="caption" color="textMuted">
           Тип по умолчанию. Годится везде, подпись видна всегда.
         </Text>
-        <Field label="Заказчик" hint="Отображается в списке проектов">
+        <Field label={label} hint={description}>
           {(props) => <Input {...props} fullWidth />}
         </Field>
       </Stack>
@@ -61,11 +63,11 @@ export const Variants: Story = {
           Второй тип. Для плотных форм, где поля идут в ряд.
         </Text>
         <Stack gap="md">
-          <Field label="Заказчик" variant="floating">
+          <Field label={label} variant="floating">
             {(props) => <Input {...props} fullWidth />}
           </Field>
-          <Field label="Заполненное" variant="floating">
-            {(props) => <Input {...props} defaultValue="ММК" fullWidth />}
+          <Field label={label} variant="floating">
+            {(props) => <Input {...props} defaultValue={value} fullWidth />}
           </Field>
         </Stack>
       </Stack>
@@ -79,11 +81,19 @@ export const Variants: Story = {
  */
 export const States: Story = {
   render: () => (
-    <Stack gap="md">
-      <Input placeholder="Обычное" />
-      <Input defaultValue="Заполненное" />
-      <Input placeholder="Невалидное" invalid />
-      <Input defaultValue="Недоступное" disabled />
+    <Stack gap="md" align="start">
+      <Labeled label="default">
+        <Input placeholder={placeholder} />
+      </Labeled>
+      <Labeled label="заполненное">
+        <Input defaultValue={value} />
+      </Labeled>
+      <Labeled label="invalid">
+        <Input placeholder={placeholder} invalid />
+      </Labeled>
+      <Labeled label="disabled">
+        <Input defaultValue={value} disabled />
+      </Labeled>
       <Text variant="caption" color="textMuted">
         Наведение и фокус — мышью и табом: focus-visible не срабатывает на клик.
       </Text>
@@ -94,16 +104,28 @@ export const States: Story = {
 /** Три высоты — те же, что у кнопки: поле и кнопка встают в один ряд. */
 export const Sizes: Story = {
   render: () => (
-    <Stack gap="md">
-      <Input size="sm" placeholder="sm — 32" />
-      <Input size="md" placeholder="md — 40" />
-      <Input size="lg" placeholder="lg — 48" />
+    <Stack gap="md" align="start">
+      {(
+        [
+          ['sm', '32'],
+          ['md', '40'],
+          ['lg', '48'],
+        ] as const
+      ).map(([size, px]) => (
+        <Labeled key={size} label={`${size} — ${px}`}>
+          <Input size={size} placeholder={placeholder} />
+        </Labeled>
+      ))}
     </Stack>
   ),
 };
 
-/** Как поле выглядит в работе: всегда внутри `Field`, всегда с подписью. */
-export const InContext: Story = {
+/**
+ * Примеры использования: как поле выглядит в работе — всегда внутри `Field`,
+ * всегда с подписью. Формулировки здесь настоящие: подпись поля объясняет,
+ * что в него вводят, и абстрактный «Label» этого не показывает.
+ */
+export const Usage: Story = {
   render: () => (
     <Stack gap="lg">
       <Field label="Название проекта" hint="Отображается в списке проектов">
@@ -112,6 +134,10 @@ export const InContext: Story = {
       <Field label="Заказчик" required error="Поле обязательно для заполнения">
         {(props) => <Input {...props} fullWidth />}
       </Field>
+      <Text variant="bodySm" color="textMuted">
+        Поле без подписи в продукте не существует. Голый контрол в блоках выше показан только затем, чтобы были видны
+        состояния самого поля.
+      </Text>
     </Stack>
   ),
 };

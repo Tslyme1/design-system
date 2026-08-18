@@ -58,6 +58,9 @@
 }
 
 .label {
+  /* Обрезается именно подпись: без min-width флекс-элемент упирается
+     в собственный текст и растит плашку вместо многоточия. */
+  min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -87,6 +90,9 @@
   background: transparent;
   border: none;
   border-left: var(--border-hairline) solid var(--color-border);
+  /* Правые углы повторяют скругление плашки: иначе фон кнопки при
+     наведении заходит на дугу рамки и срезает её квадратом. */
+  border-radius: var(--radius-none) var(--radius-md) var(--radius-md) var(--radius-none);
   color: var(--color-text-muted);
   cursor: pointer;
 

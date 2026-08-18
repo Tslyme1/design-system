@@ -37,7 +37,7 @@ export const Playground: Story = {
     padding: 'lg',
     border: true,
     background: 'surface',
-    children: <Text variant="body">Содержимое с внутренним отступом</Text>,
+    children: <Text variant="body">Label</Text>,
   },
 };
 
