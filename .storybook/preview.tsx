@@ -2,7 +2,7 @@ import type { Preview, Decorator } from '@storybook/react-vite';
 import { DocsContainer } from '@storybook/addon-docs/blocks';
 import type { DocsContainerProps } from '@storybook/addon-docs/blocks';
 import { addons } from 'storybook/preview-api';
-import { useEffect, useState, type PropsWithChildren } from 'react';
+import { useEffect, useSyncExternalStore, type PropsWithChildren } from 'react';
 import { lightTheme, darkTheme } from './theme';
 import '../src/tokens/tokens.css';
 import './preview.css';
@@ -19,38 +19,65 @@ type ThemeName = 'light' | 'dark';
  *
  * Начальное значение читается из адреса iframe (`?globals=theme:dark`) —
  * на момент первой отрисовки канал ещё молчит, и без этого страница успевала
- * мигнуть светлым. Дальше значение обновляют события канала: `setGlobals`
- * приходит на старте превью, `globalsUpdated` — на каждое переключение.
+ * мигнуть светлым.
  */
 const themeFromUrl = (): ThemeName => {
   const globals = new URLSearchParams(window.location.search).get('globals') ?? '';
   return globals.includes('theme:dark') ? 'dark' : 'light';
 };
 
-const useThemeName = (): ThemeName => {
-  const [theme, setTheme] = useState<ThemeName>(themeFromUrl);
+/**
+ * Тема хранится на уровне модуля, а не в состоянии контейнера Docs.
+ *
+ * В состоянии компонента она не держалась: Storybook пересобирает страницу
+ * Docs при смене globals, контейнер монтируется заново и читает тему из
+ * адреса — то есть всегда светлую, потому что в адрес iframe globals попадают
+ * не всегда. Внешне это выглядело как «переключатель не работает, помогает
+ * только F5»: перезагрузка возвращала globals в адрес, и тема бралась оттуда.
+ *
+ * Модульное состояние живёт столько же, сколько документ превью, и
+ * перемонтирование его не трогает.
+ */
+let currentTheme: ThemeName = themeFromUrl();
+const themeListeners = new Set<() => void>();
 
-  useEffect(() => {
-    const channel = addons.getChannel();
-    const handle = ({ globals }: { globals?: Record<string, unknown> }) => {
-      const next = globals?.theme;
-      if (next === 'light' || next === 'dark') setTheme(next);
-    };
-
-    channel.on('setGlobals', handle);
-    channel.on('globalsUpdated', handle);
-    return () => {
-      channel.off('setGlobals', handle);
-      channel.off('globalsUpdated', handle);
-    };
-  }, []);
-
-  useEffect(() => {
-    document.documentElement.setAttribute('data-theme', theme);
-  }, [theme]);
-
-  return theme;
+const setTheme = (next: ThemeName) => {
+  if (next === currentTheme) return;
+  currentTheme = next;
+  document.documentElement.setAttribute('data-theme', next);
+  themeListeners.forEach((notify) => notify());
 };
+
+document.documentElement.setAttribute('data-theme', currentTheme);
+
+/**
+ * Подписка через `ready()`, а не `getChannel()`.
+ *
+ * Пока канал не создан, `getChannel()` молча возвращает заглушку `mockChannel`
+ * — без ошибки и без предупреждения. Подписка на неё не срабатывает никогда,
+ * и это вторая половина того же дефекта, что был в `manager.ts`.
+ *
+ * Слушаем оба события: `setGlobals` приходит на старте превью,
+ * `globalsUpdated` — на каждое переключение в тулбаре.
+ */
+void addons.ready().then((channel) => {
+  const handle = ({ globals }: { globals?: Record<string, unknown> }) => {
+    const next = globals?.theme;
+    if (next === 'light' || next === 'dark') setTheme(next);
+  };
+
+  channel.on('setGlobals', handle);
+  channel.on('globalsUpdated', handle);
+});
+
+const subscribeTheme = (notify: () => void) => {
+  themeListeners.add(notify);
+  return () => {
+    themeListeners.delete(notify);
+  };
+};
+
+const useThemeName = (): ThemeName => useSyncExternalStore(subscribeTheme, () => currentTheme);
 
 /**
  * Тема переключается тем же способом, что и в приложении: атрибутом
