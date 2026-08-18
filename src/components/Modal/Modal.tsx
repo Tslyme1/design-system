@@ -1,9 +1,10 @@
 import type { ReactNode } from 'react';
-import { useEffect, useRef, useCallback } from 'react';
+import { useEffect, useRef, useCallback, useState } from 'react';
 import { createPortal } from 'react-dom';
 import type { ModalWidthToken } from '../../tokens';
 import { motionDuration } from '../../tokens';
 import { usePresence } from '../usePresence';
+import { LayerRootProvider } from '../LayerRoot';
 import { Text, Icon } from '../../primitives';
 import styles from './Modal.module.css';
 
@@ -38,8 +39,19 @@ export type ModalProps = {
  * Прокрутка живёт только в содержимом — шапка и футер остаются на виду.
  */
 export function Modal({ open, onClose, title, children, footer, size = 'sm', dismissible = true }: ModalProps) {
-  const dialogRef = useRef<HTMLDivElement>(null);
+  const dialogRef = useRef<HTMLDivElement | null>(null);
   const previouslyFocused = useRef<HTMLElement | null>(null);
+  /**
+   * Тот же узел, что в `dialogRef`, но состоянием: поповеру внутри окна
+   * он нужен как корень портала, а ref смены не вызывает — на первом
+   * проходе там `null`, и панель успела бы уехать в `body`.
+   */
+  const [layerNode, setLayerNode] = useState<HTMLDivElement | null>(null);
+
+  const setDialog = useCallback((node: HTMLDivElement | null) => {
+    dialogRef.current = node;
+    setLayerNode(node);
+  }, []);
   // Окно остаётся в дереве, пока доигрывает уход: иначе закрытие происходит
   // рывком, хотя открытие анимировано.
   const { mounted, exiting } = usePresence(open, motionDuration.fast);
@@ -107,7 +119,7 @@ export function Modal({ open, onClose, title, children, footer, size = 'sm', dis
       role="presentation"
     >
       <div
-        ref={dialogRef}
+        ref={setDialog}
         className={[styles.dialog, styles[size], exiting ? styles.exiting : null].filter(Boolean).join(' ')}
         role="dialog"
         aria-modal="true"
@@ -125,9 +137,13 @@ export function Modal({ open, onClose, title, children, footer, size = 'sm', dis
           ) : null}
         </header>
 
-        <div className={styles.content}>{children}</div>
+        {/* Всё содержимое окна знает, что всплывающие слои внутри него
+            рисуются в само окно, а не в конец документа. */}
+        <LayerRootProvider node={layerNode}>
+          <div className={styles.content}>{children}</div>
 
-        {footer ? <footer className={styles.footer}>{footer}</footer> : null}
+          {footer ? <footer className={styles.footer}>{footer}</footer> : null}
+        </LayerRootProvider>
       </div>
     </div>,
     document.body

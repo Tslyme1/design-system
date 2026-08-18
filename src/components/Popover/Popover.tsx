@@ -14,6 +14,7 @@ import {
 } from '@floating-ui/react';
 import { motionDuration, spacing } from '../../tokens';
 import { usePresence } from '../usePresence';
+import { useLayerRoot } from '../LayerRoot';
 import styles from './Popover.module.css';
 
 export type PopoverPlacement = 'bottom-start' | 'bottom-end' | 'top-start' | 'top-end';
@@ -91,6 +92,13 @@ export function Popover({
   // пункта, — и именно оно определяет, аккуратен слой или нет.
   const { mounted, exiting } = usePresence(open, motionDuration.fast);
 
+  /**
+   * Корень портала. По умолчанию `body`, но внутри модалки или выдвижной
+   * панели — их собственный узел: иначе панель уходит из их стека и
+   * рисуется под ними. См. `LayerRoot`.
+   */
+  const layerRoot = useLayerRoot();
+
   const {
     refs,
     floatingStyles,
@@ -163,7 +171,7 @@ export function Popover({
       {trigger}
 
       {mounted ? (
-        <FloatingPortal>
+        <FloatingPortal root={layerRoot ?? undefined}>
           {/*
             Панель лежит в портале, то есть в конце документа, а обход по Tab
             идёт по порядку в DOM. Менеджер фокуса ставит вокруг панели

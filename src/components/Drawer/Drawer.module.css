@@ -105,3 +105,9 @@
     transform: translateX(100%);
   }
 }
+
+/* Тот же случай, что в модалке: пустая обёртка портала не должна
+   попадать в раскладку панели. */
+.panel > [data-floating-ui-portal] {
+  display: contents;
+}

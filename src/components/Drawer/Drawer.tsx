@@ -1,7 +1,8 @@
 import type { ReactNode } from 'react';
-import { useEffect, useCallback } from 'react';
+import { useEffect, useCallback, useState } from 'react';
 import { motionDuration } from '../../tokens';
 import { usePresence } from '../usePresence';
+import { LayerRootProvider } from '../LayerRoot';
 import styles from './Drawer.module.css';
 
 export type DrawerProps = {
@@ -34,6 +35,8 @@ export function Drawer({ open, onClose, children, footer, title, size = 'wide' }
   // Панель уезжает вправо, а не пропадает на месте: она въехала оттуда же,
   // и без обратного хода закрытие читается как сбой отрисовки.
   const { mounted, exiting } = usePresence(open, motionDuration.base);
+  /** Узел панели — корень портала для поповеров внутри неё. См. `LayerRoot`. */
+  const [layerNode, setLayerNode] = useState<HTMLElement | null>(null);
 
   const handleKeyDown = useCallback(
     (event: KeyboardEvent) => {
@@ -61,14 +64,17 @@ export function Drawer({ open, onClose, children, footer, title, size = 'wide' }
       />
 
       <aside
+        ref={setLayerNode}
         className={[styles.panel, styles[size], exiting ? styles.exiting : null].filter(Boolean).join(' ')}
         role="dialog"
         aria-label={title}
         aria-modal="false"
       >
         {title ? <header className={styles.header}>{title}</header> : null}
-        <div className={styles.content}>{children}</div>
-        {footer ? <footer className={styles.footer}>{footer}</footer> : null}
+        <LayerRootProvider node={layerNode}>
+          <div className={styles.content}>{children}</div>
+          {footer ? <footer className={styles.footer}>{footer}</footer> : null}
+        </LayerRootProvider>
       </aside>
     </>
   );

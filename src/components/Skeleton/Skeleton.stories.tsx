@@ -117,6 +117,11 @@ export const EdgeCases: Story = {
       <Labeled label="lines=1 — короткой последней строки нет">
         <Skeleton variant="text" lines={1} />
       </Labeled>
+      <Labeled label="на утопленной поверхности — заготовка остаётся видимой">
+        <Box padding="sm" background="surfaceSunken">
+          <Skeleton variant="text" lines={2} />
+        </Box>
+      </Labeled>
       <Labeled label="prefers-reduced-motion">
         <Stack gap="xs">
           <Skeleton variant="text" lines={2} />
@@ -139,7 +144,7 @@ export const Anatomy: Story = {
         'высота control': 'control.md',
         'пропорция block': '16 / 9',
         radius: 'radius.md',
-        фон: 'color.surfaceSunken',
+        заливка: 'color.border',
         анимация: 'duration.slow, alternate',
       }}
     >

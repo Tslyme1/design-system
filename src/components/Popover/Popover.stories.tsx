@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { useState } from 'react';
 import { Popover } from './Popover';
 import type { PopoverPlacement } from './Popover';
-import { Button, Checkbox, Radio, RadioGroup } from '@/components';
+import { Button, Checkbox, Modal, Radio, RadioGroup, Select } from '@/components';
 import { Stack, Text } from '@/primitives';
 
 const meta = {
@@ -154,9 +154,11 @@ export const States: Story = {
 export const EdgeCases: Story = {
   args: { open: false, onClose: () => undefined, trigger: null, children: null },
   render: () => {
-    const [which, setWhich] = useState<'flip' | 'align' | 'tall' | null>(null);
+    const [which, setWhich] = useState<'flip' | 'align' | 'tall' | 'inModal' | null>(null);
+    const [modalOpen, setModalOpen] = useState(false);
+    const [crusher, setCrusher] = useState<string | null>(null);
     const close = () => setWhich(null);
-    const toggle = (id: 'flip' | 'align' | 'tall') => () => setWhich(which === id ? null : id);
+    const toggle = (id: 'flip' | 'align' | 'tall' | 'inModal') => () => setWhich(which === id ? null : id);
 
     return (
       // Без align="start" у внешней колонки: группам нужна вся ширина,
@@ -229,10 +231,53 @@ export const EdgeCases: Story = {
           </Text>
         </Stack>
 
+        <Stack gap="xs" align="start">
+          <Text variant="label">Внутри модалки</Text>
+          <Button variant="secondary" onClick={() => setModalOpen(true)}>
+            Открыть окно с полем выбора
+          </Button>
+          <Text variant="bodySm" color="textMuted">
+            Панель поверх окна, а не под ним. Портал в конец документа выносил её из стека модалки, и панель со слоем
+            `overlay` уходила под окно со слоем `modal` — список выбора было видно ниже, за краем окна.
+          </Text>
+        </Stack>
+
+        <Modal open={modalOpen} onClose={() => setModalOpen(false)} title="Label">
+          <Stack gap="md">
+            <Select
+              fullWidth
+              placeholder="Placeholder"
+              options={[
+                { value: 'a', label: 'Label 1' },
+                { value: 'b', label: 'Label 2' },
+                { value: 'c', label: 'Label 3' },
+              ]}
+              value={crusher}
+              onChange={(next) => setCrusher(typeof next === 'string' ? next : (next[0] ?? null))}
+            />
+            <Popover
+              open={which === 'inModal'}
+              onClose={close}
+              width="trigger"
+              fullWidth
+              trigger={
+                <Button variant="secondary" iconEnd="chevronDown" onClick={toggle('inModal')} fullWidth>
+                  И обычный поповер
+                </Button>
+              }
+            >
+              <Text variant="bodySm" color="textMuted">
+                Панель лежит в узле модалки, поэтому спорить за слой ей не с кем.
+              </Text>
+            </Popover>
+          </Stack>
+        </Modal>
+
         <Text variant="bodySm" color="textMuted">
           Панель рисуется в портале и считается от вьюпорта: контейнер с прокруткой её не режет — в том числе этот,
           холст документации. Размещение пересчитывается на прокрутке любого предка, на изменении размеров окна и на
-          изменении размеров самой панели.
+          изменении размеров самой панели. Внутри модалки и выдвижной панели корнем портала становятся они сами —
+          иначе слой выпадает из их стека.
         </Text>
       </Stack>
     );

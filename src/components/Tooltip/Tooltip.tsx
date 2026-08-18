@@ -13,6 +13,7 @@ import {
 } from '@floating-ui/react';
 import { motionDuration, spacing } from '../../tokens';
 import { usePresence } from '../usePresence';
+import { useLayerRoot } from '../LayerRoot';
 import styles from './Tooltip.module.css';
 
 export type TooltipProps = {
@@ -54,6 +55,9 @@ export function Tooltip({ children, content, placement = 'top', delay = 300 }: T
   // Скрытый пузырь в дереве не остаётся вовсе — прежде он висел там всегда
   // с `visibility: hidden`, и это приходилось объяснять отдельным комментарием.
   const { mounted, exiting } = usePresence(open, motionDuration.fast);
+
+  /** Корень портала: внутри модалки — сама модалка. См. `LayerRoot`. */
+  const layerRoot = useLayerRoot();
 
   const { refs, floatingStyles } = useFloating({
     open,
@@ -117,7 +121,7 @@ export function Tooltip({ children, content, placement = 'top', delay = 300 }: T
     >
       {trigger}
       {mounted ? (
-        <FloatingPortal>
+        <FloatingPortal root={layerRoot ?? undefined}>
           <span
             ref={refs.setFloating}
             id={id}
