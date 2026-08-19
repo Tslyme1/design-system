@@ -17,7 +17,7 @@ const meta = {
         component: [
           'Роль: выбор из списка, который не помещается на экран. Панель отдана `Popover`, здесь только логика выбора.',
           'Не использовать для: двух-трёх взаимоисключающих вариантов, которые помещаются на экран — там `RadioGroup` или `SegmentedControl` (не построен): список ради двух пунктов прячет выбор за лишним кликом.',
-          'Триггер — `button`, а не `input`, поэтому заполненность сообщается через `data-filled`: плавающая подпись `Field` держится на `:placeholder-shown`, который работает только у полей ввода.',
+          'Триггер — `button`, а не `input`, поэтому заполненность сообщается через `data-filled`: `:placeholder-shown`, на котором держится плавающая подпись у `Input`, бывает только у полей ввода. Пустой текст плейсхолдера в варианте `floating` подставляет сам `Field` — своё значение `placeholder` туда передавать не нужно, иначе оно окажется под подписью.',
         ].join('\n\n'),
       },
     },
@@ -58,6 +58,8 @@ export const Variants: Story = {
     const [single, setSingle] = useState<string | string[] | null>('a');
     const [multi, setMulti] = useState<string | string[] | null>(['a', 'c']);
     const [custom, setCustom] = useState<string | string[] | null>(null);
+    const [floatEmpty, setFloatEmpty] = useState<string | string[] | null>(null);
+    const [floatFilled, setFloatFilled] = useState<string | string[] | null>('a');
 
     return (
       <Stack gap="xl" align="start">
@@ -93,6 +95,22 @@ export const Variants: Story = {
               </Button>
             }
           />
+        </Stack>
+
+        {/* Плавающая подпись у селекта: два положения рядом, потому что
+            дефект был виден только в сравнении. Пока подпись поднята всегда,
+            пустой селект и заполненный выглядят одинаково — и то, что
+            начального положения нет, заметить не на чем. */}
+        <Stack gap="xs">
+          <Text variant="label">Плавающая подпись: пусто и заполнено</Text>
+          <Stack direction="row" gap="md" align="start">
+            <Field label="Label" variant="floating">
+              {(props) => <Select {...props} options={labelOptions} value={floatEmpty} onChange={setFloatEmpty} />}
+            </Field>
+            <Field label="Label" variant="floating">
+              {(props) => <Select {...props} options={labelOptions} value={floatFilled} onChange={setFloatFilled} />}
+            </Field>
+          </Stack>
         </Stack>
       </Stack>
     );

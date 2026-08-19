@@ -73,8 +73,10 @@ export function Field({
   if (variant === 'floating') {
     return (
       <div className={wrapperClass}>
-        {/* Порядок важен: подпись идёт ПОСЛЕ контрола, потому что её
-            положение задаётся через соседний селектор `+`. */}
+        {/* Подпись идёт после контрола: так она лежит поверх него без
+            отдельного слоя. Положение считает `:has()` на самом боксе,
+            поэтому глубина вложенности контрола значения не имеет —
+            триггер `Select` живёт внутри обёртки `Popover`. */}
         <div className={styles.floatBox}>
           {children(renderProps)}
           <label htmlFor={id} className={[styles.floatLabel, error ? styles.labelError : null].filter(Boolean).join(' ')}>

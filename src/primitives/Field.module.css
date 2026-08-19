@@ -65,27 +65,45 @@
     color var(--duration-fast) var(--easing-standard);
 }
 
-/* `:placeholder-shown` работает только у input и textarea. Контролы
-   с собственным триггером (Select) сообщают заполненность атрибутом
-   `data-filled`, иначе подпись у них не поднималась бы никогда. */
-.floatBox :focus + .floatLabel,
-.floatBox :not(:placeholder-shown) + .floatLabel,
-.floatBox [data-filled='true'] + .floatLabel,
-.floatBox [aria-expanded='true'] + .floatLabel {
+/* Условия подъёма подписи проверяются через `:has()` на самом боксе,
+   а не соседним селектором `+` от контрола.
+
+   Соседний селектор требовал, чтобы контрол был прямым предыдущим братом
+   подписи. У `Input` так и есть, а `Select` рисует триггер внутри обёртки
+   `Popover` — и все три условия мимо неё промахивались. Хуже того,
+   `:not(:placeholder-shown)` на этой обёртке срабатывал всегда: псевдокласс
+   `:placeholder-shown` бывает только у input и textarea, а `div` под него
+   не подходит, значит отрицание для него истинно. Подпись у селекта стояла
+   поднятой с первой отрисовки, и начального состояния — подпись внутри
+   поля — у него просто не было.
+
+   Отсюда же явные `input` и `textarea` в условии заполненности: без них
+   отрицание снова начнёт срабатывать на любом элементе, который не является
+   полем ввода.
+
+   `:has()` поддержан всеми актуальными браузерами; в них же живёт
+   `:placeholder-shown`, на котором вариант держался и раньше. */
+.floatBox:has(:focus) .floatLabel,
+.floatBox:has(input:not(:placeholder-shown)) .floatLabel,
+.floatBox:has(textarea:not(:placeholder-shown)) .floatLabel,
+.floatBox:has([data-filled='true']) .floatLabel,
+.floatBox:has([aria-expanded='true']) .floatLabel {
   top: 0;
   font-size: var(--text-caption-size);
 }
 
-.floatBox :focus + .floatLabel {
+.floatBox:has(:focus) .floatLabel {
   color: var(--color-accent-text);
 }
 
-.floatBox :focus + .floatLabel.labelError,
-.floatBox :not(:placeholder-shown) + .floatLabel.labelError {
+.floatBox:has(:focus) .floatLabel.labelError,
+.floatBox:has(input:not(:placeholder-shown)) .floatLabel.labelError,
+.floatBox:has(textarea:not(:placeholder-shown)) .floatLabel.labelError,
+.floatBox:has([data-filled='true']) .floatLabel.labelError {
   color: var(--color-danger-text);
 }
 
-.floatBox :disabled + .floatLabel {
+.floatBox:has(:disabled) .floatLabel {
   color: var(--color-text-disabled);
   background: var(--color-surface-sunken);
 }
