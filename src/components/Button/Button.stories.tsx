@@ -200,6 +200,35 @@ export const Content: Story = {
         </Stack>
       </Stack>
 
+      {/* Столбцом и рядом — потому что порознь разница не видна: одна кнопка
+          с центрированной подписью выглядит нормально, ломается именно
+          перечень. */}
+      <Stack gap="md" align="start">
+        <Text variant="label">align у fullWidth: содержимое по центру и к началу строки</Text>
+        <Stack direction="row" gap="2xl" align="start">
+          <Labeled label="center — по умолчанию">
+            <Stack gap="2xs" direction="column">
+              <Button variant="ghost" size="sm" iconStart="placeholder" fullWidth>
+                Label
+              </Button>
+              <Button variant="ghost" size="sm" iconStart="placeholder" fullWidth>
+                {`Label ${crusher.long}`}
+              </Button>
+            </Stack>
+          </Labeled>
+          <Labeled label="start — строки меню">
+            <Stack gap="2xs" direction="column">
+              <Button variant="ghost" size="sm" iconStart="placeholder" align="start" fullWidth>
+                Label
+              </Button>
+              <Button variant="ghost" size="sm" iconStart="placeholder" align="start" fullWidth>
+                {`Label ${crusher.long}`}
+              </Button>
+            </Stack>
+          </Labeled>
+        </Stack>
+      </Stack>
+
       <Text variant="bodySm" color="textMuted">
         В приложении подпись кнопки — глагол: она обещает действие. Существительное превращает кнопку в ярлык, и
         непонятно, что произойдёт по нажатию. Примеры настоящих подписей — в блоке `Usage`.
