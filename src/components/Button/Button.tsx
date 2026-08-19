@@ -30,18 +30,6 @@ type LabelledButtonProps = ButtonBase & {
   iconStart?: IconName;
   /** Иконка после текста. Для раскрывающих действий — `chevronDown`. */
   iconEnd?: IconName;
-  /**
-   * Выравнивание содержимого внутри кнопки.
-   *
-   * Имеет смысл только вместе с `fullWidth`: у кнопки по содержимому
-   * выравнивать нечего — она и так обтягивает подпись.
-   *
-   * `start` — для строк меню и списков действий. Там кнопки стоят
-   * столбцом и разной длины: при выравнивании по центру иконки не
-   * образуют колонки, и список читается как набор случайных обрывков,
-   * а не как перечень действий.
-   */
-  align?: 'center' | 'start';
   icon?: never;
 };
 
@@ -58,8 +46,6 @@ type IconOnlyButtonProps = ButtonBase & {
   children?: never;
   iconStart?: never;
   iconEnd?: never;
-  /** Квадратной кнопке выравнивать нечего: внутри одна иконка по центру. */
-  align?: never;
   /** Квадратная кнопка не тянется: её ширина — это её высота. */
   fullWidth?: never;
 };
@@ -80,7 +66,6 @@ export function Button({
   icon,
   iconStart,
   iconEnd,
-  align = 'center',
   fullWidth = false,
   loading = false,
   disabled,
@@ -96,7 +81,6 @@ export function Button({
     styles[size],
     iconOnly ? styles.iconOnly : null,
     fullWidth ? styles.fullWidth : null,
-    align === 'start' ? styles.alignStart : null,
     loading ? styles.loading : null,
   ]
     .filter(Boolean)
