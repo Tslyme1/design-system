@@ -20,12 +20,19 @@ export type SelectProps = {
   options: SelectOption[];
   /** Выбранное значение. Для `multiple` — массив. */
   value: string | string[] | null;
-  onChange: (value: string | string[]) => void;
+  onChange: (value: string | string[] | null) => void;
   /** Текст, когда ничего не выбрано. */
   placeholder?: string;
   size?: ControlSizeToken;
   /** Выбор нескольких вариантов флажками. */
   multiple?: boolean;
+  /**
+   * Повторный клик по выбранному варианту снимает выбор — селект
+   * возвращается к плейсхолдеру и отдаёт `null`. Выключать только там,
+   * где пустого значения не существует (например, обязательный режим
+   * расчёта): тогда снять выбор можно лишь выбрав другой вариант.
+   */
+  clearable?: boolean;
   /** Поле поиска над списком. Включать от ~10 вариантов. */
   searchable?: boolean;
   /**
@@ -62,6 +69,7 @@ export function Select({
   placeholder = 'Не выбрано',
   size = 'md',
   multiple = false,
+  clearable = true,
   searchable = false,
   allowCustom = false,
   footer,
@@ -111,7 +119,9 @@ export function Select({
       onChange(next);
       return;
     }
-    onChange(option.value);
+    /* Одиночный выбор без снятия — ловушка: выбранное значение
+       нельзя вернуть в пустое, если в списке всего один вариант. */
+    onChange(clearable && selected.includes(option.value) ? null : option.value);
     setOpen(false);
     setQuery('');
   };

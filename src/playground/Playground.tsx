@@ -49,7 +49,7 @@ export function Playground() {
   const [mode, setMode] = useState('engineer');
   const [crusher, setCrusher] = useState<string | string[] | null>(null);
   const [customer, setCustomer] = useState<string | string[] | null>(null);
-  const [tags, setTags] = useState<string | string[]>([]);
+  const [tags, setTags] = useState<string | string[] | null>([]);
   const [showDelta, setShowDelta] = useState(true);
   const [angleUnit, setAngleUnit] = useState('deg');
 

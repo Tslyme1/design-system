@@ -17,6 +17,7 @@ const meta = {
         component: [
           'Роль: выбор из списка, который не помещается на экран. Панель отдана `Popover`, здесь только логика выбора.',
           'Не использовать для: двух-трёх взаимоисключающих вариантов, которые помещаются на экран — там `RadioGroup` или `SegmentedControl` (не построен): список ради двух пунктов прячет выбор за лишним кликом.',
+          'Выбранный вариант снимается повторным кликом по нему — иначе список с одним вариантом невозможно вернуть в пустое состояние. Там, где пустого значения не существует, снятие выключается пропом `clearable={false}`.',
           'Триггер — `button`, а не `input`, поэтому заполненность сообщается через `data-filled`: `:placeholder-shown`, на котором держится плавающая подпись у `Input`, бывает только у полей ввода. Пустой текст плейсхолдера в варианте `floating` подставляет сам `Field` — своё значение `placeholder` туда передавать не нужно, иначе оно окажется под подписью.',
         ].join('\n\n'),
       },
@@ -25,6 +26,7 @@ const meta = {
   argTypes: {
     size: { control: 'inline-radio', options: ['sm', 'md', 'lg'] },
     multiple: { control: 'boolean' },
+    clearable: { control: 'boolean' },
     searchable: { control: 'boolean' },
     allowCustom: { control: 'boolean' },
     disabled: { control: 'boolean' },
@@ -58,6 +60,8 @@ export const Variants: Story = {
     const [single, setSingle] = useState<string | string[] | null>('a');
     const [multi, setMulti] = useState<string | string[] | null>(['a', 'c']);
     const [custom, setCustom] = useState<string | string[] | null>(null);
+    const [lonely, setLonely] = useState<string | string[] | null>('a');
+    const [locked, setLocked] = useState<string | string[] | null>('a');
     const [floatEmpty, setFloatEmpty] = useState<string | string[] | null>(null);
     const [floatFilled, setFloatFilled] = useState<string | string[] | null>('a');
 
@@ -95,6 +99,28 @@ export const Variants: Story = {
               </Button>
             }
           />
+        </Stack>
+
+        {/* Список с одним вариантом — случай, на котором дефект виден:
+            без снятия выбора значение «a» становится необратимым. Рядом
+            стоит `clearable={false}`, чтобы разница читалась в сравнении. */}
+        <Stack gap="xs">
+          <Text variant="label">Снятие выбора: один вариант в списке</Text>
+          <Stack direction="row" gap="md" align="start">
+            <Select
+              options={[labelOptions[0]]}
+              value={lonely}
+              onChange={setLonely}
+              placeholder={placeholder}
+            />
+            <Select
+              options={[labelOptions[0]]}
+              value={locked}
+              onChange={setLocked}
+              clearable={false}
+              placeholder={placeholder}
+            />
+          </Stack>
         </Stack>
 
         {/* Плавающая подпись у селекта: два положения рядом, потому что

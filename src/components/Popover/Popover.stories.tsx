@@ -253,7 +253,7 @@ export const EdgeCases: Story = {
                 { value: 'c', label: 'Label 3' },
               ]}
               value={crusher}
-              onChange={(next) => setCrusher(typeof next === 'string' ? next : (next[0] ?? null))}
+              onChange={(next) => setCrusher(typeof next === 'string' ? next : (next?.[0] ?? null))}
             />
             <Popover
               open={which === 'inModal'}
