@@ -403,9 +403,11 @@ export function Playground() {
           <Surface level="flat" border radius="none" fullWidth>
             <AppHeader>
               <AppHeader.Left>
-                <HeaderLogo>УРАЛМАШ</HeaderLogo>
-                <HeaderDivider />
-                <HeaderButton icon="home" title="Домой" active />
+                {/* Знак и есть переход на главную: отдельной ячейки `home`
+                    рядом больше нет — это было одно действие двумя элементами. */}
+                <HeaderLogo label="Уралмаш" onClick={() => undefined} active>
+                  УРАЛМАШ
+                </HeaderLogo>
                 <HeaderDivider />
                 <HeaderButton icon="plus" title="Новый проект" />
                 <HeaderDivider />
@@ -647,9 +649,11 @@ export function Playground() {
           <div className={styles.drawerHost}>
             <AppHeader>
               <AppHeader.Left>
-                <HeaderLogo>УРАЛМАШ</HeaderLogo>
-                <HeaderDivider />
-                <HeaderButton icon="home" title="Домой" active />
+                {/* Знак и есть переход на главную: отдельной ячейки `home`
+                    рядом больше нет — это было одно действие двумя элементами. */}
+                <HeaderLogo label="Уралмаш" onClick={() => undefined} active>
+                  УРАЛМАШ
+                </HeaderLogo>
                 <HeaderDivider />
                 <HeaderButton expandable>КМД-1750Т7-Д</HeaderButton>
               </AppHeader.Left>

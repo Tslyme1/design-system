@@ -50,34 +50,57 @@ export function AppHeader({ children }: AppHeaderProps) {
 AppHeader.Left = HeaderLeft;
 AppHeader.Right = HeaderRight;
 
-export type HeaderLogoProps = {
+type NativeButtonProps = Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'className' | 'style' | 'children'>;
+
+export type HeaderLogoProps = Omit<NativeButtonProps, 'aria-label'> & {
   /**
    * Знак: строка-логотип, `svg` или `img`. Строка выводится ролью `label`.
    * Сам знак система не хранит — бренд приходит снаружи, иначе библиотека
    * станет непереносимой между сервисами.
    */
   children: ReactNode;
-  /** Название для читалки экрана. Обязательно, когда знак графический. */
-  label?: string;
+  /**
+   * Название сервиса. Обязательно на уровне типов: знак — картинка, и без
+   * подписи ячейка нема для читалки экрана, а нажать её всё равно можно.
+   */
+  label: string;
+  /**
+   * Переход на главную. Обязателен: знак — кнопка, и кнопка без действия
+   * не бывает.
+   */
+  onClick: () => void;
+  /** Знак подсвечен как активная вкладка, когда открыта главная. */
+  active?: boolean;
 };
 
 /**
- * Знак сервиса в шапке. Неинтерактивен намеренно.
+ * Знак сервиса в шапке. Ведёт на главную.
  *
- * Это не кнопка и не ссылка: у него нет ни `hover`, ни фокуса, ни курсора-руки —
- * нажимать не на что. Логотип, который выглядит нажимаемым и ничего не делает,
- * обманывает; если из шапки нужен переход на главную, для этого стоит отдельная
- * ячейка `HeaderButton icon="home"` с подписью.
+ * Раньше знак был неинтерактивен, а переход на главную стоял отдельной
+ * ячейкой `home` рядом. Отменено: нажатие на логотип — то, что человек
+ * пробует первым, и ячейка `home` рядом со знаком дублировала одно действие
+ * двумя элементами подряд. Возражение против кликабельного логотипа
+ * относится к логотипу, который никуда не ведёт, — здесь он ведёт.
+ *
+ * Поэтому у знака поведение обычной ячейки шапки: `hover`, `focus-visible`,
+ * курсор-рука, подсветка активной вкладки. `onClick` и `label` обязательны
+ * на уровне типов — знак без действия или без имени собрать нельзя.
  */
-export function HeaderLogo({ children, label }: HeaderLogoProps) {
+export function HeaderLogo({ children, label, active = false, ...rest }: HeaderLogoProps) {
+  const className = [styles.cell, styles.logo, active ? styles.active : null].filter(Boolean).join(' ');
+
   return (
-    <span className={styles.logo} role={label ? 'img' : undefined} aria-label={label}>
+    <button
+      {...rest}
+      type="button"
+      className={className}
+      aria-label={label}
+      aria-current={active ? 'page' : undefined}
+    >
       {typeof children === 'string' ? <Text variant="label">{children}</Text> : children}
-    </span>
+    </button>
   );
 }
-
-type NativeButtonProps = Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'className' | 'style' | 'children'>;
 
 export type HeaderButtonProps = NativeButtonProps & {
   /** Иконка. Для кнопки без подписи — единственное содержимое. */

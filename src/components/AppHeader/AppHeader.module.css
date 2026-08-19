@@ -35,18 +35,12 @@
   justify-content: flex-end;
 }
 
-/* Знак сервиса. Форма ячейки, но не поведение: ни hover, ни курсора-руки —
-   нажимать не на что. */
+/* Знак сервиса. Ячейка шапки со всем её поведением — знак ведёт на главную.
+   Отличается от прочих ячеек только тем, что не приглушён в покое: бренд
+   не бывает второстепенным элементом полосы. */
 .logo {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-sm);
-  flex-shrink: 0;
-
-  height: 100%;
   padding-inline: var(--space-md);
   color: var(--color-text);
-  cursor: default;
   user-select: none;
 }
 

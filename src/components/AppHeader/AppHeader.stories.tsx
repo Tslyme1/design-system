@@ -56,7 +56,7 @@ export const Playground: Story = {
     children: (
       <>
         <AppHeader.Left>
-          <HeaderLogo label="Уралмаш">
+          <HeaderLogo label="Уралмаш" onClick={() => undefined}>
             <Mark />
           </HeaderLogo>
           <HeaderDivider />
@@ -127,11 +127,11 @@ export const Variants: Story = {
       </Stack>
 
       <Stack gap="xs">
-        <Text variant="label">Знак сервиса — неинтерактивный</Text>
+        <Text variant="label">Знак сервиса — ячейка, ведущая на главную</Text>
         <Surface level="flat" border radius="none" fullWidth>
           <AppHeader>
             <AppHeader.Left>
-              <HeaderLogo label="Уралмаш">
+              <HeaderLogo label="Уралмаш" onClick={() => undefined}>
                 <Mark />
               </HeaderLogo>
               <HeaderDivider />
@@ -211,7 +211,7 @@ export const States: Story = {
       <Surface level="flat" border radius="none" fullWidth>
         <AppHeader>
           <AppHeader.Left>
-            <HeaderLogo label="Уралмаш">
+            <HeaderLogo label="Уралмаш" onClick={() => undefined}>
               <Mark />
             </HeaderLogo>
             <HeaderDivider />
@@ -243,7 +243,7 @@ export const Usage: Story = {
     <Surface level="flat" border radius="none" fullWidth>
       <AppHeader>
         <AppHeader.Left>
-          <HeaderLogo label="Уралмаш">
+          <HeaderLogo label="Уралмаш" onClick={() => undefined}>
             <Mark />
           </HeaderLogo>
           <HeaderDivider />
