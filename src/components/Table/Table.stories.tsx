@@ -3,7 +3,7 @@ import { useState } from 'react';
 import type { ComponentType } from 'react';
 import { Table, TableSummary } from './Table';
 import type { TableColumn, TableSort, TableProps } from './Table';
-import { Badge, Button, EmptyState } from '@/components';
+import { Badge, Button, Checkbox, EmptyState } from '@/components';
 import { Stack, Text, Box, Grid } from '@/primitives';
 import { Labeled, Spec, DoDont } from '@spec';
 import { projectRows, longText, unbreakable, label, description, errorText } from '@fixtures';
@@ -133,6 +133,17 @@ export const Variants: Story = {
             раздела, который её и называет. */}
         <Labeled label="без названия">
           <Table {...base} caption={undefined} />
+        </Labeled>
+
+        {/* Кнопка строки — на второй колонке: первой стоит контрол, и внутри
+            кнопки он был бы недостижим указателем. */}
+        <Labeled label="rowActionKey — кнопка строки не на первой колонке">
+          <Table
+            {...base}
+            columns={[{ key: 'mark', title: '', render: () => <Checkbox aria-label="Label" readOnly /> }, ...columns]}
+            rowActionKey="title"
+            onRowClick={() => undefined}
+          />
         </Labeled>
       </Stack>
     );

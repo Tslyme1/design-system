@@ -49,6 +49,16 @@ export type TableProps<Row> = {
   error?: string;
   /** Что показать, когда строк нет. По умолчанию — короткое пустое состояние. */
   empty?: ReactNode;
+  /**
+   * Ключ колонки, содержимое которой становится кнопкой строки при
+   * `onRowClick`. По умолчанию — первая колонка.
+   *
+   * Нужен, когда первой стоит колонка с контролом: флажок внутри кнопки —
+   * это интерактивное внутри интерактивного, указатель до флажка не доходит,
+   * а доступным именем строки становится подпись флажка вместо имени
+   * позиции. Кнопку в таком случае переносят на колонку с названием.
+   */
+  rowActionKey?: string;
 };
 
 /** Пустое значение показывается прочерком, а не пустой ячейкой: пустая читается как «забыли». */
@@ -83,7 +93,10 @@ export function Table<Row>({
   loading = false,
   error,
   empty,
+  rowActionKey,
 }: TableProps<Row>) {
+  /* Колонка со строкой-действием: названная явно или первая. */
+  const actionKey = rowActionKey ?? columns[0]?.key;
   const toggleSort = (key: string) => {
     if (!onSortChange) return;
     const direction: SortDirection = sort?.key === key && sort.direction === 'asc' ? 'desc' : 'asc';
@@ -130,15 +143,16 @@ export function Table<Row>({
         className={[styles.row, onRowClick ? styles.interactive : null].filter(Boolean).join(' ')}
         onClick={onRowClick ? () => onRowClick(row) : undefined}
       >
-        {columns.map((column, index) => (
+        {columns.map((column) => (
           <td
             key={column.key}
             className={[styles.cell, column.align === 'end' ? styles.alignEnd : null].filter(Boolean).join(' ')}
           >
-            {/* Действие живёт в первой ячейке, а не на строке: у `tr` нет
+            {/* Действие живёт в одной ячейке, а не на строке: у `tr` нет
                 роли, его нельзя открыть в новой вкладке, а фокус на каждой
-                строке превращает проход по таблице в сотню нажатий таба. */}
-            {onRowClick && index === 0 ? (
+                строке превращает проход по таблице в сотню нажатий таба.
+                Какая это ячейка — задаёт `rowActionKey`, по умолчанию первая. */}
+            {onRowClick && column.key === actionKey ? (
               <button
                 type="button"
                 className={styles.rowAction}

@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { useEffect, useRef, useCallback, useState } from 'react';
+import { useEffect, useRef, useCallback, useState, useId } from 'react';
 import { createPortal } from 'react-dom';
 import type { ModalWidthToken } from '../../tokens';
 import { motionDuration } from '../../tokens';
@@ -47,6 +47,18 @@ export function Modal({ open, onClose, title, children, footer, size = 'sm', dis
    * проходе там `null`, и панель успела бы уехать в `body`.
    */
   const [layerNode, setLayerNode] = useState<HTMLDivElement | null>(null);
+
+  /**
+   * Идентификатор заголовка — свой у каждого окна.
+   *
+   * Был прибит строкой `modal-title`. Пока окно на экране одно, это работает;
+   * стоит открыть окно поверх окна — а так устроен выбор из справочника
+   * внутри окна нового проекта, — и в документе оказываются два узла с одним
+   * id. `aria-labelledby` находит первый, и верхнее окно берёт имя нижнего:
+   * читалка экрана объявляет «Новый проект» вместо «Фильтры», и обратиться
+   * к окну по имени нельзя.
+   */
+  const titleId = useId();
 
   const setDialog = useCallback((node: HTMLDivElement | null) => {
     dialogRef.current = node;
@@ -123,11 +135,11 @@ export function Modal({ open, onClose, title, children, footer, size = 'sm', dis
         className={[styles.dialog, styles[size], exiting ? styles.exiting : null].filter(Boolean).join(' ')}
         role="dialog"
         aria-modal="true"
-        aria-labelledby="modal-title"
+        aria-labelledby={titleId}
         onClick={(event) => event.stopPropagation()}
       >
         <header className={styles.header}>
-          <Text variant="headingSm" as="h2" id="modal-title" truncate>
+          <Text variant="headingSm" as="h2" id={titleId} truncate>
             {title}
           </Text>
           {dismissible ? (
