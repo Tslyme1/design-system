@@ -24,7 +24,18 @@ export type TableProps<Row> = {
   rows: Row[];
   /** Устойчивый ключ строки. Индекс массива не годится: он меняется при сортировке. */
   rowKey: (row: Row) => string;
+  /** Название таблицы. Обязательно — см. `captionHidden`. */
   caption: string;
+  /**
+   * Убрать название с экрана, оставив его скринридеру.
+   *
+   * Нужно там, где название уже стоит рядом — заголовком раздела или
+   * подписью панели: два одинаковых текста подряд глаз читает как ошибку
+   * вёрстки. Пропа «не выводить название вовсе» здесь нет намеренно:
+   * без него таблица пропадает из списка заголовков скринридера, а на
+   * странице с несколькими таблицами их становится нечем различать.
+   */
+  captionHidden?: boolean;
   sort?: TableSort | null;
   onSortChange?: (sort: TableSort) => void;
   onRowClick?: (row: Row) => void;
@@ -61,6 +72,7 @@ export function Table<Row>({
   rows,
   rowKey,
   caption,
+  captionHidden = false,
   sort,
   onSortChange,
   onRowClick,
@@ -147,7 +159,9 @@ export function Table<Row>({
       {/* aria-busy сообщает о загрузке тем, кто не видит заготовок:
           сами Skeleton помечены aria-hidden и для скринридера не существуют. */}
       <table className={styles.table} aria-busy={loading || undefined}>
-        <caption className={styles.caption}>{caption}</caption>
+        <caption className={[styles.caption, captionHidden ? styles.captionHidden : null].filter(Boolean).join(' ')}>
+          {caption}
+        </caption>
         <thead>
           <tr>
             {columns.map((column) => {

@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { AppHeader, HeaderButton, HeaderDivider, HeaderLogo } from './AppHeader';
-import { Stack, Text, Surface } from '@/primitives';
+import { Stack, Text, Surface, Box } from '@/primitives';
 
 const meta = {
   title: 'Components/AppHeader',
@@ -265,6 +265,15 @@ export const Usage: Story = {
           <HeaderButton chrome="close" title="Закрыть" />
         </AppHeader.Right>
       </AppHeader>
+
+      {/* Рабочая область под шапкой: без неё не видно главного в активном
+          пункте — того, что он сливается с областью, в которую ведёт. */}
+      <Box background="surface" padding="lg" fullWidth>
+        <Text variant="bodySm" color="textMuted">
+          Активный пункт перекрывает нижнюю границу полосы и переходит в рабочую область без линии между ними.
+          Остальные пункты остаются отделёнными от неё.
+        </Text>
+      </Box>
     </Surface>
   ),
 };
