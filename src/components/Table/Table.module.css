@@ -100,7 +100,10 @@
   font-size: var(--text-body-sm-size);
   line-height: var(--text-body-sm-line);
   color: var(--color-text);
-  vertical-align: top;
+  /* По центру, а не по верху: в строке рядом с текстом стоят теги, кнопки
+     и значки, и они на полторы-две строки выше текста. При выравнивании по
+     верху строка распадалась на два уровня — читалась как две. */
+  vertical-align: middle;
 }
 
 .alignEnd {
