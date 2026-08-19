@@ -5,6 +5,7 @@ import {
   Modal,
   Drawer,
   Popover,
+  Cell,
   Input,
   Textarea,
   Select,
@@ -46,6 +47,7 @@ export function Playground() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [modeOpen, setModeOpen] = useState(false);
   const [filtersOpen, setFiltersOpen] = useState(false);
+  const [actionsOpen, setActionsOpen] = useState(false);
   const [mode, setMode] = useState('engineer');
   const [crusher, setCrusher] = useState<string | string[] | null>(null);
   const [customer, setCustomer] = useState<string | string[] | null>(null);
@@ -498,6 +500,44 @@ export function Playground() {
                 <Checkbox label="Включая архив" />
                 <Checkbox label="Частично выбрано" indeterminate />
                 <Checkbox label="Недоступно" disabled />
+              </Stack>
+            </Popover>
+
+            {/* Меню действий: строки — `Cell`, а не вёрстка на месте.
+                Именно здесь было видно расхождение — пункты вставали
+                по центру панели и с разным отступом до иконки. */}
+            <Popover
+              open={actionsOpen}
+              onClose={() => setActionsOpen(false)}
+              placement="bottom-start"
+              width="md"
+              trigger={
+                <Button variant="secondary" iconEnd="moreHorizontal" onClick={() => setActionsOpen((v) => !v)}>
+                  Действия
+                </Button>
+              }
+            >
+              <Stack gap="none">
+                <Cell size="sm" leading={<Icon name="fileText" size="sm" />} onClick={() => setActionsOpen(false)}>
+                  Открыть проект
+                </Cell>
+                <Cell size="sm" leading={<Icon name="print" size="sm" />} onClick={() => setActionsOpen(false)}>
+                  Печать: геометрия
+                </Cell>
+                <Cell size="sm" leading={<Icon name="print" size="sm" />} onClick={() => setActionsOpen(false)}>
+                  Печать: грансостав
+                </Cell>
+                <Cell size="sm" leading={<Icon name="print" size="sm" />} onClick={() => setActionsOpen(false)}>
+                  Печать: продукт
+                </Cell>
+                <Cell
+                  size="sm"
+                  tone="danger"
+                  leading={<Icon name="trash" size="sm" />}
+                  onClick={() => setActionsOpen(false)}
+                >
+                  Удалить в корзину
+                </Cell>
               </Stack>
             </Popover>
           </Stack>

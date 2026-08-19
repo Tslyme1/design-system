@@ -10,6 +10,9 @@ export type { DrawerProps } from './Drawer/Drawer';
 export { Popover } from './Popover/Popover';
 export type { PopoverProps, PopoverPlacement } from './Popover/Popover';
 
+export { Cell } from './Cell/Cell';
+export type { CellProps } from './Cell/Cell';
+
 export { Input } from './Input/Input';
 export type { InputProps } from './Input/Input';
 

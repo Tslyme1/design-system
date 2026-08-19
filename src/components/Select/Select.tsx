@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 import type { ControlSizeToken } from '../../tokens';
 import { Icon } from '../../primitives';
 import { Popover } from '../Popover/Popover';
+import { Cell } from '../Cell/Cell';
 import { Checkbox } from '../Checkbox/Checkbox';
 import styles from './Select.module.css';
 
@@ -204,39 +205,28 @@ export function Select({
             {list.map((option) => {
               const isSelected = selected.includes(option.value);
               return (
-                <div
+                /* Раскладка строки — общая `Cell`: тот же ряд стоит в меню
+                   поповера и в списках, и собирался он раньше в каждом
+                   месте заново. Здесь остаётся только смысл варианта. */
+                <Cell
                   key={option.value}
-                  className={[
-                    styles.option,
-                    isSelected ? styles.optionSelected : null,
-                    option.disabled ? styles.optionDisabled : null,
-                  ]
-                    .filter(Boolean)
-                    .join(' ')}
+                  size={size}
                   role="option"
                   aria-selected={isSelected}
-                  tabIndex={option.disabled ? -1 : 0}
+                  selected={isSelected}
+                  disabled={option.disabled}
+                  description={option.description}
                   onClick={() => pick(option)}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                      e.preventDefault();
-                      pick(option);
-                    }
-                  }}
+                  trailing={
+                    multiple ? (
+                      <Checkbox checked={isSelected} readOnly tabIndex={-1} />
+                    ) : isSelected ? (
+                      <Icon name="check" size="sm" color="accentText" />
+                    ) : null
+                  }
                 >
-                  <span className={styles.optionText}>
-                    <span className={styles.optionLabel}>{option.label}</span>
-                    {option.description ? (
-                      <span className={styles.optionDescription}>{option.description}</span>
-                    ) : null}
-                  </span>
-
-                  {multiple ? (
-                    <Checkbox checked={isSelected} readOnly tabIndex={-1} />
-                  ) : isSelected ? (
-                    <Icon name="check" size="sm" color="accentText" />
-                  ) : null}
-                </div>
+                  {option.label}
+                </Cell>
               );
             })}
           </div>
