@@ -130,8 +130,9 @@
   --neutral-dark-900: #ededed;
   --neutral-dark-1000: #ffffff;
 
-  /* Синий — не главное действие, а сообщение: фокус, ссылка, пояснение.
-     Главное действие в этом языке чёрное. */
+  /* Синий несёт главное действие, фокус и ссылку. Прежде акцентом служила
+     верхняя ступень нейтральной лестницы, а синий отвечал только за
+     сообщение; решение отменено — см. роль `accent`. */
   --blue-100: #f0f7ff;
   --blue-200: #e1efff;
   --blue-300: #cee7fe;
@@ -197,13 +198,18 @@
   --color-border-hover: var(--neutral-500);
   --color-border-strong: var(--neutral-600);
 
-  /* Главное действие — чёрное, а не синее. Самая узнаваемая черта языка:
-     акцентом служит верхняя ступень нейтральной лестницы, а синий отдан
-     сообщению — фокусу, ссылке, пояснению. */
-  --color-accent: var(--neutral-1000);
-  --color-accent-hover: #000000;
-  --color-accent-active: #383838;
-  --color-accent-subtle: var(--neutral-200);
+  /* Главное действие — синее.
+     Ступень 800, а не 700: белый текст на 700 даёт 4.44:1 — под порогом 4.5
+     для подписи кнопки (14px, вес 600 — это не «крупный текст»). На 800
+     получается 5.73:1. Наведение и нажатие уходят вниз по лестнице, где
+     контраст только растёт.
+     `accentText` совпал с заливкой и остаётся ступенью 800: акцентный текст
+     и акцентная заливка теперь один цвет — это и есть согласованность,
+     а не совпадение. */
+  --color-accent: var(--blue-800);
+  --color-accent-hover: var(--blue-900);
+  --color-accent-active: var(--blue-1000);
+  --color-accent-subtle: var(--blue-200);
   --color-accent-text: var(--blue-800);
 
   --color-danger: var(--danger-700);
@@ -220,8 +226,10 @@
   --color-warning-text: var(--warning-900);
 
   --color-overlay: rgba(0, 0, 0, 0.5);
-  /* Кольцо фокуса синее, а не цвета акцента: на чёрной кнопке чёрное
-     кольцо не видно, а фокус обязан читаться на любом контроле. */
+  /* Кольцо фокуса — ступень 700, на шаг светлее заливки главного действия.
+     Прежде оно было синим вынужденно: чёрное кольцо на чёрной кнопке не
+     читалось. Теперь заливка сама синяя, и кольцо от неё отделяет не цвет,
+     а зазор: `outline-offset` в 2px оставляет между ними полосу фона. */
   --color-focus-ring: var(--blue-700);
 
   /* ---------- Тени: светлая тема ---------- */
@@ -262,19 +270,21 @@
     --color-text: var(--neutral-dark-1000);
     --color-text-muted: var(--neutral-dark-800);
     --color-text-disabled: var(--neutral-dark-600);
-    /* Кнопка главного действия в тёмной теме белая, поэтому текст на ней чёрный. */
+    /* Заливка главного действия в тёмной теме светло-синяя, текст на ней чёрный. */
     --color-text-on-accent: #000000;
 
     --color-border: var(--neutral-dark-400);
     --color-border-hover: var(--neutral-dark-500);
     --color-border-strong: var(--neutral-dark-600);
 
-    /* Акцент переворачивается вместе с темой: на светлом он чёрный,
-       на тёмном белый. Роль одна и та же — главное действие. */
-    --color-accent: var(--neutral-dark-1000);
-    --color-accent-hover: var(--neutral-dark-900);
-    --color-accent-active: var(--neutral-dark-800);
-    --color-accent-subtle: var(--neutral-dark-300);
+    /* Тёмная тема берёт ступени с другого конца синей лестницы: она одна
+       на обе темы и не переворачивается. 600 на тёмном фоне читается,
+       а текст на нём — чёрный (8.4:1); белый дал бы 2.5:1. */
+    --color-accent: var(--blue-600);
+    --color-accent-hover: var(--blue-500);
+    --color-accent-active: var(--blue-400);
+    /* Приглушённая заливка — нижняя ступень: единственная тёмная в лестнице. */
+    --color-accent-subtle: var(--blue-1000);
     --color-accent-text: var(--blue-600);
 
     --color-danger: var(--danger-600);
@@ -322,19 +332,21 @@
   --color-text: var(--neutral-dark-1000);
   --color-text-muted: var(--neutral-dark-800);
   --color-text-disabled: var(--neutral-dark-600);
-  /* Кнопка главного действия в тёмной теме белая, поэтому текст на ней чёрный. */
+  /* Заливка главного действия в тёмной теме светло-синяя, текст на ней чёрный. */
   --color-text-on-accent: #000000;
 
   --color-border: var(--neutral-dark-400);
   --color-border-hover: var(--neutral-dark-500);
   --color-border-strong: var(--neutral-dark-600);
 
-  /* Акцент переворачивается вместе с темой: на светлом он чёрный,
-     на тёмном белый. Роль одна и та же — главное действие. */
-  --color-accent: var(--neutral-dark-1000);
-  --color-accent-hover: var(--neutral-dark-900);
-  --color-accent-active: var(--neutral-dark-800);
-  --color-accent-subtle: var(--neutral-dark-300);
+  /* Тёмная тема берёт ступени с другого конца синей лестницы: она одна
+     на обе темы и не переворачивается. 600 на тёмном фоне читается,
+     а текст на нём — чёрный (8.4:1); белый дал бы 2.5:1. */
+  --color-accent: var(--blue-600);
+  --color-accent-hover: var(--blue-500);
+  --color-accent-active: var(--blue-400);
+  /* Приглушённая заливка — нижняя ступень: единственная тёмная в лестнице. */
+  --color-accent-subtle: var(--blue-1000);
   --color-accent-text: var(--blue-600);
 
   --color-danger: var(--danger-600);
