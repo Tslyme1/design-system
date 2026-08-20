@@ -39,6 +39,10 @@ export type SelectProps = {
   /**
    * Разрешить значение, которого нет в списке — как «Заказчик»
    * в окне нового проекта, где нового заказчика заводят на месте.
+   *
+   * Поле ввода появляется вместе с пропом: включать ради него ещё
+   * и `searchable` не нужно — вводить свободное значение некуда,
+   * пока поля нет.
    */
   allowCustom?: boolean;
   /** Закреплённая строка внизу: «+ Добавить». */
@@ -84,6 +88,14 @@ export function Select({
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState('');
   const searchRef = useRef<HTMLInputElement>(null);
+
+  /**
+   * Поле над списком. Поиск и свободный ввод пишут в одно и то же поле,
+   * поэтому включает его любой из двух пропов: `allowCustom` без
+   * `searchable` обещал значение вне списка, а ввести его было негде —
+   * панель открывалась одним списком вариантов.
+   */
+  const typeable = searchable || allowCustom;
 
   const selected = useMemo(() => (Array.isArray(value) ? value : value ? [value] : []), [value]);
 
@@ -160,7 +172,7 @@ export function Select({
       data-filled={label ? 'true' : 'false'}
       onClick={() => {
         setOpen((v) => !v);
-        if (searchable) window.setTimeout(() => searchRef.current?.focus(), 0);
+        if (typeable) window.setTimeout(() => searchRef.current?.focus(), 0);
       }}
     >
       <span className={label ? styles.value : styles.placeholder}>{label ?? placeholder}</span>
@@ -181,17 +193,29 @@ export function Select({
       fullWidth={fullWidth}
       footer={footer}
     >
-      {searchable ? (
+      {typeable ? (
         <input
           ref={searchRef}
           /* Класс размера тот же, что у триггера: поле поиска обязано
              совпадать со строками меню, а не жить по своей шкале. */
           className={[styles.search, styles[size]].join(' ')}
           value={query}
+          /* Имя дублирует плейсхолдер намеренно: подписи над полем нет,
+             а плейсхолдер доступным именем не считается — без `aria-label`
+             поле оставалось безымянным для скринридера. */
+          aria-label={allowCustom ? 'Поиск или новое значение' : 'Поиск'}
           placeholder={allowCustom ? 'Поиск или новое значение' : 'Поиск'}
           onChange={(e) => setQuery(e.target.value)}
           onKeyDown={(e) => {
-            if (e.key === 'Enter' && allowCustom) commitCustom();
+            if (e.key !== 'Enter' || !allowCustom) return;
+            /* Enter здесь означает «взять введённое» и ничего больше.
+               Без `preventDefault` он доигрывался дальше: поле исчезало
+               вместе с панелью прямо посреди обработки нажатия, действие
+               по умолчанию доставалось тому, что оказалось под фокусом,
+               и нажатие уходило в кнопку закрытия окна — селект брал
+               значение и уносил с собой всю модалку. */
+            e.preventDefault();
+            commitCustom();
           }}
         />
       ) : null}

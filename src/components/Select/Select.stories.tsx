@@ -84,13 +84,15 @@ export const Variants: Story = {
           />
         </Stack>
 
+        {/* Свободный ввод без `searchable`: поле над списком приходит
+            вместе с `allowCustom`. Отдельно включать поиск незачем —
+            это одно и то же поле. */}
         <Stack gap="xs">
           <Text variant="label">Свободный ввод</Text>
           <Select
             options={labelOptions}
             value={custom}
             onChange={setCustom}
-            searchable
             allowCustom
             placeholder={placeholder}
             footer={
