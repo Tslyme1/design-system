@@ -270,19 +270,19 @@
     --color-text: var(--neutral-dark-1000);
     --color-text-muted: var(--neutral-dark-800);
     --color-text-disabled: var(--neutral-dark-600);
-    /* Заливка главного действия в тёмной теме светло-синяя, текст на ней чёрный. */
-    --color-text-on-accent: #000000;
+    /* Текст на главном действии белый в обеих темах: одна кнопка — одна надпись. */
+    --color-text-on-accent: #ffffff;
 
     --color-border: var(--neutral-dark-400);
     --color-border-hover: var(--neutral-dark-500);
     --color-border-strong: var(--neutral-dark-600);
 
-    /* Тёмная тема берёт ступени с другого конца синей лестницы: она одна
-       на обе темы и не переворачивается. 600 на тёмном фоне читается,
-       а текст на нём — чёрный (8.4:1); белый дал бы 2.5:1. */
-    --color-accent: var(--blue-600);
-    --color-accent-hover: var(--blue-500);
-    --color-accent-active: var(--blue-400);
+    /* Ступень выбрана под белый текст на кнопке, а не под яркость самой
+       кнопки: белый на `blue-600` даёт всего 2.6:1 — надпись на главном
+       действии не читается. На `blue-800` выходит 5.4:1. */
+    --color-accent: var(--blue-800);
+    --color-accent-hover: var(--blue-700);
+    --color-accent-active: var(--blue-600);
     /* Приглушённая заливка — нижняя ступень: единственная тёмная в лестнице. */
     --color-accent-subtle: var(--blue-1000);
     --color-accent-text: var(--blue-600);
@@ -332,19 +332,18 @@
   --color-text: var(--neutral-dark-1000);
   --color-text-muted: var(--neutral-dark-800);
   --color-text-disabled: var(--neutral-dark-600);
-  /* Заливка главного действия в тёмной теме светло-синяя, текст на ней чёрный. */
-  --color-text-on-accent: #000000;
+  /* Текст на главном действии белый в обеих темах: одна кнопка — одна надпись. */
+  --color-text-on-accent: #ffffff;
 
   --color-border: var(--neutral-dark-400);
   --color-border-hover: var(--neutral-dark-500);
   --color-border-strong: var(--neutral-dark-600);
 
-  /* Тёмная тема берёт ступени с другого конца синей лестницы: она одна
-     на обе темы и не переворачивается. 600 на тёмном фоне читается,
-     а текст на нём — чёрный (8.4:1); белый дал бы 2.5:1. */
-  --color-accent: var(--blue-600);
-  --color-accent-hover: var(--blue-500);
-  --color-accent-active: var(--blue-400);
+  /* Ступень выбрана под белый текст на кнопке: белый на `blue-600` даёт
+     2.6:1, на `blue-800` — 5.4:1. */
+  --color-accent: var(--blue-800);
+  --color-accent-hover: var(--blue-700);
+  --color-accent-active: var(--blue-600);
   /* Приглушённая заливка — нижняя ступень: единственная тёмная в лестнице. */
   --color-accent-subtle: var(--blue-1000);
   --color-accent-text: var(--blue-600);
