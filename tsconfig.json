@@ -26,5 +26,5 @@
       "@spec": [".storybook/spec.tsx"]
     }
   },
-  "include": ["src", ".storybook"]
+  "include": ["src", ".storybook/**/*"]
 }

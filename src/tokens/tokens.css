@@ -25,13 +25,14 @@
 
   /* ---------- ПРИМИТИВЫ: радиусы ---------- */
   --radius-none: 0px;
-  --radius-md: 4px;
+  --radius-sm: 6px;
+  --radius-md: 12px;
   --radius-full: 9999px;
 
   /* ---------- ПРИМИТИВЫ: типографика ---------- */
-  --font-heading: "Barlow Condensed", system-ui, sans-serif;
-  --font-body: "Barlow", system-ui, sans-serif;
-  --font-mono: ui-monospace, Menlo, Consolas, monospace;
+  --font-heading: "Geist", system-ui, sans-serif;
+  --font-body: "Geist", system-ui, sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, Menlo, Consolas, monospace;
 
   --text-body-sm-size: 12px;
   --text-body-sm-line: 1.4;
@@ -98,103 +99,136 @@
   --z-modal: 1100;
   --z-toast: 1200;
 
-  /* ---------- ПРИМИТИВЫ: лестницы цвета (не меняются темой) ---------- */
-  --neutral-100: #f5f5f8;
-  --neutral-200: #e7e7ea;
-  --neutral-300: #d4d4d7;
-  --neutral-400: #b7b7ba;
-  --neutral-500: #98989b;
-  --neutral-600: #7a7a7d;
-  --neutral-700: #5d5d60;
-  --neutral-800: #424244;
-  --neutral-900: #2b2b2d;
+  /* ---------- ПРИМИТИВЫ: лестницы цвета ----------
+     Десять ступеней, у каждого диапазона своё назначение:
+     100–300 фон компонента, 400–600 границы, 700–800 контрастная
+     заливка, 900–1000 текст. Роли ниже выбирают ступень по этому
+     договору, а не на глаз. */
+  --neutral-100: #fafafa;
+  --neutral-200: #f5f5f5;
+  --neutral-300: #ebebeb;
+  --neutral-400: #e0e0e0;
+  --neutral-500: #d1d1d1;
+  --neutral-600: #a1a1a1;
+  --neutral-700: #8f8f8f;
+  --neutral-800: #666666;
+  --neutral-900: #4d4d4d;
+  --neutral-1000: #171717;
 
-  --accent-100: #eef6ff;
-  --accent-200: #d6ebff;
-  --accent-300: #b5d9fd;
-  --accent-400: #94bce3;
-  --accent-500: #749dc4;
-  --accent-600: #597ea3;
-  --accent-700: #416180;
-  --accent-800: #2c455d;
-  --accent-900: #1d2d3d;
+  /* Тёмная тема берёт ступени отсюда, а не переворачивает светлую
+     лестницу. Прежде тёмные роли подставляли сырые значения прямо
+     в этом файле, минуя примитивы, — отдельная лестница возвращает
+     их под общее правило. */
+  --neutral-dark-100: #1a1a1a;
+  --neutral-dark-200: #1f1f1f;
+  --neutral-dark-300: #292929;
+  --neutral-dark-400: #2e2e2e;
+  --neutral-dark-500: #454545;
+  --neutral-dark-600: #878787;
+  --neutral-dark-700: #8f8f8f;
+  --neutral-dark-800: #a1a1a1;
+  --neutral-dark-900: #ededed;
+  --neutral-dark-1000: #ffffff;
 
-  --danger-100: #fdeceb;
-  --danger-200: #f9d2ce;
-  --danger-300: #f2b0a9;
-  --danger-400: #e58a80;
-  --danger-500: #d3655a;
-  --danger-600: #b3261e;
-  --danger-700: #8f2019;
-  --danger-800: #671712;
-  --danger-900: #43100c;
+  /* Синий — не главное действие, а сообщение: фокус, ссылка, пояснение.
+     Главное действие в этом языке чёрное. */
+  --blue-100: #f0f7ff;
+  --blue-200: #e1efff;
+  --blue-300: #cee7fe;
+  --blue-400: #b7d9f8;
+  --blue-500: #8fc3f2;
+  --blue-600: #52a8ff;
+  --blue-700: #0072f5;
+  --blue-800: #0062d1;
+  --blue-900: #0058a8;
+  --blue-1000: #0a3e73;
 
-  --success-100: #e9f6ec;
-  --success-200: #c9e8d1;
-  --success-300: #a2d6b0;
-  --success-400: #77bf8b;
-  --success-500: #4fa368;
-  --success-600: #38834f;
-  --success-700: #2a663d;
-  --success-800: #1d492b;
-  --success-900: #12301c;
+  --danger-100: #fff0f0;
+  --danger-200: #ffe0e0;
+  --danger-300: #ffcdcd;
+  --danger-400: #ffb1b1;
+  --danger-500: #ff9b9b;
+  --danger-600: #f97575;
+  --danger-700: #e5484d;
+  --danger-800: #d02735;
+  --danger-900: #a51f2b;
+  --danger-1000: #6f1420;
 
-  --warning-100: #fdf1dd;
-  --warning-200: #f9dfb4;
-  --warning-300: #f2c883;
-  --warning-400: #e5ab52;
-  --warning-500: #cd8c2c;
-  --warning-600: #a86e1e;
-  --warning-700: #835517;
-  --warning-800: #5d3c10;
-  --warning-900: #3c260a;
+  --success-100: #eefdf3;
+  --success-200: #d6f9e0;
+  --success-300: #b6f0c8;
+  --success-400: #8ee0aa;
+  --success-500: #5cc47f;
+  --success-600: #2fa25a;
+  --success-700: #17864a;
+  --success-800: #0f6b3c;
+  --success-900: #0b5230;
+  --success-1000: #08331f;
+
+  --warning-100: #fff8e6;
+  --warning-200: #fff0c2;
+  --warning-300: #ffe49a;
+  --warning-400: #ffd166;
+  --warning-500: #f7b93e;
+  --warning-600: #d99400;
+  --warning-700: #b47600;
+  --warning-800: #8f5d00;
+  --warning-900: #6b4500;
+  --warning-1000: #422b00;
 
   /* ================================================================ *
    * СЕМАНТИКА — светлая тема
    * ================================================================ */
 
-  --color-bg: #f2f2f3;
+  /* Страница и карточка одного тона: слои разделяет хайрлайн, а не
+     заливка. Это и есть основной приём языка — почти плоско, разделено
+     линией. Правило «тень или бордер» при этом остаётся в силе. */
+  --color-bg: #ffffff;
   --color-surface: #ffffff;
   --color-surface-raised: #ffffff;
   --color-surface-sunken: var(--neutral-100);
 
-  --color-text: #1d1f20;
-  --color-text-muted: var(--neutral-600);
-  --color-text-disabled: var(--neutral-400);
+  --color-text: var(--neutral-1000);
+  --color-text-muted: var(--neutral-900);
+  --color-text-disabled: var(--neutral-700);
   --color-text-on-accent: #ffffff;
 
-  --color-border: rgba(29, 31, 32, 0.16);
-  --color-border-hover: rgba(29, 31, 32, 0.28);
-  --color-border-strong: var(--neutral-400);
+  --color-border: var(--neutral-400);
+  --color-border-hover: var(--neutral-500);
+  --color-border-strong: var(--neutral-600);
 
-  --color-accent: #5980a6;
-  --color-accent-hover: var(--accent-600);
-  --color-accent-active: var(--accent-700);
-  --color-accent-subtle: var(--accent-100);
-  /* Текстовая ступень: сам акцент даёт лишь 3:1 к фону — мало для абзаца. */
-  --color-accent-text: var(--accent-700);
+  /* Главное действие — чёрное, а не синее. Самая узнаваемая черта языка:
+     акцентом служит верхняя ступень нейтральной лестницы, а синий отдан
+     сообщению — фокусу, ссылке, пояснению. */
+  --color-accent: var(--neutral-1000);
+  --color-accent-hover: #000000;
+  --color-accent-active: #383838;
+  --color-accent-subtle: var(--neutral-200);
+  --color-accent-text: var(--blue-800);
 
-  --color-danger: var(--danger-600);
-  --color-danger-hover: var(--danger-700);
+  --color-danger: var(--danger-700);
+  --color-danger-hover: var(--danger-800);
   --color-danger-subtle: var(--danger-100);
-  --color-danger-text: var(--danger-700);
+  --color-danger-text: var(--danger-900);
 
-  --color-success: var(--success-600);
+  --color-success: var(--success-700);
   --color-success-subtle: var(--success-100);
-  --color-success-text: var(--success-700);
+  --color-success-text: var(--success-900);
 
-  --color-warning: var(--warning-600);
+  --color-warning: var(--warning-700);
   --color-warning-subtle: var(--warning-100);
-  --color-warning-text: var(--warning-700);
+  --color-warning-text: var(--warning-900);
 
-  --color-overlay: rgba(29, 31, 32, 0.45);
-  --color-focus-ring: var(--color-accent);
+  --color-overlay: rgba(0, 0, 0, 0.5);
+  /* Кольцо фокуса синее, а не цвета акцента: на чёрной кнопке чёрное
+     кольцо не видно, а фокус обязан читаться на любом контроле. */
+  --color-focus-ring: var(--blue-700);
 
   /* ---------- Тени: светлая тема ---------- */
   --shadow-none: none;
-  --shadow-sm: 0 1px 2px rgba(43, 43, 45, 0.14);
-  --shadow-md: 0 3px 10px rgba(43, 43, 45, 0.16);
-  --shadow-lg: 0 12px 32px rgba(43, 43, 45, 0.22);
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.06);
 
   /* ---------- Палитра тегов: светлая тема ---------- */
   --tag-steel-bg: #dee8f1;
@@ -220,46 +254,48 @@
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme='light']) {
-    --color-bg: #131516;
-    --color-surface: #1b1e1f;
-    --color-surface-raised: #232729;
-    --color-surface-sunken: #0e1011;
+    --color-bg: #000000;
+    --color-surface: var(--neutral-dark-100);
+    --color-surface-raised: var(--neutral-dark-300);
+    --color-surface-sunken: #0a0a0a;
 
-    --color-text: #e8e8ea;
-    --color-text-muted: var(--neutral-500);
-    --color-text-disabled: var(--neutral-700);
-    --color-text-on-accent: #0e1011;
+    --color-text: var(--neutral-dark-1000);
+    --color-text-muted: var(--neutral-dark-800);
+    --color-text-disabled: var(--neutral-dark-600);
+    /* Кнопка главного действия в тёмной теме белая, поэтому текст на ней чёрный. */
+    --color-text-on-accent: #000000;
 
-    --color-border: rgba(232, 232, 234, 0.16);
-    --color-border-hover: rgba(232, 232, 234, 0.28);
-    --color-border-strong: var(--neutral-600);
+    --color-border: var(--neutral-dark-400);
+    --color-border-hover: var(--neutral-dark-500);
+    --color-border-strong: var(--neutral-dark-600);
 
-    /* На тёмном фоне база акцента смещается вверх по лестнице:
-       #5980a6 на тёмном даёт недостаточный контраст. */
-    --color-accent: var(--accent-400);
-    --color-accent-hover: var(--accent-300);
-    --color-accent-active: var(--accent-200);
-    --color-accent-subtle: rgba(148, 188, 227, 0.14);
-    --color-accent-text: var(--accent-300);
+    /* Акцент переворачивается вместе с темой: на светлом он чёрный,
+       на тёмном белый. Роль одна и та же — главное действие. */
+    --color-accent: var(--neutral-dark-1000);
+    --color-accent-hover: var(--neutral-dark-900);
+    --color-accent-active: var(--neutral-dark-800);
+    --color-accent-subtle: var(--neutral-dark-300);
+    --color-accent-text: var(--blue-600);
 
-    --color-danger: var(--danger-400);
-    --color-danger-hover: var(--danger-300);
-    --color-danger-subtle: rgba(229, 138, 128, 0.14);
-    --color-danger-text: var(--danger-300);
+    --color-danger: var(--danger-600);
+    --color-danger-hover: var(--danger-500);
+    --color-danger-subtle: rgba(229, 72, 77, 0.16);
+    --color-danger-text: var(--danger-500);
 
-    --color-success: var(--success-400);
-    --color-success-subtle: rgba(119, 191, 139, 0.14);
-    --color-success-text: var(--success-300);
+    --color-success: var(--success-600);
+    --color-success-subtle: rgba(47, 162, 90, 0.16);
+    --color-success-text: var(--success-500);
 
-    --color-warning: var(--warning-400);
-    --color-warning-subtle: rgba(229, 171, 82, 0.14);
-    --color-warning-text: var(--warning-300);
+    --color-warning: var(--warning-600);
+    --color-warning-subtle: rgba(217, 148, 0, 0.16);
+    --color-warning-text: var(--warning-500);
 
-    --color-overlay: rgba(0, 0, 0, 0.65);
+    --color-overlay: rgba(0, 0, 0, 0.7);
+    --color-focus-ring: var(--blue-600);
 
-    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.5);
-    --shadow-md: 0 3px 10px rgba(0, 0, 0, 0.55);
-    --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.65);
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.6);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.65), 0 1px 2px rgba(0, 0, 0, 0.5);
+    --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.75), 0 2px 8px rgba(0, 0, 0, 0.6);
 
     --tag-steel-bg: #24384a;
     --tag-steel-fg: #b5d9fd;
@@ -278,44 +314,48 @@
 
 /* Явный выбор пользователя побеждает системное предпочтение в обе стороны. */
 :root[data-theme='dark'] {
-  --color-bg: #131516;
-  --color-surface: #1b1e1f;
-  --color-surface-raised: #232729;
-  --color-surface-sunken: #0e1011;
+  --color-bg: #000000;
+  --color-surface: var(--neutral-dark-100);
+  --color-surface-raised: var(--neutral-dark-300);
+  --color-surface-sunken: #0a0a0a;
 
-  --color-text: #e8e8ea;
-  --color-text-muted: var(--neutral-500);
-  --color-text-disabled: var(--neutral-700);
-  --color-text-on-accent: #0e1011;
+  --color-text: var(--neutral-dark-1000);
+  --color-text-muted: var(--neutral-dark-800);
+  --color-text-disabled: var(--neutral-dark-600);
+  /* Кнопка главного действия в тёмной теме белая, поэтому текст на ней чёрный. */
+  --color-text-on-accent: #000000;
 
-  --color-border: rgba(232, 232, 234, 0.16);
-  --color-border-hover: rgba(232, 232, 234, 0.28);
-  --color-border-strong: var(--neutral-600);
+  --color-border: var(--neutral-dark-400);
+  --color-border-hover: var(--neutral-dark-500);
+  --color-border-strong: var(--neutral-dark-600);
 
-  --color-accent: var(--accent-400);
-  --color-accent-hover: var(--accent-300);
-  --color-accent-active: var(--accent-200);
-  --color-accent-subtle: rgba(148, 188, 227, 0.14);
-  --color-accent-text: var(--accent-300);
+  /* Акцент переворачивается вместе с темой: на светлом он чёрный,
+     на тёмном белый. Роль одна и та же — главное действие. */
+  --color-accent: var(--neutral-dark-1000);
+  --color-accent-hover: var(--neutral-dark-900);
+  --color-accent-active: var(--neutral-dark-800);
+  --color-accent-subtle: var(--neutral-dark-300);
+  --color-accent-text: var(--blue-600);
 
-  --color-danger: var(--danger-400);
-  --color-danger-hover: var(--danger-300);
-  --color-danger-subtle: rgba(229, 138, 128, 0.14);
-  --color-danger-text: var(--danger-300);
+  --color-danger: var(--danger-600);
+  --color-danger-hover: var(--danger-500);
+  --color-danger-subtle: rgba(229, 72, 77, 0.16);
+  --color-danger-text: var(--danger-500);
 
-  --color-success: var(--success-400);
-  --color-success-subtle: rgba(119, 191, 139, 0.14);
-  --color-success-text: var(--success-300);
+  --color-success: var(--success-600);
+  --color-success-subtle: rgba(47, 162, 90, 0.16);
+  --color-success-text: var(--success-500);
 
-  --color-warning: var(--warning-400);
-  --color-warning-subtle: rgba(229, 171, 82, 0.14);
-  --color-warning-text: var(--warning-300);
+  --color-warning: var(--warning-600);
+  --color-warning-subtle: rgba(217, 148, 0, 0.16);
+  --color-warning-text: var(--warning-500);
 
-  --color-overlay: rgba(0, 0, 0, 0.65);
+  --color-overlay: rgba(0, 0, 0, 0.7);
+  --color-focus-ring: var(--blue-600);
 
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.5);
-  --shadow-md: 0 3px 10px rgba(0, 0, 0, 0.55);
-  --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.65);
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.6);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.65), 0 1px 2px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.75), 0 2px 8px rgba(0, 0, 0, 0.6);
 
   --tag-steel-bg: #24384a;
   --tag-steel-fg: #b5d9fd;

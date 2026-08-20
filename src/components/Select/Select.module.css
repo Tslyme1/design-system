@@ -10,7 +10,7 @@
   text-align: left;
 
   border: var(--border-hairline) solid var(--color-border);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-sm);
   cursor: pointer;
 
   transition: border-color var(--duration-fast) var(--easing-standard);
@@ -76,19 +76,22 @@
 
 /* ---------- Содержимое панели ---------- */
 
+/* Высоту, отступы и кегль поле поиска берёт из тех же классов размера,
+   что и триггер: `.sm` / `.md` / `.lg` ставятся на него в разметке.
+   Своих значений здесь нет намеренно — раньше поиск был прибит к `sm`
+   независимо от размера селекта, и в поле `md` строки шли кеглем 14,
+   а поиск над ними 12. Разнобой был виден именно в сравнении: поле
+   выглядело чужим в собственном меню. */
 .search {
   width: 100%;
-  height: var(--control-sm);
   margin-bottom: var(--space-2xs);
-  padding-inline: var(--space-sm);
 
   background: var(--color-surface);
   color: var(--color-text);
   font-family: var(--font-body);
-  font-size: var(--text-body-sm-size);
 
   border: var(--border-hairline) solid var(--color-border);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-sm);
 }
 
 .search:focus-visible {

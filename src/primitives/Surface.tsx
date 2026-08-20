@@ -32,7 +32,7 @@ export function Surface({
   children,
   level = 'flat',
   border = true,
-  radius = 'none',
+  radius = 'md',
   padding,
   background = 'surface',
   interactive = false,

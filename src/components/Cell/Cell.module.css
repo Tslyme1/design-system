@@ -16,7 +16,7 @@
 
   background: transparent;
   border: none;
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-sm);
   color: var(--color-text);
   font-family: var(--font-body);
   /* Кнопка по умолчанию центрирует текст — в списке это и читается

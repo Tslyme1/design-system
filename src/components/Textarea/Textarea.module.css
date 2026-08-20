@@ -12,7 +12,7 @@
   line-height: var(--text-body-line);
 
   border: var(--border-hairline) solid var(--color-border);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-sm);
 
   /* Ручки растягивания нет: высотой управляет сам компонент — он ведёт её
      за содержимым. Ручка спорила бы с вводом, откатывая заданную вручную

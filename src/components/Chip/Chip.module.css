@@ -6,7 +6,7 @@
 
   background: var(--color-surface);
   border: var(--border-hairline) solid var(--color-border);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-sm);
 
   transition: border-color var(--duration-fast) var(--easing-standard);
 }
@@ -47,7 +47,7 @@
 .main:focus-visible {
   outline: var(--border-strong) solid var(--color-focus-ring);
   outline-offset: -2px;
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-sm);
 }
 
 .text {
@@ -92,7 +92,7 @@
   border-left: var(--border-hairline) solid var(--color-border);
   /* Правые углы повторяют скругление плашки: иначе фон кнопки при
      наведении заходит на дугу рамки и срезает её квадратом. */
-  border-radius: var(--radius-none) var(--radius-md) var(--radius-md) var(--radius-none);
+  border-radius: var(--radius-none) var(--radius-sm) var(--radius-sm) var(--radius-none);
   color: var(--color-text-muted);
   cursor: pointer;
 

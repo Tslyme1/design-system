@@ -57,10 +57,14 @@
   padding: var(--space-md);
   border-bottom: var(--border-hairline) solid var(--color-border);
 
-  font-family: var(--font-body);
-  font-size: var(--text-label-size);
-  line-height: var(--text-label-line);
-  font-weight: var(--text-label-weight);
+  /* Роль `headingSm`, а не `label`. Подпись группы в меню (`label`, 12)
+     здесь не подходит: строки под заголовком идут кеглем 14, и заголовок
+     оказывался мельче того, что озаглавливает, — это читается как сбой
+     вёрстки, а не как иерархия. */
+  font-family: var(--font-heading);
+  font-size: var(--text-heading-sm-size);
+  line-height: var(--text-heading-sm-line);
+  font-weight: var(--text-heading-sm-weight);
   color: var(--color-text);
 }
 

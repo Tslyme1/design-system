@@ -5,6 +5,9 @@
   width: 100%;
   overflow-x: auto;
   border: var(--border-hairline) solid var(--color-border);
+  /* Таблица — такая же оболочка, как карточка и модалка, и скруглена
+     наравне с ними. Прокрутка обрезается по этим же углам. */
+  border-radius: var(--radius-md);
 }
 
 .table {
@@ -12,6 +15,12 @@
   border-collapse: collapse;
   font-family: var(--font-body);
   background: var(--color-surface);
+
+  /* Табличные цифры на всю таблицу. В пропорциональном начертании единица
+     уже восьмёрки, и числа одной длины получают разную ширину — колонка
+     идёт рябью, а сравнить значения по вертикали, ради чего таблица и
+     существует, становится труднее. */
+  font-variant-numeric: tabular-nums;
 }
 
 .caption {
@@ -75,7 +84,7 @@
   padding: 0;
   background: transparent;
   border: none;
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-sm);
   color: inherit;
   font: inherit;
   cursor: pointer;
@@ -106,7 +115,13 @@
   vertical-align: middle;
 }
 
+/* Колонка, выровненная по правому краю, — числовая: так это и записано
+   в системе («Выравнивание. Для чисел в таблицах»). Числа набираются
+   `Geist Mono`: моноширинные разряды встают столбиком, и 1750 стоит под
+   900, а не левее его. Для инженерной таблицы это читаемость, а не
+   оформление — по этим колонкам подбирают машину. */
 .alignEnd {
+  font-family: var(--font-mono);
   text-align: end;
 }
 
@@ -139,7 +154,7 @@
   padding: 0;
   background: transparent;
   border: none;
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-sm);
   color: inherit;
   font: inherit;
   text-align: start;

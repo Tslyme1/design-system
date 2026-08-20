@@ -7,7 +7,7 @@
   padding-block: var(--space-2xs);
   padding-inline: var(--space-sm);
 
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-sm);
   font-family: var(--font-body);
   font-size: var(--text-body-sm-size);
   line-height: var(--text-body-sm-line);

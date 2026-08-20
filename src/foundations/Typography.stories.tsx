@@ -62,8 +62,8 @@ export const Playground: Story = {
             тройку, поэтому разойтись не могут: правка размера меняет обе сразу.
           </Text>
           <Text variant="bodySm" color="textMuted">
-            То же по кеглю у bodyLg и headingSm (оба 16), но там различие настоящее: Barlow 400 против Barlow
-            Condensed 600.
+            То же по кеглю у bodyLg и headingSm (оба 16), но там различие настоящее: 400 / 1.5 против
+            600 / 1.3. Прежде их разводила ещё и гарнитура — с переходом на Geist осталось начертание.
           </Text>
         </Stack>
       </Box>
@@ -91,15 +91,15 @@ export const Families: Story = {
     <Stack gap="lg">
       <Stack gap="2xs">
         <Text variant="caption" color="textMuted">
-          Barlow Condensed — заголовки
+          Geist — заголовки
         </Text>
-        <Text variant="headingMd">Label — заголовок гарнитурой Barlow Condensed</Text>
+        <Text variant="headingMd">Label — заголовок гарнитурой Geist</Text>
       </Stack>
       <Stack gap="2xs">
         <Text variant="caption" color="textMuted">
-          Barlow — текст
+          Geist — текст
         </Text>
-        <Text variant="body">Label — текст гарнитурой Barlow</Text>
+        <Text variant="body">Label — текст гарнитурой Geist</Text>
       </Stack>
     </Stack>
   ),

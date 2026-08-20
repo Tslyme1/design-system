@@ -161,6 +161,7 @@ export const spaceVar: Record<SpaceToken, string> = {
 
 export const radiusVar: Record<RadiusToken, string> = {
   none: 'var(--radius-none)',
+  sm: 'var(--radius-sm)',
   md: 'var(--radius-md)',
   full: 'var(--radius-full)',
 };

@@ -29,24 +29,28 @@ export const lightTheme = create({
   appBg: palette.neutral[100],
   appContentBg: palette.white,
   appPreviewBg: palette.white,
-  appBorderColor: palette.neutral[300],
+  appBorderColor: palette.neutral[400],
 
-  textColor: palette.neutral[900],
-  textMutedColor: palette.neutral[600],
+  textColor: palette.neutral[1000],
+  textMutedColor: palette.neutral[900],
   textInverseColor: palette.white,
 
-  colorPrimary: palette.accent[700],
-  colorSecondary: palette.accent[700],
+  /* Синий, а не акцент системы. В новом языке акцент — это вес: почти
+     чёрный на светлой теме. Чёрная подсветка выбранной вкладки в оболочке
+     витрины неотличима от текста, поэтому здесь работает та роль синего,
+     которую он и получил, — сигнал взаимодействия. */
+  colorPrimary: palette.blue[700],
+  colorSecondary: palette.blue[700],
 
   barBg: palette.neutral[100],
-  barTextColor: palette.neutral[600],
-  barSelectedColor: palette.accent[700],
-  barHoverColor: palette.accent[700],
+  barTextColor: palette.neutral[900],
+  barSelectedColor: palette.blue[700],
+  barHoverColor: palette.blue[700],
 
   inputBg: palette.white,
-  inputBorder: palette.neutral[300],
-  inputTextColor: palette.neutral[900],
-  inputBorderRadius: 4,
+  inputBorder: palette.neutral[400],
+  inputTextColor: palette.neutral[1000],
+  inputBorderRadius: 6,
 
   booleanBg: palette.neutral[200],
   booleanSelectedBg: palette.white,
@@ -56,30 +60,32 @@ export const darkTheme = create({
   ...shared,
   base: 'dark',
 
-  /* Значения тёмной темы — те же ступени лестниц, что подставляет tokens.css
-     в тёмном режиме: 900 как фон, 800 как поверхность, 100 как основной текст. */
-  appBg: '#17181a',
-  appContentBg: '#1d1e20',
-  appPreviewBg: '#1d1e20',
-  appBorderColor: palette.neutral[800],
+  /* Тёмная тема берёт ступени из `neutralDark` — той же лестницы, которую
+     подставляет `tokens.css` в тёмном режиме. Прежде здесь стояли сырые
+     `#17181a` и `#1d1e20`: оболочка витрины красилась мимо примитивов и
+     разъезжалась с превью при каждой правке палитры. */
+  appBg: palette.black,
+  appContentBg: palette.neutralDark[100],
+  appPreviewBg: palette.neutralDark[100],
+  appBorderColor: palette.neutralDark[400],
 
-  textColor: palette.neutral[100],
-  textMutedColor: palette.neutral[500],
-  textInverseColor: palette.neutral[900],
+  textColor: palette.neutralDark[1000],
+  textMutedColor: palette.neutralDark[800],
+  textInverseColor: palette.neutralDark[100],
 
-  colorPrimary: palette.accent[300],
-  colorSecondary: palette.accent[300],
+  colorPrimary: palette.blue[600],
+  colorSecondary: palette.blue[600],
 
-  barBg: '#17181a',
-  barTextColor: palette.neutral[500],
-  barSelectedColor: palette.accent[300],
-  barHoverColor: palette.accent[300],
+  barBg: palette.black,
+  barTextColor: palette.neutralDark[800],
+  barSelectedColor: palette.blue[600],
+  barHoverColor: palette.blue[600],
 
-  inputBg: '#1d1e20',
-  inputBorder: palette.neutral[800],
-  inputTextColor: palette.neutral[100],
-  inputBorderRadius: 4,
+  inputBg: palette.neutralDark[100],
+  inputBorder: palette.neutralDark[400],
+  inputTextColor: palette.neutralDark[1000],
+  inputBorderRadius: 6,
 
-  booleanBg: palette.neutral[800],
-  booleanSelectedBg: palette.neutral[700],
+  booleanBg: palette.neutralDark[300],
+  booleanSelectedBg: palette.neutralDark[500],
 });

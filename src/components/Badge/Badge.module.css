@@ -12,7 +12,7 @@
   padding-block: var(--space-2xs);
   padding-inline: var(--space-sm);
 
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-sm);
   /* Целиком роль label, а не размер от bodySm с весом от label:
      смешанная пара — это девятая типографическая роль, которой в шкале нет. */
   font-family: var(--font-body);

@@ -57,7 +57,7 @@
   padding: var(--space-2xs);
   background: transparent;
   border: none;
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-sm);
   text-align: start;
   color: inherit;
   font: inherit;

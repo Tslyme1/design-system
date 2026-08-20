@@ -184,7 +184,9 @@ export function Select({
       {searchable ? (
         <input
           ref={searchRef}
-          className={styles.search}
+          /* Класс размера тот же, что у триггера: поле поиска обязано
+             совпадать со строками меню, а не жить по своей шкале. */
+          className={[styles.search, styles[size]].join(' ')}
           value={query}
           placeholder={allowCustom ? 'Поиск или новое значение' : 'Поиск'}
           onChange={(e) => setQuery(e.target.value)}

@@ -17,7 +17,7 @@
   background: var(--color-surface-raised);
   color: var(--color-text);
   border: var(--border-hairline) solid var(--color-border);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-sm);
   box-shadow: var(--shadow-md);
 
   font-family: var(--font-body);

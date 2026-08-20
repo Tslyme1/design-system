@@ -1,0 +1,29 @@
+<!--
+  Гарнитуры для окна превью.
+
+  Витрина живёт в отдельном документе, и <link> из index.html до неё
+  не доходит: без этого компоненты в сторибуке рисуются системным
+  шрифтом, то есть показывают не то, что попадает в продукт.
+
+  Загрузка неблокирующая, и это не оптимизация, а условие работы.
+  Обычный <link rel="stylesheet"> задерживает выполнение скриптов,
+  идущих за ним, — включая бандл превью. Если шрифты недоступны
+  (закрытая сеть, VPN, блокировка Google), витрина зависает на
+  бесконечной загрузке вместо того, чтобы показать компонент
+  системным шрифтом. Внешняя сеть не должна решать, работает ли
+  инструмент.
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  rel="preload"
+  as="style"
+  href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap"
+  onload="this.onload=null;this.rel='stylesheet'"
+/>
+<noscript>
+  <link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap"
+  />
+</noscript>

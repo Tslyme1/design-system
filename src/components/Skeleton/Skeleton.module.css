@@ -16,7 +16,7 @@
 .skeleton {
   display: block;
   background: var(--color-border);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-sm);
   animation: pulse var(--duration-slow) var(--easing-standard) infinite alternate;
 }
 

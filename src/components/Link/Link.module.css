@@ -11,7 +11,7 @@
   line-height: inherit;
   text-decoration: underline;
   text-underline-offset: var(--space-2xs);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-sm);
   cursor: pointer;
 
   transition: color var(--duration-fast) var(--easing-standard);
