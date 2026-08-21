@@ -10,6 +10,12 @@ import styles from './Select.module.css';
 export type SelectOption = {
   value: string;
   label: string;
+  /**
+   * Чем нарисовать вариант, когда подписи мало: тег своего цвета, значок
+   * состояния. Подпись при этом остаётся обязательной — по ней идёт поиск,
+   * её же читает скринридер, и она остаётся запасным видом варианта.
+   */
+  content?: ReactNode;
   /** Второй уровень подписи — пояснение под названием. */
   description?: string;
   /** Заголовок группы, к которой относится вариант. */
@@ -123,6 +129,17 @@ export function Select({
     return `Выбрано: ${selected.length}`;
   }, [selected, options, multiple]);
 
+  /**
+   * Что показать в поле. Свой вид варианта показывается и здесь: тег,
+   * выбранный из списка тегов, обязан остаться тегом и в закрытом поле —
+   * иначе список и поле рассказывают об одном значении по-разному.
+   * У множественного выбора со счётчиком показывать нечего.
+   */
+  const display = useMemo(() => {
+    if (selected.length !== 1) return label;
+    return options.find((o) => o.value === selected[0])?.content ?? label;
+  }, [selected, options, label]);
+
   const pick = (option: SelectOption) => {
     if (option.disabled) return;
     if (multiple) {
@@ -175,7 +192,7 @@ export function Select({
         if (typeable) window.setTimeout(() => searchRef.current?.focus(), 0);
       }}
     >
-      <span className={label ? styles.value : styles.placeholder}>{label ?? placeholder}</span>
+      <span className={label ? styles.value : styles.placeholder}>{display ?? placeholder}</span>
       <Icon name="chevronDown" size="sm" />
     </button>
   );
@@ -251,7 +268,7 @@ export function Select({
                     ) : null
                   }
                 >
-                  {option.label}
+                  {option.content ?? option.label}
                 </Cell>
               );
             })}

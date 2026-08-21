@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { useState } from 'react';
 import { Select } from './Select';
-import { Button } from '@/components';
+import { Button, Tag } from '@/components';
 import { Stack, Text, Field } from '@/primitives';
 import { Labeled } from '@spec';
 import { crusherOptions, customers, labelOptions, labelOptionsGrouped, placeholder } from '@fixtures';
@@ -64,6 +64,7 @@ export const Variants: Story = {
     const [locked, setLocked] = useState<string | string[] | null>('a');
     const [floatEmpty, setFloatEmpty] = useState<string | string[] | null>(null);
     const [floatFilled, setFloatFilled] = useState<string | string[] | null>('a');
+    const [tagged, setTagged] = useState<string | string[] | null>('a');
 
     return (
       <Stack gap="xl" align="start">
@@ -87,6 +88,23 @@ export const Variants: Story = {
         {/* Свободный ввод без `searchable`: поле над списком приходит
             вместе с `allowCustom`. Отдельно включать поиск незачем —
             это одно и то же поле. */}
+        {/* Свой вид варианта: подпись остаётся — по ней идёт поиск и её
+            читает скринридер, — но нарисован вариант тегом. Тот же тег
+            стоит и в закрытом поле: список и поле обязаны рассказывать
+            об одном значении одинаково. */}
+        <Stack gap="xs">
+          <Text variant="label">Свой вид варианта</Text>
+          <Select
+            options={labelOptions.map((option, index) => ({
+              ...option,
+              content: <Tag color={(['steel', 'sage', 'amber'] as const)[index % 3]}>{option.label}</Tag>,
+            }))}
+            value={tagged}
+            onChange={setTagged}
+            placeholder={placeholder}
+          />
+        </Stack>
+
         <Stack gap="xs">
           <Text variant="label">Свободный ввод</Text>
           <Select

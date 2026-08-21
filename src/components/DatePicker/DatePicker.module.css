@@ -1,0 +1,121 @@
+/**
+ * Поле, открывающее панель, — ровно то же, что у `Select`: рамка, высоты
+ * по шкале контролов, значок справа, приглушённый плейсхолдер. Поэтому
+ * не копия правил, а `composes`: две одинаковые с виду кнопки, живущие
+ * по разным описаниям, — ровно тот случай, из-за которого в аудите
+ * набралось три написания одного и того же контрола.
+ */
+.trigger {
+  composes: trigger from '../Select/Select.module.css';
+}
+
+.sm {
+  composes: sm from '../Select/Select.module.css';
+}
+
+.md {
+  composes: md from '../Select/Select.module.css';
+}
+
+.lg {
+  composes: lg from '../Select/Select.module.css';
+}
+
+.invalid {
+  composes: invalid from '../Select/Select.module.css';
+}
+
+.fullWidth {
+  composes: fullWidth from '../Select/Select.module.css';
+}
+
+.value {
+  composes: value from '../Select/Select.module.css';
+}
+
+.placeholder {
+  composes: placeholder from '../Select/Select.module.css';
+}
+
+/* ---------- Панель ---------- */
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-sm);
+}
+
+/**
+ * Подписи дней недели и сама сетка — одна и та же раскладка семи колонок.
+ * Ширина колонки равна ячейке-контролу: день — это цель для указателя,
+ * и меньше `control.sm` она быть не может.
+ */
+.weekdays,
+.grid {
+  display: grid;
+  grid-template-columns: repeat(7, var(--control-sm));
+  gap: var(--space-2xs);
+}
+
+.day {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  width: var(--control-sm);
+  height: var(--control-sm);
+  padding: 0;
+
+  background: transparent;
+  color: var(--color-text);
+  /* Числа моноширинные — по той же причине, что и в таблицах: разряды
+     встают столбиком, и 9 не гуляет относительно 30. */
+  font-family: var(--font-mono);
+  font-size: var(--text-body-sm-size);
+
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+
+  transition: background-color var(--duration-fast) var(--easing-standard);
+}
+
+.day:hover:not(:disabled) {
+  background: var(--color-surface-sunken);
+}
+
+.day:focus-visible {
+  outline: var(--border-strong) solid var(--color-focus-ring);
+  outline-offset: -2px;
+}
+
+/* Дни соседних месяцев показаны, но приглушены: сетка обязана быть полной
+   неделями, иначе первая и последняя строки рвутся посередине. */
+.outside {
+  color: var(--color-text-muted);
+}
+
+/* Сегодня — обводкой, а не заливкой: заливка означает выбор, и два
+   залитых дня в одном месяце читались бы как два выбранных. */
+.today {
+  box-shadow: inset 0 0 0 var(--border-hairline) var(--color-accent);
+  color: var(--color-accent-text);
+}
+
+.selected,
+.selected:hover:not(:disabled) {
+  background: var(--color-accent);
+  color: var(--color-text-on-accent);
+}
+
+.day:disabled {
+  color: var(--color-text-disabled);
+  cursor: not-allowed;
+}

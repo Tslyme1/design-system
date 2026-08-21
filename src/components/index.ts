@@ -19,6 +19,9 @@ export type { InputProps } from './Input/Input';
 export { Select } from './Select/Select';
 export type { SelectProps, SelectOption } from './Select/Select';
 
+export { DatePicker } from './DatePicker/DatePicker';
+export type { DatePickerProps } from './DatePicker/DatePicker';
+
 export { Checkbox } from './Checkbox/Checkbox';
 export type { CheckboxProps } from './Checkbox/Checkbox';
 
