@@ -170,6 +170,53 @@ export function HeaderButton({ icon, children, active = false, expandable = fals
   );
 }
 
+export type HeaderTabProps = {
+  /** Подпись вкладки: имя открытой сущности. */
+  children: ReactNode;
+  /** Открыта ли вкладка сейчас. */
+  active?: boolean;
+  /** Нажатие по подписи. Без него подпись остаётся текстом, а не кнопкой. */
+  onClick?: () => void;
+  /**
+   * Действия над открытой сущностью — закрыть, переименовать. Ячейки
+   * `HeaderButton`, стоящие внутри вкладки, а не рядом с ней.
+   */
+  actions?: ReactNode;
+};
+
+/**
+ * Вкладка открытой сущности: подпись плюс действия над ней.
+ *
+ * Отдельно от `HeaderButton`, потому что это не кнопка: внутри уже есть
+ * кнопки, а кнопку в кнопку вложить нельзя. Раньше действия над открытым
+ * проектом стояли соседними ячейками — за пределами вкладки, и по полосе
+ * нельзя было понять, к чему относится крестик: к вкладке слева или к тому,
+ * что справа.
+ *
+ * Действия проявляются при наведении и при фокусе внутри вкладки, но место
+ * занимают всегда: появляясь, они иначе раздвигали бы полосу под курсором.
+ * Там, где наведения не существует (палец), они видны постоянно — прятать
+ * действие за жест, которого у устройства нет, значит убрать его совсем.
+ */
+export function HeaderTab({ children, active = false, onClick, actions }: HeaderTabProps) {
+  const className = [styles.tab, active ? styles.active : null].filter(Boolean).join(' ');
+
+  return (
+    <div className={className}>
+      <button
+        type="button"
+        className={[styles.cell, styles.withLabel, styles.tabLabel].join(' ')}
+        aria-current={active ? 'page' : undefined}
+        onClick={onClick}
+      >
+        <span className={styles.label}>{children}</span>
+      </button>
+
+      {actions ? <span className={styles.tabActions}>{actions}</span> : null}
+    </div>
+  );
+}
+
 /** Вертикальный хайрлайн между ячейками шапки. */
 export function HeaderDivider() {
   return <span className={styles.divider} aria-hidden="true" />;

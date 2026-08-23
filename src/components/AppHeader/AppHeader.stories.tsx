@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { AppHeader, HeaderButton, HeaderDivider, HeaderLogo } from './AppHeader';
+import { AppHeader, HeaderButton, HeaderDivider, HeaderLogo, HeaderTab } from './AppHeader';
 import { Stack, Text, Surface, Box } from '@/primitives';
 
 const meta = {
@@ -109,6 +109,32 @@ export const Variants: Story = {
               <HeaderButton icon="placeholder" title="Label 3" />
               <HeaderButton icon="placeholder" title="Label 4" />
             </AppHeader.Right>
+          </AppHeader>
+        </Surface>
+      </Stack>
+
+      <Stack gap="xs">
+        <Text variant="label">
+          Вкладка открытой сущности — подпись и действия над ней в одной ячейке. Действия проявляются при
+          наведении, но место занимают всегда
+        </Text>
+        <Surface level="flat" border radius="none" fullWidth>
+          <AppHeader>
+            <AppHeader.Left>
+              <HeaderTab
+                active
+                onClick={() => undefined}
+                actions={
+                  <>
+                    <HeaderButton icon="chevronDown" title="Label" />
+                    <HeaderButton chrome="close" title="Закрыть" />
+                  </>
+                }
+              >
+                Label
+              </HeaderTab>
+              <HeaderButton icon="placeholder" title="Label" />
+            </AppHeader.Left>
           </AppHeader>
         </Surface>
       </Stack>

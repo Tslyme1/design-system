@@ -22,6 +22,9 @@ export type { SelectProps, SelectOption } from './Select/Select';
 export { DatePicker } from './DatePicker/DatePicker';
 export type { DatePickerProps } from './DatePicker/DatePicker';
 
+export { RangeSelect } from './RangeSelect/RangeSelect';
+export type { RangeSelectProps, Range } from './RangeSelect/RangeSelect';
+
 export { Checkbox } from './Checkbox/Checkbox';
 export type { CheckboxProps } from './Checkbox/Checkbox';
 
@@ -65,5 +68,5 @@ export type { ChipProps } from './Chip/Chip';
 export { EmptyState } from './EmptyState/EmptyState';
 export type { EmptyStateProps } from './EmptyState/EmptyState';
 
-export { AppHeader, HeaderButton, HeaderDivider, HeaderLogo, HeaderSpacer } from './AppHeader/AppHeader';
-export type { AppHeaderProps, HeaderButtonProps, HeaderLogoProps, HeaderSideProps } from './AppHeader/AppHeader';
+export { AppHeader, HeaderButton, HeaderDivider, HeaderLogo, HeaderTab, HeaderSpacer } from './AppHeader/AppHeader';
+export type { AppHeaderProps, HeaderButtonProps, HeaderLogoProps, HeaderTabProps, HeaderSideProps } from './AppHeader/AppHeader';

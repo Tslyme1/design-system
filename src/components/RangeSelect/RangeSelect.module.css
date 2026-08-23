@@ -1,0 +1,55 @@
+/**
+ * Поле — то же, что у `Select`: рядом в строке фильтров стоят отбор по
+ * значению и отбор по диапазону, и разный вид означал бы разную природу,
+ * которой нет. Не копия правил, а `composes`.
+ */
+.trigger {
+  composes: trigger from '../Select/Select.module.css';
+}
+
+.sm {
+  composes: sm from '../Select/Select.module.css';
+}
+
+.md {
+  composes: md from '../Select/Select.module.css';
+}
+
+.lg {
+  composes: lg from '../Select/Select.module.css';
+}
+
+.invalid {
+  composes: invalid from '../Select/Select.module.css';
+}
+
+.fullWidth {
+  composes: fullWidth from '../Select/Select.module.css';
+}
+
+.value {
+  composes: value from '../Select/Select.module.css';
+}
+
+.placeholder {
+  composes: placeholder from '../Select/Select.module.css';
+}
+
+/* ---------- Панель ---------- */
+
+/**
+ * Две границы в строку, тире между ними. Ширины равные: ни одна из границ
+ * не главнее другой, а разная ширина полей читалась бы именно так.
+ */
+.panel {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.dash {
+  color: var(--color-text-muted);
+  font-family: var(--font-body);
+  font-size: var(--text-body-sm-size);
+}
