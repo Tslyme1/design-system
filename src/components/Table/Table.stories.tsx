@@ -7,6 +7,7 @@ import { Badge, Button, Checkbox, EmptyState } from '@/components';
 import { Stack, Text, Box, Grid } from '@/primitives';
 import { Labeled, Spec, DoDont } from '@spec';
 import { projectRows, longText, unbreakable, label, description, errorText } from '@fixtures';
+import storyStyles from './Table.stories.module.css';
 
 /**
  * Тип строки задан явно, а не выведен из фикстуры: вывод даёт union
@@ -46,6 +47,15 @@ const columns: TableColumn<Row>[] = [
     render: (row) => <Badge tone="neutral">{row.status}</Badge>,
   },
 ];
+
+/** Достаточно строк, чтобы гарантированно выйти за пределы демо-контейнера `stickyHeader`. */
+const manyRows: Row[] = Array.from({ length: 20 }, (_, i) => ({
+  id: String(i + 1),
+  title: `Value ${i + 1}`,
+  customer: 'Value',
+  capacity: 100 * (i + 1),
+  status: 'Label',
+}));
 
 /** Предметные данные — только для блока `Usage`. */
 const usageRows = projectRows as Row[];
@@ -289,6 +299,12 @@ export const Overflow: Story = {
             { ...rows[1], note: unbreakable },
           ]}
         />
+      </Labeled>
+
+      <Labeled label="stickyHeader — строк больше, чем помещается в контейнер снаружи">
+        <div className={storyStyles.scrollDemo}>
+          <Table {...base} rows={manyRows} stickyHeader />
+        </div>
       </Labeled>
     </Stack>
   ),

@@ -59,6 +59,13 @@ export type TableProps<Row> = {
    * позиции. Кнопку в таком случае переносят на колонку с названием.
    */
   rowActionKey?: string;
+  /**
+   * Прибить шапку к верху при прокрутке. Работает только тогда, когда сама
+   * таблица стоит внутри чужого контейнера с ограниченной высотой и
+   * `overflow`, — этот контейнер и прокручивается, а не таблица сама
+   * по себе. Без такого предка проп ничего не изменит: скроллить нечему.
+   */
+  stickyHeader?: boolean;
 };
 
 /** Пустое значение показывается прочерком, а не пустой ячейкой: пустая читается как «забыли». */
@@ -94,6 +101,7 @@ export function Table<Row>({
   error,
   empty,
   rowActionKey,
+  stickyHeader = false,
 }: TableProps<Row>) {
   /* Колонка со строкой-действием: названная явно или первая. */
   const actionKey = rowActionKey ?? columns[0]?.key;
@@ -173,7 +181,7 @@ export function Table<Row>({
   };
 
   return (
-    <div className={styles.scroll}>
+    <div className={[styles.scroll, stickyHeader ? styles.scrollStickyHeader : null].filter(Boolean).join(' ')}>
       {/* aria-busy сообщает о загрузке тем, кто не видит заготовок:
           сами Skeleton помечены aria-hidden и для скринридера не существуют. */}
       <table className={styles.table} aria-busy={loading || undefined}>
@@ -195,7 +203,13 @@ export function Table<Row>({
                   key={column.key}
                   scope="col"
                   aria-sort={ariaSort}
-                  className={[styles.head, column.align === 'end' ? styles.alignEnd : null].filter(Boolean).join(' ')}
+                  className={[
+                    styles.head,
+                    stickyHeader ? styles.headSticky : null,
+                    column.align === 'end' ? styles.alignEnd : null,
+                  ]
+                    .filter(Boolean)
+                    .join(' ')}
                 >
                   {column.sortable && onSortChange ? (
                     <button type="button" className={styles.sortButton} onClick={() => toggleSort(column.key)}>
