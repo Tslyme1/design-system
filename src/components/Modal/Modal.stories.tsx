@@ -4,6 +4,7 @@ import { Modal } from './Modal';
 import { Button, Input } from '@/components';
 import { Stack, Text, Field } from '@/primitives';
 import { longText, label, longLabel } from '@fixtures';
+import { Labeled } from '@spec';
 
 const meta = {
   title: 'Components/Modal',
@@ -168,6 +169,53 @@ export const Content: Story = {
           </Stack>
         </Modal>
       </>
+    );
+  },
+};
+
+/**
+ * Ответ на границу: содержимого больше, чем помещается в `max-height: 88vh`
+ * окна. Прокручивается только содержимое — шапка с заголовком и футер
+ * с действиями остаются на месте и никогда не уезжают за пределы экрана,
+ * сколько бы ни было текста внутри.
+ */
+export const Overflow: Story = {
+  args: { open: false, title: '', children: null, onClose: () => undefined },
+  render: () => {
+    const [open, setOpen] = useState(false);
+    return (
+      <Stack gap="md">
+        <Text variant="bodySm" color="textMuted">
+          Заголовок и футер видны всегда — не листаются вместе с содержимым.
+        </Text>
+
+        <Labeled label="содержимое выше окна">
+          <Button variant="secondary" onClick={() => setOpen(true)}>
+            Открыть
+          </Button>
+        </Labeled>
+
+        <Modal
+          open={open}
+          onClose={() => setOpen(false)}
+          title={longLabel}
+          footer={
+            <Modal.Footer aside={<Button variant="ghost" onClick={() => setOpen(false)}>Label</Button>}>
+              <Button variant="primary" onClick={() => setOpen(false)}>
+                Label
+              </Button>
+            </Modal.Footer>
+          }
+        >
+          <Stack gap="md">
+            {Array.from({ length: 24 }, (_, i) => (
+              <Text key={i} variant="body">
+                {i + 1}. {longText}
+              </Text>
+            ))}
+          </Stack>
+        </Modal>
+      </Stack>
     );
   },
 };
