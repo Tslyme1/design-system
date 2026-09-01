@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { AppHeader, HeaderButton, HeaderDivider, HeaderLogo, HeaderTab } from './AppHeader';
+import { Button } from '../Button/Button';
 import { Stack, Text, Surface, Box } from '@/primitives';
 
 const meta = {
@@ -115,8 +116,8 @@ export const Variants: Story = {
 
       <Stack gap="xs">
         <Text variant="label">
-          Вкладка открытой сущности — подпись и действия над ней в одной ячейке. Действия проявляются при
-          наведении, но место занимают всегда
+          Вкладка открытой сущности — подпись и действия над ней в одной ячейке. Действия — `Button` `size="sm"`
+          `variant="ghost"`, лежат оверлеем поверх вкладки и проявляются при наведении, ничего не раздвигая
         </Text>
         <Surface level="flat" border radius="none" fullWidth>
           <AppHeader>
@@ -126,8 +127,8 @@ export const Variants: Story = {
                 onClick={() => undefined}
                 actions={
                   <>
-                    <HeaderButton icon="chevronDown" title="Label" />
-                    <HeaderButton chrome="close" title="Закрыть" />
+                    <Button variant="ghost" size="sm" icon="chevronDown" aria-label="Label" />
+                    <Button variant="ghost" size="sm" icon="x" aria-label="Закрыть" />
                   </>
                 }
               >
