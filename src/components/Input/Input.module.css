@@ -69,3 +69,61 @@
   padding-inline: var(--space-lg);
   font-size: var(--text-body-lg-size);
 }
+
+/**
+ * Обёртка суффикса. Строчный флекс, а не блочный: `Input` без суффикса
+ * остаётся голым `<input>` и не тянет за собой лишний узел в разметке
+ * потребителя — обёртка появляется только когда она правда нужна.
+ */
+.wrapper {
+  position: relative;
+  display: inline-flex;
+  min-width: 0;
+}
+
+.wrapper .input {
+  width: 100%;
+}
+
+.wrapperFullWidth {
+  width: 100%;
+}
+
+/**
+ * Место под суффикс не измеряется по факту, а зарезервировано с запасом
+ * под короткую единицу («град.», «рад.», «мм», «%») — под это суффикс
+ * и задуман (см. комментарий у пропа `suffix` в `Input.tsx`).
+ */
+.sm.withSuffix {
+  padding-right: var(--space-2xl);
+}
+
+.md.withSuffix,
+.lg.withSuffix {
+  padding-right: calc(var(--space-2xl) + var(--space-xs));
+}
+
+.suffix {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--color-text-muted);
+  font-family: var(--font-body);
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.wrapper.sm .suffix {
+  right: var(--space-sm);
+  font-size: var(--text-body-sm-size);
+}
+
+.wrapper.md .suffix {
+  right: var(--space-md);
+  font-size: var(--text-body-size);
+}
+
+.wrapper.lg .suffix {
+  right: var(--space-lg);
+  font-size: var(--text-body-lg-size);
+}

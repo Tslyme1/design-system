@@ -134,6 +134,9 @@ export const Usage: Story = {
       <Field label="Заказчик" required error="Поле обязательно для заполнения">
         {(props) => <Input {...props} fullWidth />}
       </Field>
+      <Field label="Угол конуса β10" hint="Единица переключается рядом, значение остаётся тем же числом">
+        {(props) => <Input {...props} fullWidth type="number" defaultValue="17.5" suffix="град." />}
+      </Field>
       <Text variant="bodySm" color="textMuted">
         Поле без подписи в продукте не существует. Голый контрол в блоках выше показан только затем, чтобы были видны
         состояния самого поля.

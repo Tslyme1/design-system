@@ -53,6 +53,15 @@ export type SelectProps = {
   allowCustom?: boolean;
   /** Закреплённая строка внизу: «+ Добавить». */
   footer?: ReactNode;
+  /**
+   * Единица измерения у правого края поля, перед стрелкой — «град.»,
+   * «рад.», «т/ч». Тот же смысл, что у одноимённого пропа `Input`: подпись
+   * `Field` называет величину, суффикс — единицу, в которой её сейчас
+   * показывают. В потоке рядом со значением, а не оверлеем поверх него:
+   * триггер — уже флекс-строка, и здесь, в отличие от `Input`, нет чужого
+   * текста ввода, который суффикс мог бы закрыть собой.
+   */
+  suffix?: ReactNode;
   disabled?: boolean;
   invalid?: boolean;
   fullWidth?: boolean;
@@ -84,6 +93,7 @@ export function Select({
   searchable = false,
   allowCustom = false,
   footer,
+  suffix,
   disabled = false,
   invalid = false,
   fullWidth = false,
@@ -193,6 +203,11 @@ export function Select({
       }}
     >
       <span className={label ? styles.value : styles.placeholder}>{display ?? placeholder}</span>
+      {suffix ? (
+        <span className={styles.suffix} aria-hidden="true">
+          {suffix}
+        </span>
+      ) : null}
       <Icon name="chevronDown" size="sm" />
     </button>
   );

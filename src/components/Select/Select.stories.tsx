@@ -247,6 +247,7 @@ export const Usage: Story = {
   render: () => {
     const [customer, setCustomer] = useState<string | string[] | null>(null);
     const [crusher, setCrusher] = useState<string | string[] | null>(null);
+    const [diameter, setDiameter] = useState<string | string[] | null>('1750');
 
     return (
       <Stack gap="lg">
@@ -272,6 +273,23 @@ export const Usage: Story = {
         <Field label="Дробилка" variant="floating">
           {(props) => (
             <Select {...props} options={crusherOptions} value={crusher} onChange={setCrusher} fullWidth />
+          )}
+        </Field>
+
+        <Field label="Диаметр основания" hint="Единица показана в поле — рядом со значением, перед стрелкой">
+          {(props) => (
+            <Select
+              {...props}
+              options={[
+                { value: '1750', label: '1750' },
+                { value: '2200', label: '2200' },
+              ]}
+              value={diameter}
+              onChange={setDiameter}
+              clearable={false}
+              suffix="мм"
+              fullWidth
+            />
           )}
         </Field>
       </Stack>
