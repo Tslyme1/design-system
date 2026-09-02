@@ -48,6 +48,18 @@ const columns: TableColumn<Row>[] = [
   },
 ];
 
+/** Колонка действий над строкой — та, что `pinEndKey` прибивает к правому краю. */
+const columnsWithMenu: TableColumn<Row>[] = [
+  ...columns,
+  { key: 'note', title: 'Label 5' },
+  { key: 'author', title: 'Label 6' },
+  {
+    key: 'menu',
+    title: '',
+    render: () => <Button variant="ghost" size="sm" icon="moreHorizontal" aria-label="Действия" />,
+  },
+];
+
 /** Достаточно строк, чтобы гарантированно выйти за пределы демо-контейнера `stickyHeader`. */
 const manyRows: Row[] = Array.from({ length: 20 }, (_, i) => ({
   id: String(i + 1),
@@ -304,6 +316,12 @@ export const Overflow: Story = {
       <Labeled label="stickyHeader — строк больше, чем помещается в контейнер снаружи">
         <div className={storyStyles.scrollDemo}>
           <Table {...base} rows={manyRows} stickyHeader />
+        </div>
+      </Labeled>
+
+      <Labeled label="pinEndKey — колонка действия прибита к правому краю при прокрутке">
+        <div className={storyStyles.narrowDemo}>
+          <Table {...base} columns={columnsWithMenu} pinEndKey="menu" />
         </div>
       </Labeled>
     </Stack>

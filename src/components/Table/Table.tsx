@@ -66,6 +66,15 @@ export type TableProps<Row> = {
    * по себе. Без такого предка проп ничего не изменит: скроллить нечему.
    */
   stickyHeader?: boolean;
+  /**
+   * Ключ колонки, прибитой к правому краю при горизонтальной прокрутке —
+   * для колонки действий над строкой («Меню»), которая иначе уезжает
+   * за край при сужении вьюпорта и перестаёт быть доступна одним кликом.
+   * Явный ключ, а не «всегда последняя»: тот же приём, что у `rowActionKey`
+   * — не каждая таблица прокручивается по горизонтали и не у каждой
+   * последняя колонка — действие.
+   */
+  pinEndKey?: string;
 };
 
 /** Пустое значение показывается прочерком, а не пустой ячейкой: пустая читается как «забыли». */
@@ -102,6 +111,7 @@ export function Table<Row>({
   empty,
   rowActionKey,
   stickyHeader = false,
+  pinEndKey,
 }: TableProps<Row>) {
   /* Колонка со строкой-действием: названная явно или первая. */
   const actionKey = rowActionKey ?? columns[0]?.key;
@@ -127,7 +137,10 @@ export function Table<Row>({
       return Array.from({ length: 3 }, (_, i) => (
         <tr key={i} className={styles.row}>
           {columns.map((column) => (
-            <td key={column.key} className={styles.cell}>
+            <td
+              key={column.key}
+              className={[styles.cell, column.key === pinEndKey ? styles.pinEnd : null].filter(Boolean).join(' ')}
+            >
               <Skeleton variant="text" />
             </td>
           ))}
@@ -154,7 +167,13 @@ export function Table<Row>({
         {columns.map((column) => (
           <td
             key={column.key}
-            className={[styles.cell, column.align === 'end' ? styles.alignEnd : null].filter(Boolean).join(' ')}
+            className={[
+              styles.cell,
+              column.align === 'end' ? styles.alignEnd : null,
+              column.key === pinEndKey ? styles.pinEnd : null,
+            ]
+              .filter(Boolean)
+              .join(' ')}
           >
             {/* Действие живёт в одной ячейке, а не на строке: у `tr` нет
                 роли, его нельзя открыть в новой вкладке, а фокус на каждой
@@ -207,6 +226,7 @@ export function Table<Row>({
                     styles.head,
                     stickyHeader ? styles.headSticky : null,
                     column.align === 'end' ? styles.alignEnd : null,
+                    column.key === pinEndKey ? styles.pinEnd : null,
                   ]
                     .filter(Boolean)
                     .join(' ')}

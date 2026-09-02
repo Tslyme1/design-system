@@ -180,6 +180,43 @@
   background: var(--color-accent-subtle);
 }
 
+/**
+ * Колонка, прибитая к правому краю при горизонтальной прокрутке (`pinEndKey`).
+ *
+ * Свой фон обязателен: `.cell` сама по себе прозрачна и берёт фон строки
+ * снизу (`.row`/`.interactive`), а прибитая ячейка остаётся на месте, пока
+ * остальные проезжают под ней, — без непрозрачного фона сквозь неё было бы
+ * видно уехавшее содержимое соседних колонок. У `.head` свой фон уже есть
+ * (`--color-surface-sunken`) — здесь он просто закреплён тем же значением,
+ * а не переопределён, поэтому фон ячейки и шапки различаются составными
+ * селекторами ниже, а не одним общим правилом.
+ *
+ * Хайрлайн слева — постоянный, а не только во время прокрутки: измерять,
+ * прокручена ли таблица прямо сейчас, — отдельная логика ради качества,
+ * которое и так почти не заметно (тонкая линия остаётся тонкой линией).
+ */
+.pinEnd {
+  position: sticky;
+  right: 0;
+  z-index: var(--z-sticky);
+  border-left: var(--border-hairline) solid var(--color-border);
+}
+
+.cell.pinEnd {
+  background: var(--color-surface);
+}
+
+.head.pinEnd {
+  background: var(--color-surface-sunken);
+}
+
+/* Строка получает фон через `.interactive:hover`/`:focus-within`, а прибитая
+   ячейка в него не «включена» — та же подсветка дублируется на ней самой. */
+.interactive:hover .pinEnd,
+.interactive:focus-within .pinEnd {
+  background: var(--color-accent-subtle);
+}
+
 .rowAction {
   display: inline-flex;
   align-items: center;
