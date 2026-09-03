@@ -178,6 +178,20 @@ button.button:disabled {
   color: var(--color-text);
 }
 
+/**
+ * Пройден и в то же время текущий — кружок остаётся обводкой, не
+ * заливается. Заливка с галкой читается как «это позади, экран уже
+ * не на этом шаге» — ровно то, что неправда, пока шаг ещё активен.
+ * `.done.active` — оба класса на одном `li` (см. `state` в `Stepper.tsx`),
+ * поэтому специфичность выше, чем у `.done .marker` самого по себе,
+ * и заливка последнего не пробивается. Обводка и её цвет остаются
+ * от `.active .marker` — здесь их незачем повторять.
+ */
+.done.active .marker {
+  background: var(--color-surface);
+  color: var(--color-accent-text);
+}
+
 .disabled .marker,
 .disabled .label,
 .disabled .description {
