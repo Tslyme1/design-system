@@ -1,12 +1,25 @@
 /**
- * Поле, открывающее панель, — ровно то же, что у `Select`: рамка, высоты
- * по шкале контролов, значок справа, приглушённый плейсхолдер. Поэтому
- * не копия правил, а `composes`: две одинаковые с виду кнопки, живущие
- * по разным описаниям, — ровно тот случай, из-за которого в аудите
- * набралось три написания одного и того же контрола.
+ * Обёртка триггера — та же рамка и высоты по шкале контролов, что у
+ * `Select` (`composes`, не копия правил: те же классы, что уже развели
+ * по трём написаниям в аудите). Раньше обёртка была самой кнопкой:
+ * поле только открывало панель, а печатать в него было нельзя. Теперь
+ * внутри настоящий `<input>` (`.field`) — обёртка стала `<div>`,
+ * не интерактивна сама по себе, и состояния (`hover`, фокус, disabled),
+ * которые раньше приходили от `.trigger:…` на кнопке `Select`, здесь
+ * расставлены заново под композицию из двух дочерних контролов.
  */
-.trigger {
+.triggerBox {
   composes: trigger from '../Select/Select.module.css';
+  cursor: default;
+}
+
+.triggerBox:hover {
+  border-color: var(--color-border-hover);
+}
+
+.triggerBox:focus-within,
+.triggerOpen {
+  border-color: var(--color-accent);
 }
 
 .sm {
@@ -29,12 +42,69 @@
   composes: fullWidth from '../Select/Select.module.css';
 }
 
-.value {
-  composes: value from '../Select/Select.module.css';
+/** Поле ввода внутри обёртки: без своих рамки и фона — их несёт `.triggerBox`. */
+.field {
+  flex: 1;
+  min-width: 0;
+  width: 100%;
+
+  background: transparent;
+  color: var(--color-text);
+  font: inherit;
+
+  border: none;
+  outline: none;
+  padding: 0;
+  cursor: text;
 }
 
-.placeholder {
-  composes: placeholder from '../Select/Select.module.css';
+.field::placeholder {
+  color: var(--color-text-muted);
+}
+
+.field:disabled {
+  cursor: not-allowed;
+}
+
+/** Кнопка-значок календаря: открывает панель кликом, поле — фокусом. */
+.iconButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+
+  padding: 0;
+  background: transparent;
+  color: var(--color-text-muted);
+
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+
+.iconButton:hover:not(:disabled) {
+  color: var(--color-text);
+}
+
+.iconButton:focus-visible {
+  outline: var(--border-strong) solid var(--color-focus-ring);
+  outline-offset: 1px;
+}
+
+.iconButton:disabled {
+  color: var(--color-text-disabled);
+  cursor: not-allowed;
+}
+
+/**
+ * Отключённое состояние — своим классом, а не `.triggerBox:disabled`:
+ * `disabled` в DOM бывает только у настоящих контролов (`<input>`,
+ * `<button>`), а обёртка теперь `<div>`. Ставится вместе с `disabled`
+ * на оба дочерних контрола — здесь только фон и рамка обёртки.
+ */
+.disabled {
+  background: var(--color-surface-sunken);
+  border-color: var(--color-border);
 }
 
 /* ---------- Панель ---------- */

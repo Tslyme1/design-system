@@ -81,8 +81,15 @@ const WEEKS = 6;
  * интерфейса, собранного из токенов, открывалась панель чужого вида, своя
  * в каждом браузере. Это и есть причина, по которой компонент существует.
  *
- * Панель, закрытие по Esc и клику снаружи отданы `Popover` — здесь только
- * сетка месяца и перемещение по ней.
+ * Поле — настоящий `<input>`, а не кнопка: дату можно напечатать
+ * («21.08.2026»), а не только выбрать кликом по сетке. Раньше поле было
+ * кнопкой ровно с одной задачей — открыть панель, — и человеку с готовой
+ * датой в голове приходилось её высматривать в сетке вместо того, чтобы
+ * напечатать. Значок календаря остался отдельной кнопкой рядом: он же
+ * открывает панель тем, кто предпочитает клик, а не набор текста.
+ *
+ * Панель, закрытие по Esc и клику снаружи отданы `Popover` — здесь сетка
+ * месяца, перемещение по ней и разбор напечатанного текста.
  */
 export function DatePicker({
   value,
@@ -152,6 +159,37 @@ export function DatePicker({
     setOpen(false);
   };
 
+  /* ---------- Текст в поле: печать вручную ---------- */
+
+  const [text, setText] = useState(() => (selected ? formatRu(selected) : ''));
+
+  /* Значение снаружи (клик по сетке, «Сегодня», «Очистить», сброс формы)
+     обязано перезаписать напечатанное — иначе после выбора в сетке в поле
+     останется недопечатанный текст. */
+  useEffect(() => {
+    setText(selected ? formatRu(selected) : '');
+  }, [selected]);
+
+  /** Откатывает поле к последнему настоящему значению — нераспознанный текст не принимается молча. */
+  const revertText = () => setText(selected ? formatRu(selected) : '');
+
+  const commitText = (raw: string) => {
+    const trimmed = raw.trim();
+    if (trimmed === '') {
+      onChange(null);
+      return;
+    }
+    const parsed = parseRu(trimmed);
+    if (!parsed || outOfRange(parsed)) {
+      revertText();
+      return;
+    }
+    onChange(toISO(parsed));
+    setView(firstOfMonth(parsed));
+    setFocused(parsed);
+    setOpen(false);
+  };
+
   const moveFocus = (next: Date) => {
     focusPending.current = true;
     setFocused(next);
@@ -185,35 +223,58 @@ export function DatePicker({
   };
 
   const triggerClass = [
-    styles.trigger,
+    styles.triggerBox,
     styles[size],
     invalid ? styles.invalid : null,
     fullWidth ? styles.fullWidth : null,
+    open ? styles.triggerOpen : null,
+    disabled ? styles.disabled : null,
   ]
     .filter(Boolean)
     .join(' ');
 
-  const label = selected ? formatRu(selected) : null;
-
   const trigger = (
-    <button
-      type="button"
-      id={id}
-      className={triggerClass}
-      disabled={disabled}
-      aria-haspopup="dialog"
-      aria-expanded={open}
-      aria-label={ariaLabel}
-      aria-describedby={describedBy}
-      aria-invalid={ariaInvalid || invalid || undefined}
-      /* Плавающая подпись `Field` смотрит на этот атрибут: `:placeholder-shown`
-         работает только у input, а здесь кнопка. Тот же уговор, что у `Select`. */
-      data-filled={label ? 'true' : 'false'}
-      onClick={() => setOpen((v) => !v)}
-    >
-      <span className={label ? styles.value : styles.placeholder}>{label ?? placeholder}</span>
-      <Icon name="calendar" size="sm" />
-    </button>
+    <div className={triggerClass}>
+      <input
+        type="text"
+        id={id}
+        className={styles.field}
+        value={text}
+        placeholder={placeholder}
+        disabled={disabled}
+        aria-label={ariaLabel}
+        aria-describedby={describedBy}
+        aria-invalid={ariaInvalid || invalid || undefined}
+        /* Плавающая подпись `Field` смотрит на этот атрибут: тот же уговор,
+           что у `Select`, — держит один и тот же контракт для обоих полей,
+           хотя здесь это уже настоящий `<input>` и `:placeholder-shown`
+           сработал бы и сам. */
+        data-filled={text ? 'true' : 'false'}
+        onFocus={() => setOpen(true)}
+        onChange={(event) => setText(event.target.value)}
+        onKeyDown={(event) => {
+          if (event.key === 'Enter') {
+            event.preventDefault();
+            commitText(text);
+          }
+          if (event.key === 'Escape') {
+            revertText();
+          }
+        }}
+        onBlur={(event) => commitText(event.target.value)}
+      />
+      <button
+        type="button"
+        className={styles.iconButton}
+        aria-label={open ? 'Закрыть календарь' : 'Открыть календарь'}
+        aria-haspopup="dialog"
+        aria-expanded={open}
+        disabled={disabled}
+        onClick={() => setOpen((v) => !v)}
+      >
+        <Icon name="calendar" size="sm" />
+      </button>
+    </div>
   );
 
   return (
@@ -338,6 +399,28 @@ function parseISO(value: string | null): Date | null {
 
   const date = new Date(year, month - 1, day, 12);
   return Number.isNaN(date.getTime()) ? null : date;
+}
+
+/**
+ * Разбор напечатанного «дд.мм.гггг» (и «дд/мм/гггг», «дд-мм-гггг» —
+ * человек не обязан помнить, каким разделителем набирает система).
+ *
+ * Строгий, а не снисходительный: «31.02.2026» не округляется до ближайшего
+ * настоящего дня — `new Date` в конструкторе с полями это бы сделал молча,
+ * подставив дату, которую никто не печатал. Несуществующий день отклоняется,
+ * а не подменяется.
+ */
+function parseRu(text: string): Date | null {
+  const match = text.match(/^(\d{1,2})[.\-/](\d{1,2})[.\-/](\d{4})$/);
+  if (!match) return null;
+
+  const day = Number(match[1]);
+  const month = Number(match[2]);
+  const year = Number(match[3]);
+
+  const date = new Date(year, month - 1, day, 12);
+  const isReal = date.getFullYear() === year && date.getMonth() === month - 1 && date.getDate() === day;
+  return isReal ? date : null;
 }
 
 function toISO(date: Date): string {

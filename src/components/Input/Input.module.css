@@ -52,19 +52,26 @@
   width: 100%;
 }
 
-.sm {
+/**
+ * Размер завязан на `.input`, а не на голый класс: тот же класс размера
+ * навешен и на `.wrapper` (см. ниже) — только чтобы дать `.wrapper.md .suffix`
+ * точку опоры. Без этой оговорки `.wrapper` получал бы собственные
+ * `padding-inline`/`height`, отъедая место у `<input width:100%>` внутри
+ * себя же — суффикс садился впритык к рамке поля, будто отступа нет вовсе.
+ */
+.input.sm {
   height: var(--control-sm);
   padding-inline: var(--space-sm);
   font-size: var(--text-body-sm-size);
 }
 
-.md {
+.input.md {
   height: var(--control-md);
   padding-inline: var(--space-md);
   font-size: var(--text-body-size);
 }
 
-.lg {
+.input.lg {
   height: var(--control-lg);
   padding-inline: var(--space-lg);
   font-size: var(--text-body-lg-size);
