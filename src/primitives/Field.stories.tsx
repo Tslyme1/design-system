@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Field } from './Field';
 import { Stack } from './Stack';
 import { Text } from './Text';
-import { Input } from '@/components';
+import { Button, Input, Tooltip } from '@/components';
 import { Labeled } from '@spec';
 import { label, description, value, errorText } from '@fixtures';
 
@@ -94,6 +94,20 @@ export const States: Story = {
       <Labeled label="disabled">
         <Field label={label} hint={description}>
           {(props) => <Input {...props} fullWidth disabled />}
+        </Field>
+      </Labeled>
+
+      <Labeled label="labelHint — глоссарий по наведению, не то же самое, что hint">
+        <Field
+          label={label}
+          hint="было: 12"
+          labelHint={
+            <Tooltip content="Расшифровка сокращения или физический смысл параметра — короткий текст для тех, кто не помнит методику наизусть.">
+              <Button variant="ghost" size="sm" icon="info" aria-label={`Что означает: ${label}`} />
+            </Tooltip>
+          }
+        >
+          {(props) => <Input {...props} fullWidth defaultValue={value} />}
         </Field>
       </Labeled>
     </Stack>

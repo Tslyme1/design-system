@@ -21,6 +21,19 @@
   color: var(--color-danger-text);
 }
 
+/**
+ * Значок-подсказка рядом с подписью (`labelHint`) — вплотную к тексту,
+ * без собственного отступа снаружи: интервал до подписи держит сам
+ * значок изнутри (обычно кнопка с паддингом), а не эта обёртка, иначе
+ * два источника отступа складывались бы непредсказуемо в зависимости
+ * от того, чем `labelHint` окажется в конкретном месте.
+ */
+.labelHint {
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
+}
+
 .message {
   font-family: var(--font-body);
   font-size: var(--text-caption-size);

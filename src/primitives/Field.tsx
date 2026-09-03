@@ -33,6 +33,14 @@ export type FieldProps = {
   error?: string;
   required?: boolean;
   fullWidth?: boolean;
+  /**
+   * Значок-подсказка рядом с подписью — обычно `Tooltip` вокруг кнопки
+   * со значком `info`. Не замена `hint`: тот — обязательное для работы
+   * пояснение под полем (например, «было: X»), которое видно всегда;
+   * это — необязательный глоссарий термина по наведению или фокусу,
+   * без которого можно продолжать работать, просто не узнав a₀ от Va₀.
+   */
+  labelHint?: ReactNode;
 };
 
 /**
@@ -56,6 +64,7 @@ export function Field({
   error,
   required = false,
   fullWidth = false,
+  labelHint,
 }: FieldProps) {
   const id = useId();
   const messageId = `${id}-message`;
@@ -82,6 +91,7 @@ export function Field({
           <label htmlFor={id} className={[styles.floatLabel, error ? styles.labelError : null].filter(Boolean).join(' ')}>
             {label}
             {required ? ' *' : ''}
+            {labelHint ? <span className={styles.labelHint}>{labelHint}</span> : null}
           </label>
         </div>
 
@@ -99,6 +109,7 @@ export function Field({
       <label htmlFor={id} className={[styles.label, error ? styles.labelError : null].filter(Boolean).join(' ')}>
         {label}
         {required ? ' *' : ''}
+        {labelHint ? <span className={styles.labelHint}>{labelHint}</span> : null}
       </label>
 
       {children(renderProps)}
