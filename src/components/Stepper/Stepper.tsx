@@ -8,6 +8,20 @@ export type Step = {
   description?: string;
   /** Шаг недоступен, пока не пройдены предыдущие. */
   disabled?: boolean;
+  /**
+   * Шаг действительно завершён — например, по нему уже выполнен расчёт.
+   * Не задан — состояние «пройден» считается по позиции (`index < current`),
+   * как раньше. Задан — заменяет позицию: шаг, на котором стоит пользователь
+   * сейчас, тоже может быть отмечен завершённым, если по нему уже есть
+   * результат, а не только за счёт того, что степпер продвинулся дальше.
+   *
+   * `done` и `active` — независимые состояния (см. `state` в `Stepper`
+   * ниже) и складываются: у текущего завершённого шага одновременно
+   * заливка с галкой (обычно у `done`) и усиленная обводка (обычно
+   * только у `active`) — обе стилевые роли за одно и то же состояние
+   * «здесь всё сделано».
+   */
+  completed?: boolean;
 };
 
 export type StepperProps = {
@@ -35,7 +49,7 @@ export function Stepper({ steps, current, onStepClick, direction = 'row' }: Step
   return (
     <ol className={[styles.stepper, styles[direction]].join(' ')}>
       {steps.map((step, index) => {
-        const done = index < current;
+        const done = step.completed ?? index < current;
         const active = index === current;
         const interactive = Boolean(onStepClick) && !step.disabled;
 

@@ -73,6 +73,9 @@ export const States: Story = {
           onStepClick={() => undefined}
         />
       </Labeled>
+      <Labeled label="текущий шаг уже завершён — completed побеждает позицию">
+        <Stepper steps={[labelSteps[0], { ...labelSteps[1], completed: true }, labelSteps[2]]} current={1} direction="column" />
+      </Labeled>
       <Text variant="caption" color="textMuted">
         hover и focus-visible появляются только при `onStepClick`. Без него шаги — индикатор, и курсор не меняется.
       </Text>
