@@ -76,7 +76,7 @@
 ### Icon
 - **Слой:** primitive
 - **Пропы:** `name` (IconName), `size` (sm|md|lg), `color` (TextColorToken), `label`
-- **Варианты:** 33 иконки Lucide, обводка 1.5 — 32 прикладных и служебная `placeholder`
+- **Варианты:** 34 иконки Lucide, обводка 1.5 — 33 прикладных и служебная `placeholder`
 - **Состояния:** наследует `currentColor` от родителя
 - **Используется:** Button, Tag, Modal, EmptyState, Badge, Table, Stepper, SegmentedControl, Link
 - **Не использовать для:** иллюстраций и схем. Набор закрыт: добавление иконки требует согласия, как и добавление токена.
