@@ -1,0 +1,42 @@
+/**
+ * Полоса снизу — `border-bottom`, а не `box-shadow`/абсолютный элемент:
+ * прозрачная в покое той же толщины, что и активная, поэтому смена
+ * состояния не двигает соседние пункты и текст над ней ни на пиксель.
+ */
+.tab {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-sm) var(--space-md);
+  border: none;
+  border-bottom: var(--border-strong) solid transparent;
+  background: none;
+  cursor: pointer;
+
+  font-size: var(--text-body-size);
+  line-height: var(--text-body-line);
+  font-weight: var(--text-label-weight);
+  color: var(--color-text-muted);
+
+  transition:
+    color var(--duration-fast) var(--easing-standard),
+    border-color var(--duration-fast) var(--easing-standard);
+}
+
+.tab:hover {
+  color: var(--color-text);
+}
+
+.tab:focus-visible {
+  outline: var(--border-strong) solid var(--color-focus-ring);
+  outline-offset: -2px;
+}
+
+.tab:disabled {
+  cursor: not-allowed;
+  color: var(--color-text-disabled);
+}
+
+.active {
+  color: var(--color-text);
+  border-bottom-color: var(--color-accent);
+}
