@@ -73,3 +73,6 @@ export type { AppHeaderProps, HeaderButtonProps, HeaderLogoProps, HeaderTabProps
 
 export { Tab } from './Tab/Tab';
 export type { TabProps } from './Tab/Tab';
+
+export { Toast } from './Toast/Toast';
+export type { ToastProps, ToastTone } from './Toast/Toast';
