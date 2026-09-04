@@ -17,6 +17,14 @@ export type TableColumn<Row> = {
   sortable?: boolean;
   /** Своё содержимое ячейки. Без него берётся `row[key]`. */
   render?: (row: Row) => ReactNode;
+  /**
+   * Ширина колонки как CSS-значение (`'48px'`, `'10%'`) — колонка узкого,
+   * не текстового содержимого (иконка, одна кнопка действия) иначе делит
+   * между собой лишнее пространство наравне с текстовыми колонками и
+   * выходит шире своего контента. Без неё ширина, как и раньше, отдана
+   * браузеру — большинству колонок задавать её не нужно.
+   */
+  width?: string;
 };
 
 export type TableProps<Row> = {
@@ -40,6 +48,15 @@ export type TableProps<Row> = {
    * различимой в списке заголовков. Без `caption` не действует.
    */
   captionHidden?: boolean;
+  /**
+   * Действия у заголовка — например, переключатель отображаемых колонок.
+   * Встают в ту же строку, что и `caption`, прижатые к правому краю.
+   * Требует видимого `caption`: под `captionHidden` заголовок убирается
+   * из глаз целиком, вместе с действиями внутри него, — если то, что
+   * содержится в действиях, обязано быть видно и доступно всегда, заголовок
+   * прятать нельзя.
+   */
+  captionActions?: ReactNode;
   sort?: TableSort | null;
   onSortChange?: (sort: TableSort) => void;
   onRowClick?: (row: Row) => void;
@@ -104,6 +121,7 @@ export function Table<Row>({
   rowKey,
   caption,
   captionHidden = false,
+  captionActions,
   sort,
   onSortChange,
   onRowClick,
@@ -141,6 +159,7 @@ export function Table<Row>({
             <td
               key={column.key}
               className={[styles.cell, column.key === pinEndKey ? styles.pinEnd : null].filter(Boolean).join(' ')}
+              style={column.width ? { width: column.width } : undefined}
             >
               <Skeleton variant="text" />
             </td>
@@ -175,6 +194,7 @@ export function Table<Row>({
             ]
               .filter(Boolean)
               .join(' ')}
+            style={column.width ? { width: column.width } : undefined}
           >
             {/* Действие живёт в одной ячейке, а не на строке: у `tr` нет
                 роли, его нельзя открыть в новой вкладке, а фокус на каждой
@@ -209,7 +229,16 @@ export function Table<Row>({
             потерянный заголовок, а не как его отсутствие. */}
         {caption ? (
           <caption className={[styles.caption, captionHidden ? styles.captionHidden : null].filter(Boolean).join(' ')}>
-            {caption}
+            {/* Действия прячутся вместе с заголовком под `captionHidden` —
+                см. пояснение у `captionActions` в типе пропов. */}
+            {captionActions && !captionHidden ? (
+              <span className={styles.captionRow}>
+                <span>{caption}</span>
+                <span className={styles.captionActions}>{captionActions}</span>
+              </span>
+            ) : (
+              caption
+            )}
           </caption>
         ) : null}
         <thead>
@@ -231,6 +260,7 @@ export function Table<Row>({
                   ]
                     .filter(Boolean)
                     .join(' ')}
+                  style={column.width ? { width: column.width } : undefined}
                 >
                   {column.sortable && onSortChange ? (
                     <button type="button" className={styles.sortButton} onClick={() => toggleSort(column.key)}>

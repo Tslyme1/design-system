@@ -70,3 +70,6 @@ export type { EmptyStateProps } from './EmptyState/EmptyState';
 
 export { AppHeader, HeaderButton, HeaderDivider, HeaderLogo, HeaderTab, HeaderSpacer } from './AppHeader/AppHeader';
 export type { AppHeaderProps, HeaderButtonProps, HeaderLogoProps, HeaderTabProps, HeaderSideProps } from './AppHeader/AppHeader';
+
+export { Tab } from './Tab/Tab';
+export type { TabProps } from './Tab/Tab';
