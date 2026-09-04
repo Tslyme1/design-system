@@ -14,6 +14,7 @@ export const icons = {
   chevronLeft: ['M15 18 9 12 15 6'],
   chevronUp: ['M6 15 12 9 18 15'],
   plus: ['M12 5v14', 'M5 12h14'],
+  minus: ['M5 12h14'],
   x: ['M18 6 6 18', 'M6 6l12 12'],
   check: ['M20 6 9 17l-5-5'],
   search: ['M11 3a8 8 0 1 0 0 16 8 8 0 0 0 0-16z', 'M21 21l-4.35-4.35'],
