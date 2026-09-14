@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { useState } from 'react';
 import { Modal } from './Modal';
-import { Button, Input } from '@/components';
+import { Button, Chip, Input } from '@/components';
 import { Stack, Text, Field } from '@/primitives';
 import { longText, label, longLabel } from '@fixtures';
 import { Labeled } from '@spec';
@@ -216,6 +216,61 @@ export const Overflow: Story = {
           </Stack>
         </Modal>
       </Stack>
+    );
+  },
+};
+
+/**
+ * Слоты шапки: заголовок, действия окна, закрытие.
+ *
+ * Действия в шапке и содержимое без внутреннего отступа.
+ *
+ * Плашка объекта и переключатель отображения описывают окно целиком,
+ * а не его содержимое, — им место в шапке, рядом с заголовком.
+ * `contentFlush` нужен, когда содержимое само рисует свои края: таблица
+ * во всю ширину или чертёж внутри общего отступа выглядят приклеенными
+ * к нему, а не вписанными в окно.
+ */
+export const Anatomy: Story = {
+  args: { open: false, title: '', children: null, onClose: () => undefined },
+  render: function Render() {
+    const [open, setOpen] = useState(false);
+
+    return (
+      <>
+        <Button variant="secondary" onClick={() => setOpen(true)}>
+          Открыть окно с действиями в шапке
+        </Button>
+
+        <Modal
+          open={open}
+          onClose={() => setOpen(false)}
+          title="Исходные данные: дробилка"
+          size="lg"
+          contentFlush
+          headerActions={
+            <>
+              <Chip size="sm" icon="fileText" action={{ icon: 'pencil', label: 'Сменить', onClick: () => {} }}>
+                {label}
+              </Chip>
+              <Button variant="secondary" size="sm" iconEnd="chevronDown">
+                Отображение
+              </Button>
+            </>
+          }
+          footer={
+            <Modal.Footer aside={<Button variant="ghost" onClick={() => setOpen(false)}>Закрыть</Button>}>
+              <Button variant="primary" onClick={() => setOpen(false)}>
+                Выполнить расчёт
+              </Button>
+            </Modal.Footer>
+          }
+        >
+          <Labeled label="Содержимое без внутреннего отступа — свои края рисует оно само">
+            <Text variant="body">{longText}</Text>
+          </Labeled>
+        </Modal>
+      </>
     );
   },
 };
