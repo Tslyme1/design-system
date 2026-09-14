@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import { Icon } from '../../primitives';
 import type { IconName } from '../../primitives';
+import type { ControlSizeToken } from '../../tokens';
 import styles from './Chip.module.css';
 
 export type ChipProps = {
@@ -22,6 +23,12 @@ export type ChipProps = {
   };
   /** Плашка выбранного/активного объекта. */
   active?: boolean;
+  /**
+   * Размер контрола — та же шкала, что у `Button`, `Select` и `Input`.
+   * Плашка стоит с ними в одном ряду, и ряд из `sm`-кнопок рядом
+   * с `md`-плашкой читается как два ряда, слепленных вместе.
+   */
+  size?: ControlSizeToken;
   fullWidth?: boolean;
 };
 
@@ -36,9 +43,19 @@ export type ChipProps = {
  * Не путать с `Tag`: у метки цвет означает пользовательский выбор,
  * а плашка показывает объект и ведёт к действию над ним.
  */
-export function Chip({ children, meta, icon, onClick, action, active = false, fullWidth = false }: ChipProps) {
+export function Chip({
+  children,
+  meta,
+  icon,
+  onClick,
+  action,
+  active = false,
+  size = 'md',
+  fullWidth = false,
+}: ChipProps) {
   const className = [
     styles.chip,
+    styles[size],
     active ? styles.active : null,
     onClick ? styles.clickable : null,
     fullWidth ? styles.fullWidth : null,

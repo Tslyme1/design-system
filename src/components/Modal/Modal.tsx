@@ -17,6 +17,22 @@ export type ModalProps = {
   children: ReactNode;
   /** Слот действий. Обычно `<Modal.Footer>` с кнопками. */
   footer?: ReactNode;
+  /**
+   * Действия в шапке, справа от заголовка и слева от крестика.
+   *
+   * Для того, что относится к окну целиком, а не к его содержимому:
+   * плашка выбранного объекта, переключатель отображения. В теле окна
+   * такая строка занимает первую полосу содержимого и читается как его
+   * часть — хотя описывает само окно. Тот же слот, что `captionActions`
+   * у `Table`.
+   */
+  headerActions?: ReactNode;
+  /**
+   * Содержимое без внутреннего отступа — когда оно само рисует свои
+   * края: чертёж, карта, таблица во всю ширину окна. Обычному тексту
+   * и форме отступ нужен, поэтому по умолчанию он есть.
+   */
+  contentFlush?: boolean;
   size?: ModalWidthToken;
   /**
    * Разрешить закрытие по Esc и клику по фону.
@@ -38,7 +54,17 @@ export type ModalProps = {
  *
  * Прокрутка живёт только в содержимом — шапка и футер остаются на виду.
  */
-export function Modal({ open, onClose, title, children, footer, size = 'sm', dismissible = true }: ModalProps) {
+export function Modal({
+  open,
+  onClose,
+  title,
+  children,
+  footer,
+  headerActions,
+  contentFlush = false,
+  size = 'sm',
+  dismissible = true,
+}: ModalProps) {
   const dialogRef = useRef<HTMLDivElement | null>(null);
   const previouslyFocused = useRef<HTMLElement | null>(null);
   /**
@@ -142,6 +168,7 @@ export function Modal({ open, onClose, title, children, footer, size = 'sm', dis
           <Text variant="headingSm" as="h2" id={titleId} truncate>
             {title}
           </Text>
+          {headerActions ? <div className={styles.headerActions}>{headerActions}</div> : null}
           {dismissible ? (
             <button type="button" className={styles.close} onClick={onClose} aria-label="Закрыть">
               <Icon name="x" size="md" />
@@ -152,7 +179,9 @@ export function Modal({ open, onClose, title, children, footer, size = 'sm', dis
         {/* Всё содержимое окна знает, что всплывающие слои внутри него
             рисуются в само окно, а не в конец документа. */}
         <LayerRootProvider node={layerNode}>
-          <div className={styles.content}>{children}</div>
+          <div className={[styles.content, contentFlush ? styles.contentFlush : null].filter(Boolean).join(' ')}>
+            {children}
+          </div>
 
           {footer ? <footer className={styles.footer}>{footer}</footer> : null}
         </LayerRootProvider>
