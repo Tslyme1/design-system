@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { useEffect } from 'react';
 import {
   useFloating,
   useDismiss,
@@ -176,7 +177,36 @@ function PopoverLayer({
 
   // pointerdown, а не click: иначе панель успевает закрыться раньше,
   // чем сработает обработчик внутри неё.
-  const dismiss = useDismiss(context, { outsidePressEvent: 'pointerdown' });
+  //
+  // Escape отключён у `useDismiss` и обработан ниже вручную: его нужно
+  // не только услышать, но и остановить.
+  const dismiss = useDismiss(context, { outsidePressEvent: 'pointerdown', escapeKey: false });
+
+  /**
+   * Escape закрывает только эту панель, а не всё, что под ней.
+   *
+   * Модалка слушает Escape на `document` и закрывается по нему же.
+   * Поповер внутри модалки мало того что открыт поверх — он ещё и
+   * смонтирован позже, а обработчики на одном узле срабатывают в порядке
+   * подписки: нажатие, которым хотели убрать панель, уносило вместе
+   * с ней и окно, в котором она стояла.
+   *
+   * Перехват на погружении: обработчик на `document` в фазе capture
+   * идёт раньше любых всплывающих, поэтому здесь событие можно
+   * остановить и закрыть ровно верхний слой.
+   */
+  useEffect(() => {
+    if (!open) return;
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== 'Escape') return;
+      event.stopPropagation();
+      onClose();
+    };
+
+    document.addEventListener('keydown', onKeyDown, true);
+    return () => document.removeEventListener('keydown', onKeyDown, true);
+  }, [open, onClose]);
   /**
    * `useRole` не подключён намеренно: он вешает `aria-haspopup` и
    * `aria-expanded` на опорный элемент, а опорный здесь — обёртка-div, которая
