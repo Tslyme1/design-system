@@ -31,7 +31,7 @@ type Story = StoryObj<typeof meta>;
 function Live({ labels = ['Продукт', 'Этап 1', 'Этап 2'] }: { labels?: string[] }) {
   const [active, setActive] = useState(labels[0]);
   return (
-    <Stack direction="row" gap="none">
+    <Stack direction="row" gap="xl">
       {labels.map((label) => (
         <Tab key={label} active={active === label} onClick={() => setActive(label)}>
           {label}
@@ -97,7 +97,7 @@ export const Overflow: Story = {
         экран (тот же приём, что у вкладок в шапке сервиса), а не сам `Tab`.
       </Text>
       <Box border padding="md" fullWidth>
-        <Stack direction="row" gap="none" wrap>
+        <Stack direction="row" gap="xl" wrap>
           <Tab active onClick={() => undefined}>
             Label, который в пункт не помещается и обязан обрезаться
           </Tab>
@@ -113,7 +113,7 @@ export const EdgeCases: Story = {
   render: () => (
     <Stack gap="lg" align="start">
       <Labeled label="ни один пункт не активен">
-        <Stack direction="row" gap="none">
+        <Stack direction="row" gap="xl">
           <Tab onClick={() => undefined}>Label 1</Tab>
           <Tab onClick={() => undefined}>Label 2</Tab>
         </Stack>
