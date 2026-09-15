@@ -6,7 +6,10 @@
 .tab {
   display: inline-flex;
   align-items: center;
-  padding: var(--space-sm) var(--space-md);
+  /* Без отступа по бокам: полоса активного пункта равна ширине подписи,
+     а первый пункт встаёт по краю содержимого под строкой. Расстояние
+     между пунктами — `gap` строки у вызывающего экрана. */
+  padding: var(--space-sm) 0;
   border: none;
   border-bottom: var(--border-strong) solid transparent;
   background: none;
